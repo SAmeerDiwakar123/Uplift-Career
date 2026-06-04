@@ -94,8 +94,10 @@ app.use(cookieParser());
 // CORS (IMPORTANT FIX HERE)
 app.use(
   cors({
-    origin: "https://uplift-career-frontend.vercel.app", 
+    origin: "https://uplift-career-frontend.vercel.app",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   })
 );
 
