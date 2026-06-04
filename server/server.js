@@ -9,6 +9,7 @@ import jobRoute from './routes/jobRoute.js';
 import  applicationRoute from './routes/applicationRoute.js'
 import dns from 'dns';
 
+
 dns.setServers(["1.1.1.1", "8.8.8.8"])
 
 
