@@ -15,8 +15,20 @@ const registerUser = async (req, res) => {
     }
 
     const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+if (!file) {
+  return res.status(400).json({
+    success: false,
+    message: "Profile photo is required"
+  });
+}
+
+const fileUri = getDataUri(file);
+const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+    // const file = req.file;
+    // const fileUri = getDataUri(file);
+    // const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     // Check if user already exists
     const user = await User.findOne({ email });

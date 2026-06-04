@@ -35,15 +35,18 @@ const SignUp = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (!input.file) {
+      toast.error("Please select profile photo");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("fullname", input.fullname);
     formData.append("email", input.email);
     formData.append("phoneNumber", input.phoneNumber);
     formData.append("password", input.password);
     formData.append("role", input.role);
-    if (input.file) {
-      formData.append("file", input.file);
-    }
+    formData.append("file", input.file);
     try {
       dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
@@ -58,8 +61,8 @@ const SignUp = () => {
       }
     } catch (error) {
       console.log(error);
-    } 
-    finally{
+    }
+    finally {
       dispatch(setLoading(false));
     }
   }
