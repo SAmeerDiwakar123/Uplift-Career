@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
-import ConnectDB from './config/mongoDB.js';
+import ConnectDB from './config/mongodb.js';
 import userRoute from './routes/userRoute.js';
 import cookieParser from 'cookie-parser';
 import companyRoute from './routes/companyRoute.js';
