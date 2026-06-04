@@ -8,10 +8,21 @@ import companyRoute from './routes/companyRoute.js';
 import jobRoute from './routes/jobRoute.js';
 import  applicationRoute from './routes/applicationRoute.js'
 import dns from 'dns';
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 
 dns.setServers(["1.1.1.1", "8.8.8.8"])
 
+
+
+app.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+});
+app.use(limiter);
 
 // Initialize Express
 const app = express();
@@ -25,7 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: 'https://uplift-career-whfy.vercel.app/',
   credentials: true,
 }
 
