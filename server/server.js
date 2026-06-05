@@ -92,15 +92,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // CORS (IMPORTANT FIX HERE)
+// Pehle OPTIONS preflight handle karo
+app.options("*", cors());
+
+// CORS update karo
 app.use(
   cors({
     origin: "https://uplift-career-frontend.vercel.app",
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie", "multipart/form-data"],
+    exposedHeaders: ["set-cookie"],
   })
 );
-
 // Connect DB
 await ConnectDB();
 
