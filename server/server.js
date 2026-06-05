@@ -1,62 +1,3 @@
-// import express from "express";
-// import cors from "cors";
-// import "dotenv/config";
-// import ConnectDB from "./config/mongodb.js";
-// import userRoute from "./routes/userRoute.js";
-// import cookieParser from "cookie-parser";
-// import companyRoute from "./routes/companyRoute.js";
-// import jobRoute from "./routes/jobRoute.js";
-// import applicationRoute from "./routes/applicationRoute.js";
-// import dns from "dns";
-// import helmet from "helmet";
-// import rateLimit from "express-rate-limit";
-
-// // DNS config
-// dns.setServers(["1.1.1.1", "8.8.8.8"]);
-
-// const app = express();
-
-// app.use(helmet({
-//   crossOriginEmbedderPolicy: false,
-// }));
-
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 100,
-// });
-
-// app.use(limiter);
-
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
-
-// app.use(cors({
-//   origin: [
-//     "https://uplift-career-whfy.vercel.app",
-//     "http://localhost:5173"
-//   ],
-//   credentials: true,
-// }));
-
-// app.get("/", (req, res) => {
-//   res.json({ status: "ok", message: "API running 🚀" });
-// });
-
-// const startServer = async () => {
-//   await ConnectDB();
-
-//   app.listen(process.env.PORT || 5000, () => {
-//     console.log("Server started");
-//   });
-// };
-
-// startServer();
-
-
-
-
-
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
@@ -73,12 +14,26 @@ import rateLimit from "express-rate-limit";
 // DNS config
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-// Initialize app FIRST
 const app = express();
 
-// Security middlewares FIRST
-app.use(helmet());
+// Helmet — crossOriginResourcePolicy off karo
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 
+// Manual CORS headers — sabse pehle
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://uplift-career-frontend.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS,PATCH");
+  res.header("Access-Control-Allow-Headers", "Content-Type,Authorization,Cookie");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
+// Rate limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -86,7 +41,6 @@ const limiter = rateLimit({
     return req.headers["x-forwarded-for"] || req.ip;
   },
 });
-
 app.use(limiter);
 
 // Body parsers
@@ -94,20 +48,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// CORS (IMPORTANT FIX HERE)
-// Pehle OPTIONS preflight handle karo
-app.options(/(.*)/, cors());
-
-// CORS update karo
-app.use(
-  cors({
-    origin: "https://uplift-career-frontend.vercel.app",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie", "multipart/form-data"],
-    exposedHeaders: ["set-cookie"],
-  })
-);
 // Connect DB
 await ConnectDB();
 
@@ -118,61 +58,83 @@ app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 
 app.get("/", (req, res) => {
-    res.send("Backend Running");
-}) 
-// Start server
-const PORT = process.env.PORT || 5000;
+  res.send("Backend Running");
+});
 
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);});
+  console.log(`Server is running on port ${PORT}`);
+});
+
 export default app;
 
 
-// import express from 'express'
-// import cors from 'cors'
-// import 'dotenv/config'
-// import ConnectDB from './config/mongodb.js';
-// import userRoute from './routes/userRoute.js';
-// import cookieParser from 'cookie-parser';
-// import companyRoute from './routes/companyRoute.js';
-// import jobRoute from './routes/jobRoute.js';
-// import  applicationRoute from './routes/applicationRoute.js'
-// import dns from 'dns';
+// import express from "express";
+// import cors from "cors";
+// import "dotenv/config";
+// import ConnectDB from "./config/mongodb.js";
+// import userRoute from "./routes/userRoute.js";
+// import cookieParser from "cookie-parser";
+// import companyRoute from "./routes/companyRoute.js";
+// import jobRoute from "./routes/jobRoute.js";
+// import applicationRoute from "./routes/applicationRoute.js";
+// import dns from "dns";
 // import helmet from "helmet";
+// import rateLimit from "express-rate-limit";
 
-// dns.setServers(["1.1.1.1", "8.8.8.8"])
+// // DNS config
+// dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-
-
+// // Initialize app FIRST
 // const app = express();
+
+// // Security middlewares FIRST
 // app.use(helmet());
 
-// // Initialize Express
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 100,
+//   keyGenerator: (req) => {
+//     return req.headers["x-forwarded-for"] || req.ip;
+//   },
+// });
 
+// app.use(limiter);
 
-// //Connect to DB
-// await ConnectDB();
-
-// //Middlewares
+// // Body parsers
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
-// const corsOptions = {
-//   origin: true,
-//   credentials: true,
-// }
 
-// app.use(cors(corsOptions));
+// // CORS (IMPORTANT FIX HERE)
+// // Pehle OPTIONS preflight handle karo
+// app.options(/(.*)/, cors());
 
+// // CORS update karo
+// app.use(
+//   cors({
+//     origin: "https://uplift-career-frontend.vercel.app",
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+//     allowedHeaders: ["Content-Type", "Authorization", "Cookie", "multipart/form-data"],
+//     exposedHeaders: ["set-cookie"],
+//   })
+// );
+// // Connect DB
+// await ConnectDB();
 
-// //Routes
+// // Routes
 // app.use("/api/v1/user", userRoute);
 // app.use("/api/v1/company", companyRoute);
 // app.use("/api/v1/job", jobRoute);
 // app.use("/api/v1/application", applicationRoute);
- 
-// const PORT = process.env.PORT || 5000
-// app.listen(PORT, ()=> {
-//   console.log(`Server is running on port ${PORT}`);
-// })
 
+// app.get("/", (req, res) => {
+//     res.send("Backend Running");
+// }) 
+// // Start server
+// const PORT = process.env.PORT || 5000;
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);});
+// export default app;
