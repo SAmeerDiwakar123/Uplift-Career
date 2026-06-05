@@ -33,12 +33,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// Rate limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   keyGenerator: (req) => {
-    return req.headers["x-forwarded-for"] || req.ip;
+    const forwarded = req.headers["x-forwarded-for"];
+    if (forwarded) {
+      return forwarded.split(",")[0].trim();
+    }
+    return req.ip;
+  },
+  validate: {
+    keyGeneratorIpFallback: false,
   },
 });
 app.use(limiter);
