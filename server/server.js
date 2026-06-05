@@ -82,6 +82,9 @@ app.use(helmet());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
+  keyGenerator: (req) => {
+    return req.headers["x-forwarded-for"] || req.ip;
+  },
 });
 
 app.use(limiter);
@@ -93,7 +96,7 @@ app.use(cookieParser());
 
 // CORS (IMPORTANT FIX HERE)
 // Pehle OPTIONS preflight handle karo
-app.options("*", cors());
+app.options(/(.*)/, cors());
 
 // CORS update karo
 app.use(
