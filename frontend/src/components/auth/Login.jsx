@@ -41,7 +41,7 @@ const Login = () => {
       if (res.data.success) {
         dispatch(setUser(res.data.user));
         localStorage.setItem("user", JSON.stringify(res.data.user));
-        navigate("/");
+        navigate("/jobs");
       }
       toast.success(res.data.message);
     } catch (error) {

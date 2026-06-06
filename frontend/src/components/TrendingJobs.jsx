@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import Footer from './shared/Footer';
 import { useSelector } from 'react-redux';
 
-const jobsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const TrendingJobs = () => {
 
   const { alljobs } = useSelector(store => store.job);
   const navigate = useNavigate();
-  const trendingJobs = jobsArray.slice(0, 6);
+  const trendingJobs = alljobs.slice(0, 6);
   // const jobId = "dbshbhsdhdbn"
 
   const daysAgoFunction = (mongodbTime) => {
@@ -69,7 +68,7 @@ const TrendingJobs = () => {
 
               <div className='flex items-center justify-between text-xs text-gray-500'>
                 <span className='flex items-center gap-1'><MapPin size={12} />{job?.location}</span>
-                <span className='flex items-center gap-1'><Users size={12} />{job?.applicants} applicants</span>
+                <span className='flex items-center gap-1'><Users size={12} />{job?.position} position</span>
                 <span className='flex items-center gap-1'><Clock size={12} />{daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)} days ago` }</span>
               </div>
 

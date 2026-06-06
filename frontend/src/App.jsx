@@ -1,5 +1,8 @@
 import './App.css'
-import { Routes, Route, createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
+
 import Home from './pages/Home'
 import Applications from './pages/Applications'
 import ApplyJob from './pages/ApplyJob'
@@ -19,35 +22,99 @@ import Companies from './components/admin/Companies'
 import CompanySetup from './components/admin/CompanySetup'
 import Applicants from './components/admin/Applicants'
 
-const appRouter = createBrowserRouter([
-  { path:'/', element:<Home/>},
-  { path:'/login', element:<Login/>},
-  { path:'/signup', element:<SignUp/>},
-  { path:'/jobs', element:<Jobs/>},
-  {path:'/internship', element:<Internship/>},
-  {path:'/saved', element:<SavedJobs/>},  
-  {path:'/courses', element:<Courses/>},
-  {path:'/profile', element:<Profile/>},
-  {path: '/jobs/:id', element:<JobDetail/>},
-  { path:'/apply-job/:id', element:<ApplyJob/>},
-  { path:'/Applications', element:<Applications/>},
-  {path: '/jobdetail/:id', element:<JobDetail/>},
-  {path: '/admin/dashboard', element:<Dashboard/>},
-  {path: '/admin/add-jobs', element:<AddJobs/>},
-  {path: '/admin/manage-jobs', element:<ManageJob/>},
-  {path: '/admin/create-company', element:<CreateCompany/>},
-  {path: '/admin/companies', element:<Companies/>},
-  {path: '/admin/companies/:id', element:<CompanySetup/>},
-  {path: '/admin/jobs/:id/applicants', element:<Applicants/>}
-])
+function App() {
+  const { user } = useSelector((store) => store.auth);
 
+  // Logged in user ko login/signup nahi dikhana
+  const PublicOnlyRoute = ({ children }) => {
+    return user ? <Navigate to="/jobs" replace /> : children;
+  };
 
-const App = () => {
-  return (
-    <div>
-      <RouterProvider router={appRouter}/>
-    </div>
-  )
+  // Bina login ke protected pages nahi dikhana
+  const ProtectedRoute = ({ children }) => {
+    return user ? children : <Navigate to="/login" replace />;
+  };
+
+  const appRouter = useMemo(() => createBrowserRouter([
+    {
+      path: "/",
+      element: user ? <Navigate to="/jobs" replace /> : <Home />
+    },
+    {
+      path: "/login",
+      element: <PublicOnlyRoute><Login /></PublicOnlyRoute>
+    },
+    {
+      path: "/signup",
+      element: <PublicOnlyRoute><SignUp /></PublicOnlyRoute>
+    },
+    {
+      path: "/jobs",
+      element: <ProtectedRoute><Jobs /></ProtectedRoute>
+    },
+    {
+      path: "/internship",
+      element: <ProtectedRoute><Internship /></ProtectedRoute>
+    },
+    {
+      path: "/saved",
+      element: <ProtectedRoute><SavedJobs /></ProtectedRoute>
+    },
+    {
+      path: "/courses",
+      element: <ProtectedRoute><Courses /></ProtectedRoute>
+    },
+    {
+      path: "/profile",
+      element: <ProtectedRoute><Profile /></ProtectedRoute>
+    },
+    {
+      path: "/jobs/:id",
+      element: <ProtectedRoute><JobDetail /></ProtectedRoute>
+    },
+    {
+      path: "/apply-job/:id",
+      element: <ProtectedRoute><ApplyJob /></ProtectedRoute>
+    },
+    {
+      path: "/applications",
+      element: <ProtectedRoute><Applications /></ProtectedRoute>
+    },
+    {
+      path: "/jobdetail/:id",
+      element: <ProtectedRoute><JobDetail /></ProtectedRoute>
+    },
+    {
+      path: "/admin/dashboard",
+      element: <ProtectedRoute><Dashboard /></ProtectedRoute>
+    },
+    {
+      path: "/admin/add-jobs",
+      element: <ProtectedRoute><AddJobs /></ProtectedRoute>
+    },
+    {
+      path: "/admin/manage-jobs",
+      element: <ProtectedRoute><ManageJob /></ProtectedRoute>
+    },
+    {
+      path: "/admin/create-company",
+      element: <ProtectedRoute><CreateCompany /></ProtectedRoute>
+    },
+    {
+      path: "/admin/companies",
+      element: <ProtectedRoute><Companies /></ProtectedRoute>
+    },
+    {
+      path: "/admin/companies/:id",
+      element: <ProtectedRoute><CompanySetup /></ProtectedRoute>
+    },
+    {
+      path: "/admin/jobs/:id/applicants",
+      element: <ProtectedRoute><Applicants /></ProtectedRoute>
+    }
+  ]), [user]);
+
+  return <RouterProvider router={appRouter} />;
 }
 
 export default App;

@@ -73,7 +73,7 @@ const Job = ({ job }) => {
       {/* Meta Info */}
       <div className="flex items-center justify-between text-xs text-gray-500">
         <span className="flex items-center gap-1"><MapPin size={12} />{job?.location}</span>
-        <span className="flex items-center gap-1"><Users size={12} />{job?.applicants} applicants</span>
+        <span className="flex items-center gap-1"><Users size={12} />{job?.position} position</span>
         <span className="flex items-center gap-1"><Clock size={12} />{daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)} days ago`}</span>
       </div>
 

@@ -23,6 +23,14 @@ const JobsSection = () => {
     return job?.experienceLevel === 0;
   });
 
+  const daysAgoFunction = (mongodbTime) => {
+    const createdAt = new Date(mongodbTime);
+    const currentTime = new Date();
+    const timeDifference = currentTime - createdAt;
+    return Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+  }
+
   return (
     <section className='py-14 bg-gray-100'>
 
@@ -46,22 +54,20 @@ const JobsSection = () => {
 
             <button
               onClick={() => setActiveTab("fresher")}
-              className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 ${
-                activeTab === "fresher"
+              className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 ${activeTab === "fresher"
                   ? "bg-indigo-600 text-white shadow"
                   : "text-gray-600 hover:bg-gray-50"
-              }`}
+                }`}
             >
               🎓 Fresher Jobs
             </button>
 
             <button
               onClick={() => setActiveTab("internship")}
-              className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 ${
-                activeTab === "internship"
+              className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 ${activeTab === "internship"
                   ? "bg-indigo-600 text-white shadow"
                   : "text-gray-600 hover:bg-gray-50"
-              }`}
+                }`}
             >
               💼 Internship
             </button>
@@ -83,11 +89,10 @@ const JobsSection = () => {
               <div className="flex items-center justify-between">
 
                 <span
-                  className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                    activeTab === "fresher"
+                  className={`text-xs font-semibold px-3 py-1 rounded-full ${activeTab === "fresher"
                       ? "bg-green-50 text-green-600"
                       : "bg-indigo-50 text-indigo-600"
-                  }`}
+                    }`}
                 >
                   {activeTab === "fresher"
                     ? "🎓 Fresher"
@@ -163,7 +168,7 @@ const JobsSection = () => {
               </div>
 
               {/* Info */}
-              <div className="flex items-center justify-between text-xs text-gray-500">
+                <div className="flex items-center justify-between text-xs text-gray-500">
 
                 <span className="flex items-center gap-1">
                   <MapPin size={12} />
@@ -175,10 +180,7 @@ const JobsSection = () => {
                   {job?.position} openings
                 </span>
 
-                <span className="flex items-center gap-1">
-                  <Clock size={12} />
-                  {job?.createdAt?.split("T")[0]}
-                </span>
+                <span className="flex items-center gap-1"><Clock size={12} />{daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)} days ago`}</span>
 
               </div>
 

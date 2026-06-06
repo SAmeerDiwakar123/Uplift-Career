@@ -211,7 +211,7 @@ const JobDetail = () => {
               </p>
 
               <p className="text-sm text-gray-600 mt-2">
-                Applican: {singleJob?.applications?.length || 0}
+                Applicant: {singleJob?.applications?.length || 0}
               </p>
 
               <p className="text-sm text-gray-600 mt-2">
