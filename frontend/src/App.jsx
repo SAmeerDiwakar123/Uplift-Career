@@ -36,10 +36,13 @@ function App() {
   };
 
   const appRouter = useMemo(() => createBrowserRouter([
-    {
-      path: "/",
-      element: user ? <Navigate to="/jobs" replace /> : <Home />
-    },
+{
+  path: "/",
+  element: user
+    ? (user.role === "recruiter" ? <Navigate to="/admin/add-jobs" replace /> : <Navigate to="/jobs" replace />)
+    : <Home />
+},
+
     {
       path: "/login",
       element: <PublicOnlyRoute><Login /></PublicOnlyRoute>
@@ -48,10 +51,10 @@ function App() {
       path: "/signup",
       element: <PublicOnlyRoute><SignUp /></PublicOnlyRoute>
     },
-    {
-      path: "/jobs",
-      element: <ProtectedRoute><Jobs /></ProtectedRoute>
-    },
+{
+  path: "/jobs",
+  element: <ProtectedRoute>{user?.role === "recruiter" ? <Navigate to="/admin/add-jobs" replace /> : <Jobs />}</ProtectedRoute>
+},
     {
       path: "/internship",
       element: <ProtectedRoute><Internship /></ProtectedRoute>

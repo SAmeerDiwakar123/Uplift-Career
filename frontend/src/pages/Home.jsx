@@ -9,19 +9,10 @@ import TopCompanies from '../components/TopCompanies.jsx';
 import HowWork from '../components/HowWork.jsx';
 import ExploreJobs from '../components/ExploreJobs.jsx';
 import useGetAllJobs from '../hooks/useGetAllJobs.jsx';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   useGetAllJobs();
-  const navigate = useNavigate();
 
-  const { user } = useSelector(store => store.auth);
-  useEffect(() => {
-    if (user?.role === "recruiter") {
-      navigate("/admin/dashboard")
-    }
-  },[])
   return (
     <>
       <Navbar />
