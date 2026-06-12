@@ -41,7 +41,10 @@ const JobDetail = () => {
       }
 
     } catch (error) {
-      console.log(error);
+      console.log("Error:", error);
+      console.log("Status:", error.response?.status);
+      console.log("Data:", error.response?.data);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   }
 

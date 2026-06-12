@@ -16,15 +16,15 @@ const registerUser = async (req, res) => {
 
     const file = req.file;
 
-if (!file) {
-  return res.status(400).json({
-    success: false,
-    message: "Profile photo is required"
-  });
-}
+    if (!file) {
+      return res.status(400).json({
+        success: false,
+        message: "Profile photo is required"
+      });
+    }
 
-const fileUri = getDataUri(file);
-const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     // const file = req.file;
     // const fileUri = getDataUri(file);
@@ -99,8 +99,17 @@ const loginUser = async (req, res) => {
     }
 
     return res.status(200)
-      .cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "strict" })
-      .json({ message: `Welcome back ${user.fullname}`, user, success: true });
+      .cookie("token", token, {
+        maxAge: 1 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+      })
+      .json({
+        message: `Welcome back ${user.fullname}`,
+        user,
+        success: true
+      });
 
   } catch (error) {
     console.log(error);
@@ -165,7 +174,17 @@ const updateProfile = async (req, res) => {
       profile: user.profile,
     }
 
-    return res.status(200).json({ success: true, message: "Profile updated successfully", user });
+    return res.status(200)
+      .cookie("token", "", {
+        maxAge: 0,
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+      })
+      .json({
+        message: "Logged out successfully",
+        success: true
+      });
 
   } catch (error) {
     console.log(error);
