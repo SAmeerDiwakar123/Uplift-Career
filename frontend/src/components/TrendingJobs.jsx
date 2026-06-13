@@ -67,7 +67,7 @@ const TrendingJobs = () => {
 
               <div className='flex items-center justify-between text-[10px] sm:text-xs text-gray-500'>
                 <span className='flex items-center gap-1'><MapPin size={11} />{job?.location}</span>
-                <span className='flex items-center gap-1'><Users size={11} />{job?.position}</span>
+                <span className='flex items-center gap-1'><Users size={11} />{job?.position} openings</span>
                 <span className='flex items-center gap-1'><Clock size={11} />{daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)}d ago` }</span>
               </div>
 

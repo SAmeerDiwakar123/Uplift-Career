@@ -171,7 +171,7 @@ const JobsSection = () => {
 
                 <span className="flex items-center gap-1">
                   <Users size={11} />
-                  {job?.position}
+                  {job?.position} openings
                 </span>
 
                 <span className="flex items-center gap-1"><Clock size={11} />{daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)}d ago`}</span>
