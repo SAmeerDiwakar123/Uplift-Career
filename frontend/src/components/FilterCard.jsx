@@ -34,7 +34,6 @@ const filterData = [
 const FilterCard = () => {
   const [openFilter, setOpenFilter] = useState(null);
   
-  // ✅ Fallback added — crash nahi hoga agar store.job undefined ho
   const filters = useSelector((store) => store.job?.filters || {});
   const dispatch = useDispatch();
 
