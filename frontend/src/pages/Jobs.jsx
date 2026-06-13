@@ -17,7 +17,7 @@ const Jobs = () => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const jobsPerPage = 6;
+  const jobsPerPage = 9;
 
   const filteredJobs = alljobs.filter((job) => {
     const matchesSearch =
