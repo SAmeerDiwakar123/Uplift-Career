@@ -10,7 +10,7 @@ import useGetAllJobs from '@/hooks/useGetAllJobs';
 import { Filter } from 'lucide-react';
 
 const Jobs = () => {
-  useGetAllJobs()
+  useGetAllJobs();
   const { alljobs, searchJobByText, filters } = useSelector(
     (store) => store.job
   );
