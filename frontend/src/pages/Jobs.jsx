@@ -66,7 +66,7 @@ const Jobs = () => {
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl sm:text-3xl font-bold text-gray-900">
+          <h1 className="text-sm sm:text-3xl font-bold text-gray-900">
             💼 Explore Jobs
           </h1>
 
