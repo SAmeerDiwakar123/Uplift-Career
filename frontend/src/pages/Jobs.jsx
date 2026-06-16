@@ -8,6 +8,7 @@ import right from "../assets/right.png";
 import { useState } from 'react';
 import useGetAllJobs from '@/hooks/useGetAllJobs';
 import { Filter } from 'lucide-react';
+import BottomNav from '@/components/shared/BottomNav';
 
 const Jobs = () => {
   useGetAllJobs();
@@ -159,6 +160,7 @@ const Jobs = () => {
           </div>
         </div>
       )}
+      <BottomNav />
     </div>
   );
 };

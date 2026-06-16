@@ -5,6 +5,7 @@ import { Bookmark, MapPin, Clock, Users, BadgeCheck, IndianRupee } from 'lucide-
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSavedJob } from '@/redux/savedJobSlice';
+import BottomNav from '@/components/shared/BottomNav';
 
 const SavedJobs = () => {
   const navigate = useNavigate();
@@ -94,6 +95,7 @@ const SavedJobs = () => {
           </div>
         )}
       </div>
+      <BottomNav/>
     </div>
   );
 };

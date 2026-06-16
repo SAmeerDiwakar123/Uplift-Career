@@ -5,6 +5,7 @@ import { MapPin, Clock, BadgeCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs';
+import BottomNav from '@/components/shared/BottomNav';
 
 const Applications = () => {
   useGetAppliedJobs();
@@ -91,6 +92,7 @@ const Applications = () => {
         )}
 
       </div>
+      <BottomNav/>
     </div>
   );
 };

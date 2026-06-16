@@ -5,6 +5,7 @@ import Footer from '../components/shared/Footer';
 import { Bookmark, MapPin, Clock, Users, BadgeCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import BottomNav from '@/components/shared/BottomNav';
 
 const jobsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -30,7 +31,7 @@ const Internship = () => {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">💼 Internships</h1>
         <p className="text-sm text-gray-400 mb-6">Find the best internships for you</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 pb-10">
 
           {alljobs?.filter((job) => job?.jobType?.toLowerCase() === "internship")?.slice(0,10).map((job) => (
             <div
@@ -114,31 +115,9 @@ const Internship = () => {
 
         </div>
       </div>
-
+      <BottomNav/>
     </div>
   );
 };
 
 export default Internship;
-
-
-
-
-
-// import React from 'react'
-
-// const jobsArray = [1,2,3,4,5,6,7,8,9,10];
-
-// const Internship = () => {
-
-  
-//   return (
-//     <section className=''>
-//       <div className=''>
-        
-//       </div>
-//     </section>
-//   )
-// }
-
-// export default Internship
