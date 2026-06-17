@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from '../components/shared/Navbar';
 import Footer from '../components/shared/Footer';
 import { Clock, Users, Star, BookOpen } from 'lucide-react';
+import BottomNav from '@/components/shared/BottomNav';
 
 const coursesArray = [1, 2, 3, 4, 5, 6];
 
@@ -70,6 +71,7 @@ const Courses = () => {
         </div>
 
       </div>
+      <BottomNav/>
     </div>
   );
 };

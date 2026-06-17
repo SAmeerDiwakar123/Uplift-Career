@@ -28,7 +28,7 @@ const Internship = () => {
 
       <div className="max-w-6xl mx-auto px-4 mt-6 flex-1 w-full">
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">💼 Internships</h1>
+        <h1 className="text-sm sm:text-3xl font-bold text-gray-900"> 💼 Internships</h1>
         <p className="text-sm text-gray-400 mb-6">Find the best internships for you</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 pb-10">
