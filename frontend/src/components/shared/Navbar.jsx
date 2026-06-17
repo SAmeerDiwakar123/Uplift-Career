@@ -46,7 +46,7 @@ const Navbar = () => {
         />
 
         {/* Desktop Navigation */}
-        <div className='hidden md:flex gap-10 ml-10'>
+        <div className='hidden md:flex gap-10 ml-10 '>
 
           {!user ? (
             <>
@@ -110,82 +110,84 @@ const Navbar = () => {
         </div>
 
         {/* Right Side */}
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2">
 
-          {!user ? (
-            <div className='hidden md:flex gap-3 items-center'>
-              <Link to='/login'>
-                <button className='text-white px-4 py-2 rounded-lg hover:bg-gray-800'>
-                  Login
-                </button>
-              </Link>
+  {!user ? (
+    <div className="flex items-center gap-1.5">
 
-              <Link to='/signup'>
-                <button className='bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700'>
-                  Get Started
-                </button>
-              </Link>
+      <Link to="/login">
+        <button className="text-white text-[11px] sm:text-sm px-2.5 py-1.5 rounded-lg hover:bg-gray-800 transition">
+          Login
+        </button>
+      </Link>
 
-              <button
-                onClick={() => navigate('/recruiter')}
-                className='border border-indigo-600 text-indigo-400 px-4 py-2 rounded-lg hover:bg-indigo-600 hover:text-white transition'
-              >
-                Recruiter
-              </button>
+      <Link to="/signup">
+        <button className="bg-indigo-600 text-white text-[11px] sm:text-sm px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition">
+          Get Started
+        </button>
+      </Link>
+
+      <button
+        onClick={() => navigate('/recruiter')}
+        className="hidden sm:block border border-indigo-600 text-indigo-400 text-xs px-3 py-1.5 rounded-lg hover:bg-indigo-600 hover:text-white transition"
+      >
+        Recruiter
+      </button>
+
+    </div>
+  ) : (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Avatar className="cursor-pointer h-8 w-8 sm:h-10 sm:w-10">
+          <AvatarImage src={user?.profile?.profilePhoto} />
+        </Avatar>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-64 p-3">
+        <div className="flex items-center gap-2">
+          <Avatar className="h-9 w-9">
+            <AvatarImage src={user?.profile?.profilePhoto} />
+          </Avatar>
+
+          <div>
+            <h4 className="text-sm font-semibold">
+              {user?.fullname}
+            </h4>
+
+            <p className="text-[11px] text-gray-500">
+              {user?.profile?.bio || "No bio available"}
+            </p>
+          </div>
+        </div>
+
+        <div className="border-t my-3"></div>
+
+        <div className="flex flex-col gap-1">
+
+          {user?.role === "student" && (
+            <div
+              onClick={() => navigate('/profile')}
+              className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100"
+            >
+              <User2 size={14} />
+              <span className="text-sm">View Profile</span>
             </div>
-          ) : (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Avatar className="cursor-pointer">
-                  <AvatarImage src={user?.profile?.profilePhoto} />
-                </Avatar>
-              </PopoverTrigger>
-
-              <PopoverContent className="w-72">
-                <div className='flex items-center gap-3'>
-                  <Avatar>
-                    <AvatarImage src={user?.profile?.profilePhoto} />
-                  </Avatar>
-
-                  <div>
-                    <h4 className='font-semibold'>
-                      {user?.fullname}
-                    </h4>
-
-                    <p className='text-xs text-gray-500'>
-                      {user?.profile?.bio || "No bio available"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className='border-t my-3'></div>
-
-                <div className='flex flex-col gap-2'>
-
-                  {user?.role === "student" && (
-                    <div
-                      onClick={() => navigate('/profile')}
-                      className='flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-100'
-                    >
-                      <User2 size={16} />
-                      <span>View Profile</span>
-                    </div>
-                  )}
-
-                  <div
-                    onClick={logoutHandler}
-                    className='flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-red-50 text-red-500'
-                  >
-                    <LogOut size={16} />
-                    <span>Logout</span>
-                  </div>
-
-                </div>
-              </PopoverContent>
-            </Popover>
           )}
 
+          <div
+            onClick={logoutHandler}
+            className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-red-50 text-red-500"
+          >
+            <LogOut size={14} />
+            <span className="text-sm">Logout</span>
+          </div>
+
         </div>
+      </PopoverContent>
+    </Popover>
+  )}
+
+</div>
       </div>
     </div>
   );
