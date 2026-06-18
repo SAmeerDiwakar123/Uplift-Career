@@ -1,7 +1,6 @@
 import './App.css'
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
 
 import Home from './pages/Home'
 import Applications from './pages/Applications'
@@ -22,101 +21,106 @@ import Companies from './components/admin/Companies'
 import CompanySetup from './components/admin/CompanySetup'
 import Applicants from './components/admin/Applicants'
 
-function App() {
+// ✅ Components bahar define karo - useMemo ke andar nahi
+const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((store) => store.auth);
+  return user ? children : <Navigate to="/login" replace />;
+};
 
-  // Logged in user ko login/signup nahi dikhana
-  const PublicOnlyRoute = ({ children }) => {
-    return user ? <Navigate to="/jobs" replace /> : children;
-  };
+const PublicOnlyRoute = ({ children }) => {
+  const { user } = useSelector((store) => store.auth);
+  return user ? <Navigate to="/jobs" replace /> : children;
+};
 
-  // Bina login ke protected pages nahi dikhana
-  const ProtectedRoute = ({ children }) => {
-    return user ? children : <Navigate to="/login" replace />;
-  };
+const RecruiterRoute = ({ children }) => {
+  const { user } = useSelector((store) => store.auth);
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== "recruiter") return <Navigate to="/jobs" replace />;
+  return children;
+};
 
-  const appRouter = useMemo(() => createBrowserRouter([
-{
-  path: "/",
-  element: user
-    ? (user.role === "recruiter" ? <Navigate to="/admin/add-jobs" replace /> : <Navigate to="/jobs" replace />)
-    : <Home />
-},
+// ✅ Router bhi bahar define karo
+const appRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />
+  },
+  {
+    path: "/login",
+    element: <PublicOnlyRoute><Login /></PublicOnlyRoute>
+  },
+  {
+    path: "/signup",
+    element: <PublicOnlyRoute><SignUp /></PublicOnlyRoute>
+  },
+  {
+    path: "/jobs",
+    element: <ProtectedRoute><Jobs /></ProtectedRoute>
+  },
+  {
+    path: "/internship",
+    element: <ProtectedRoute><Internship /></ProtectedRoute>
+  },
+  {
+    path: "/saved",
+    element: <ProtectedRoute><SavedJobs /></ProtectedRoute>
+  },
+  {
+    path: "/courses",
+    element: <ProtectedRoute><Courses /></ProtectedRoute>
+  },
+  {
+    path: "/profile",
+    element: <ProtectedRoute><Profile /></ProtectedRoute>
+  },
+  {
+    path: "/jobs/:id",
+    element: <ProtectedRoute><JobDetail /></ProtectedRoute>
+  },
+  {
+    path: "/apply-job/:id",
+    element: <ProtectedRoute><ApplyJob /></ProtectedRoute>
+  },
+  {
+    path: "/applications",
+    element: <ProtectedRoute><Applications /></ProtectedRoute>
+  },
+  {
+    path: "/jobdetail/:id",
+    element: <ProtectedRoute><JobDetail /></ProtectedRoute>
+  },
+  // ✅ Admin routes - RecruiterRoute use karo
+  {
+    path: "/admin/dashboard",
+    element: <RecruiterRoute><Dashboard /></RecruiterRoute>
+  },
+  {
+    path: "/admin/add-jobs",
+    element: <RecruiterRoute><AddJobs /></RecruiterRoute>
+  },
+  {
+    path: "/admin/manage-jobs",
+    element: <RecruiterRoute><ManageJob /></RecruiterRoute>
+  },
+  {
+    path: "/admin/create-company",
+    element: <RecruiterRoute><CreateCompany /></RecruiterRoute>
+  },
+  {
+    path: "/admin/companies",
+    element: <RecruiterRoute><Companies /></RecruiterRoute>
+  },
+  {
+    path: "/admin/companies/:id",
+    element: <RecruiterRoute><CompanySetup /></RecruiterRoute>
+  },
+  {
+    path: "/admin/jobs/:id/applicants",
+    element: <RecruiterRoute><Applicants /></RecruiterRoute>
+  }
+]);
 
-    {
-      path: "/login",
-      element: <PublicOnlyRoute><Login /></PublicOnlyRoute>
-    },
-    {
-      path: "/signup",
-      element: <PublicOnlyRoute><SignUp /></PublicOnlyRoute>
-    },
-{
-  path: "/jobs",
-  element: <ProtectedRoute>{user?.role === "recruiter" ? <Navigate to="/admin/add-jobs" replace /> : <Jobs />}</ProtectedRoute>
-},
-    {
-      path: "/internship",
-      element: <ProtectedRoute><Internship /></ProtectedRoute>
-    },
-    {
-      path: "/saved",
-      element: <ProtectedRoute><SavedJobs /></ProtectedRoute>
-    },
-    {
-      path: "/courses",
-      element: <ProtectedRoute><Courses /></ProtectedRoute>
-    },
-    {
-      path: "/profile",
-      element: <ProtectedRoute><Profile /></ProtectedRoute>
-    },
-    {
-      path: "/jobs/:id",
-      element: <ProtectedRoute><JobDetail /></ProtectedRoute>
-    },
-    {
-      path: "/apply-job/:id",
-      element: <ProtectedRoute><ApplyJob /></ProtectedRoute>
-    },
-    {
-      path: "/applications",
-      element: <ProtectedRoute><Applications /></ProtectedRoute>
-    },
-    {
-      path: "/jobdetail/:id",
-      element: <ProtectedRoute><JobDetail /></ProtectedRoute>
-    },
-    {
-      path: "/admin/dashboard",
-      element: <ProtectedRoute><Dashboard /></ProtectedRoute>
-    },
-    {
-      path: "/admin/add-jobs",
-      element: <ProtectedRoute><AddJobs /></ProtectedRoute>
-    },
-    {
-      path: "/admin/manage-jobs",
-      element: <ProtectedRoute><ManageJob /></ProtectedRoute>
-    },
-    {
-      path: "/admin/create-company",
-      element: <ProtectedRoute><CreateCompany /></ProtectedRoute>
-    },
-    {
-      path: "/admin/companies",
-      element: <ProtectedRoute><Companies /></ProtectedRoute>
-    },
-    {
-      path: "/admin/companies/:id",
-      element: <ProtectedRoute><CompanySetup /></ProtectedRoute>
-    },
-    {
-      path: "/admin/jobs/:id/applicants",
-      element: <ProtectedRoute><Applicants /></ProtectedRoute>
-    }
-  ]), [user]);
-
+function App() {
   return <RouterProvider router={appRouter} />;
 }
 

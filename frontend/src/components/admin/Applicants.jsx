@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setAllApplications } from '@/redux/applicationSlice'
 import { Search } from 'lucide-react'
 import { toast } from 'sonner'
+import BottomNav from '../shared/BottomNav'
 const Applicants = () => {
 
   const params = useParams();
@@ -199,7 +200,7 @@ const Applicants = () => {
         </div>
 
       </div>
-
+              <BottomNav/>
     </div>
   )
 }
