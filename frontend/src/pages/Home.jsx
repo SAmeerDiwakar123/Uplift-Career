@@ -9,6 +9,7 @@ import TopCompanies from '../components/TopCompanies.jsx';
 import HowWork from '../components/HowWork.jsx';
 import ExploreJobs from '../components/ExploreJobs.jsx';
 import useGetAllJobs from '../hooks/useGetAllJobs.jsx';
+import BottomNav from '@/components/shared/BottomNav.jsx';
 
 const Home = () => {
   useGetAllJobs();
@@ -24,6 +25,7 @@ const Home = () => {
       <TopCompanies/>
       <HowWork/>
       <Footer/>
+      <BottomNav/>
     </>
   )
 }

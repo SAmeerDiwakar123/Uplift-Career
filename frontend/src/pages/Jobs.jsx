@@ -62,32 +62,32 @@ const Jobs = () => {
       <Navbar />
 
       <div
-        className="max-w-7xl mx-auto px-4 mt-6 flex flex-col w-full"
+        className="max-w-7xl mx-auto px-2 sm:px-4 mt-2 sm:mt-6 flex flex-col w-full"
         style={{ height: "calc(100vh - 140px)" }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-3 sm:mb-6">
           <h1 className="text-sm sm:text-3xl font-bold text-gray-900">
             💼 Explore Jobs
           </h1>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {/* Mobile Filter Button */}
             <button
               onClick={() => setShowFilters(true)}
-              className="md:hidden flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-sm text-xs sm:text-sm text-gray-700"
+              className="md:hidden flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-1.5 py-1 sm:px-3 sm:py-2 shadow-sm text-xs text-gray-700"
             >
               <Filter size={12} /> Filters
             </button>
 
-            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-sm w-32 sm:w-64">
+            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-1.5 py-1 sm:px-3 sm:py-2 shadow-sm w-28 sm:w-64">
               <input
                 type="text"
                 placeholder="Search jobs..."
                 onChange={(e) =>
                   dispatch(setSearchJobByText(e.target.value))
                 }
-                className="text-xs sm:text-sm text-gray-700 outline-none w-full bg-transparent"
+                className="text-xs text-gray-700 outline-none w-full bg-transparent"
               />
             </div>
           </div>
@@ -100,12 +100,12 @@ const Jobs = () => {
           </div>
 
           {/* Jobs */}
-          <div className="flex-1 overflow-y-auto pb-10 px-2 md:px-4">
-            <p id="job-list" className="text-[10px] sm:text-xs text-gray-400 mb-4">
+          <div className="flex-1 overflow-y-auto pb-2 sm:pb-10 px-0.5 sm:px-2 md:px-4">
+            <p id="job-list" className="text-[10px] text-gray-400 mb-2 sm:mb-4">
               {filteredJobs.length} jobs found
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4">
               {paginatedJobs.map((job) => (
                 <Job key={job._id} job={job} />
               ))}
@@ -113,20 +113,20 @@ const Jobs = () => {
 
             {/* Pagination */}
             {totalPages > 0 && (
-              <div className="flex items-center justify-center gap-1.5 mt-6">
+              <div className="flex items-center justify-center gap-1 mt-4 sm:mt-6">
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                   className="disabled:opacity-40"
                 >
-                  <img src={left} alt="Previous" className="w-4 h-3 sm:w-5 sm:h-4" />
+                  <img src={left} alt="Previous" className="w-3 h-2 sm:w-5 sm:h-4" />
                 </button>
 
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentPage(index + 1)}
-                    className={`w-6 h-6 sm:w-7 sm:h-7 text-[10px] sm:text-xs flex items-center justify-center border border-gray-300 rounded-md transition ${currentPage === index + 1
+                    className={`w-5 h-5 sm:w-7 sm:h-7 text-[9px] sm:text-xs flex items-center justify-center border border-gray-300 rounded-md transition ${currentPage === index + 1
                       ? "bg-blue-500 text-white border-blue-500"
                       : "bg-white text-gray-600 hover:bg-gray-100"
                       }`}
@@ -140,7 +140,7 @@ const Jobs = () => {
                   disabled={currentPage === totalPages}
                   className="disabled:opacity-40"
                 >
-                  <img src={right} alt="Next" className="w-4 h-3 sm:w-5 sm:h-4" />
+                  <img src={right} alt="Next" className="w-3 h-2 sm:w-5 sm:h-4" />
                 </button>
               </div>
             )}
@@ -151,9 +151,9 @@ const Jobs = () => {
       {/* Mobile Filter Drawer */}
       {showFilters && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-end md:hidden">
-          <div className="bg-white w-full rounded-t-2xl p-4 max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-3">
-              <span className="font-bold text-sm sm:text-base text-gray-900">Filters</span>
+          <div className="bg-white w-full rounded-t-2xl p-3 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-bold text-sm text-gray-900">Filters</span>
               <button onClick={() => setShowFilters(false)} className="text-gray-500 text-lg">✕</button>
             </div>
             <FilterCard />
