@@ -105,7 +105,7 @@ const Jobs = () => {
               {filteredJobs.length} jobs found
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 sm:gap-4">
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4'>
               {paginatedJobs.map((job) => (
                 <Job key={job._id} job={job} />
               ))}
