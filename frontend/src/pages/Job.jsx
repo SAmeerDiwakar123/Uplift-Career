@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Bookmark,
-  MapPin,
-  Clock,
-  Users,
-  BadgeCheck
-} from 'lucide-react';
+import {Bookmark,MapPin,Clock,Users,BadgeCheck} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSavedJob } from '@/redux/savedJobSlice';

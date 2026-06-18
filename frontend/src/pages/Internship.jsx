@@ -13,7 +13,7 @@ const Internship = () => {
       <Navbar />
 
       <div className="max-w-7xl mx-auto w-full px-4 mt-6 flex-1">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
           💼 Internships
         </h1>
 
@@ -21,8 +21,8 @@ const Internship = () => {
           Find the best internships for you
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-24">
-          {alljobs?.filter((job) => job?.jobType?.toLowerCase() === "internship").map((job)=> (
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 pb-24">
+          {alljobs?.filter((job) => job?.jobType?.toLowerCase() === "internship").map((job) => (
             <Job key={job._id} job={job} />
           ))}
         </div>
@@ -30,16 +30,16 @@ const Internship = () => {
         {alljobs?.filter(
           (job) => job?.jobType?.toLowerCase() === "internship"
         ).length === 0 && (
-          <div className="bg-white rounded-xl border p-8 text-center">
-            <h2 className="text-lg font-semibold text-gray-700">
-              No internships found
-            </h2>
+            <div className="bg-white rounded-xl border p-8 text-center">
+              <h2 className="text-lg font-semibold text-gray-700">
+                No internships found
+              </h2>
 
-            <p className="text-sm text-gray-500 mt-2">
-              Please check again later.
-            </p>
-          </div>
-        )}
+              <p className="text-sm text-gray-500 mt-2">
+                Please check again later.
+              </p>
+            </div>
+          )}
       </div>
 
       <BottomNav />
@@ -143,7 +143,7 @@ export default Internship;
 
 //               <div className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2">
 //                 <span className="text-xs text-gray-500">₹{job?.salary}</span>
-//                 {/* 
+//                 {/*
 //                 <span className="text-sm font-bold text-indigo-600">
 //                   ₹{job?.salary}
 //                 </span> */}
