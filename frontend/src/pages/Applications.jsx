@@ -18,7 +18,7 @@ const Applications = () => {
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6 flex-1 w-full">
 
-        <h1 className="text-xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">📋 My Applications</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">My Applications</h1>
         <p className="text-xs sm:text-sm text-gray-400 mb-4 sm:mb-6">Track all your job applications</p>
 
         {allAppliedJobs?.length == 0 ? (

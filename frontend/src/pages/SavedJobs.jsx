@@ -1,7 +1,3 @@
-
-
-
-
 import React from 'react';
 import Navbar from '../components/shared/Navbar';
 import Footer from '../components/shared/Footer';
@@ -21,7 +17,7 @@ const SavedJobs = () => {
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6 flex-1 w-full">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
+        <h1 className="text-2xl sm:text-2xl font-bold text-gray-900 mb-1">
           Saved Jobs
         </h1>
         <p className="text-xs sm:text-sm text-gray-400 mb-5 sm:mb-6">
