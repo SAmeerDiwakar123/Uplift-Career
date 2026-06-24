@@ -2,14 +2,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice";
 import jobSlice from "./jobSlice";
-import {
-  persistStore, persistReducer,
-  FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER,
-} from "redux-persist";
+import {persistStore, persistReducer,FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER,} from "redux-persist";
 import savedJobReducer from "./savedJobSlice";
 import applicationSlice from "./applicationSlice";
 import companySlice from "./companySlice"
-
+import courseReducer from "./courseSlice"
 const persistStorage = {
   getItem: (key) => Promise.resolve(localStorage.getItem(key)),
   setItem: (key, value) => Promise.resolve(localStorage.setItem(key, value)),
@@ -29,6 +26,7 @@ const rootReducer = combineReducers({
   savedJob: savedJobReducer,
   application: applicationSlice,
   company: companySlice,
+  course: courseReducer
   
 });
 

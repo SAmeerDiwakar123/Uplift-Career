@@ -10,6 +10,10 @@ import applicationRoute from "./routes/applicationRoute.js";
 import dns from "dns";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import courseRoute from "./routes/courseRoute.js"
+import enrollmentRoute from "./routes/enrollmentRoute.js"
+import orderRoute from "./routes/orderRoute.js";
+
 
 // DNS config
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
@@ -68,6 +72,9 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
+app.use("/api/v1/course", courseRoute);
+app.use("/api/v1/enrollment", enrollmentRoute);
+app.use("/api/v1/order", orderRoute);
 
 app.get("/", (req, res) => {
   res.send("Backend Running");
