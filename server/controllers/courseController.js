@@ -7,7 +7,7 @@ const createCourse = async (req, res) => {
     const { title, description, price, category, level } = req.body;
 
     if (!title || !description || !price || !category || !level) {
-      return resizeBy.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "All fields are required"
       });
