@@ -39,7 +39,7 @@ const createCourse = async (req, res) => {
 
 const getAllCourse = async (req, res) => {
   try {
-    const courses = await Course.find({ isPublished: true }).populate("instructor", "fullname email").sort({ createAt: -1 });
+    const courses = await Course.find({ isPublished: true }).populate("instructor", "fullname email").sort({ createdAt: -1 });
 
     return res.status(200).json({ success: true, courses })
   } catch (error) {
