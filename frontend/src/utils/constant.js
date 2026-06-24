@@ -8,5 +8,5 @@ export const USER_API_END_POINT="https://uplift-career-backend.vercel.app/api/v1
 export const JOB_API_END_POINT="https://uplift-career-backend.vercel.app/api/v1/job";
 export const APPLICATION_API_END_POINT="https://uplift-career-backend.vercel.app/api/v1/application";
 export const COMPANY_API_END_POINT="https://uplift-career-backend.vercel.app/api/v1/company";
-export const COURSE_API_END_POINT = "http://localhost:5000/api/v1/course"
+export const COURSE_API_END_POINT = "http://uplift-career-backend.vercel.app/api/v1/course"
 export const ENROLLMENT_API_END_POINT = "https://uplift-career-backend.vercel.app/api/v1/enrollment"
