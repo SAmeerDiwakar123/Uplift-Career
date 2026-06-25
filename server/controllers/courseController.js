@@ -1,6 +1,9 @@
 import { Course } from "../models/CourseModel.js";
 import { Enrollment } from "../models/EnrolledModel.js";
 import cloudinary from "../utils/cloudinary.js";
+import DataUriParser from "datauri/parser.js";
+import path from "path";
+
 
 const createCourse = async (req, res) => {
   try {
@@ -43,7 +46,7 @@ const getAllCourse = async (req, res) => {
 
     return res.status(200).json({ success: true, courses })
   } catch (error) {
-    console.log("Course here "+error);
+    console.log("Course here " + error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch courses",
@@ -123,7 +126,7 @@ const updateCourse = async (req, res) => {
     }
 
     if (title) course.title = title;
-    if (description) course.description = title;
+    if (description) course.description = description;
     if (price) course.price = title;
     if (category) course.category = category;
     if (level) course.level = level;
@@ -217,10 +220,10 @@ const addLesson = async (req, res) => {
         message: "Video file is required",
       });
     }
-    const cloudResponse = await cloudinary.uploader.upload(req.file.path, {
+    const fileUri = getDataUri(req.file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
       resource_type: "video",
     });
-
     const newLesson = {
       title,
       videoUrl: cloudResponse.secure_url,
@@ -274,27 +277,28 @@ const updateLesson = async (req, res) => {
 
 
     if (req.file) {
-      const cloudResponse = await cloudinary.uploader.upload(req.file.path, {
+      const fileUri = getDataUri(req.file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
         resource_type: "video",
       });
-      lesson.videoUrl = cloudResponse.secure_url;
-    }
+    lesson.videoUrl = cloudResponse.secure_url;
+  }
 
     await course.save();
 
-    return res.status(200).json({
-      success: true,
-      message: "Lesson updated successfully",
-      lesson,
-    });
+  return res.status(200).json({
+    success: true,
+    message: "Lesson updated successfully",
+    lesson,
+  });
 
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to update lesson",
-    });
-  }
+} catch (error) {
+  console.log(error);
+  return res.status(500).json({
+    success: false,
+    message: "Failed to update lesson",
+  });
+}
 }
 
 const deleteLesson = async (req, res) => {
@@ -330,4 +334,4 @@ const deleteLesson = async (req, res) => {
     });
   }
 };
-export { createCourse, getAllCourse, getCourseById, updateCourse, deleteCourse, addLesson, updateLesson, deleteLesson};
+export { createCourse, getAllCourse, getCourseById, updateCourse, deleteCourse, addLesson, updateLesson, deleteLesson };
