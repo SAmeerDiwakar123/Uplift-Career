@@ -21,6 +21,7 @@ import CreateCompany from './components/admin/CreateCompany';
 import Companies from './components/admin/Companies';
 import CompanySetup from './components/admin/CompanySetup';
 import Applicants from './components/admin/Applicants';
+import CourseDetail from './pages/CourseDetail';
 
 
 // Home Route
@@ -88,12 +89,13 @@ const appRouter = createBrowserRouter([
   { path: "/internship", element: <StudentRoute><Internship /></StudentRoute> },
   { path: "/saved", element: <StudentRoute><SavedJobs /></StudentRoute> },
   { path: "/courses", element: <StudentRoute><Courses /></StudentRoute> },
+  { path: "/course/:id", element: <StudentRoute><CourseDetail /></StudentRoute> },
   { path: "/profile", element: <ProtectedRoute><Profile /></ProtectedRoute> },
   { path: "/jobs/:id", element: <StudentRoute><JobDetail /></StudentRoute> },
   { path: "/jobdetail/:id", element: <StudentRoute><JobDetail /></StudentRoute> },
   { path: "/apply-job/:id", element: <StudentRoute><ApplyJob /></StudentRoute> },
   { path: "/applications", element: <StudentRoute><Applications /></StudentRoute> },
-
+  
   { path: "/admin/dashboard", element: <RecruiterRoute><Dashboard /></RecruiterRoute> },
   { path: "/admin/add-jobs", element: <RecruiterRoute><AddJobs /></RecruiterRoute> },
   { path: "/admin/manage-jobs", element: <RecruiterRoute><ManageJob /></RecruiterRoute> },

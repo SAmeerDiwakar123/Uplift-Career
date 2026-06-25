@@ -4,14 +4,17 @@ import BottomNav from "@/components/shared/BottomNav";
 import { Clock, Users, Star, BookOpen } from "lucide-react";
 import axios from "axios";
 import { COURSE_API_END_POINT } from "@/utils/constant";
-
+import { useNavigate } from "react-router-dom";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchCourses = async (e) => {
       try {
+        setLoading(true)
         const res = await axios.get(
           `${COURSE_API_END_POINT}/get`,
           {
@@ -21,6 +24,9 @@ const Courses = () => {
         setCourses(res.data.courses);
       } catch (error) {
         console.log(error);
+      }
+      finally{
+        setLoading(false)
       }
     };
     fetchCourses();
@@ -39,13 +45,13 @@ const Courses = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-4 gap-5 pb-24">
           {
-            courses.map((course)=>(
+            courses.map((course) => (
               <div
                 key={course._id}
                 className="bg-white border rounded-lg overflow-hidden hover:shadow-md transition"
               >
                 <div className="h-36 bg-gray-100 flex items-center justify-center">
-                  <BookOpen 
+                  <BookOpen
                     size={38}
                     className="text-gray-400"
                   />
@@ -61,38 +67,38 @@ const Courses = () => {
                   <p className="text-sm text-gray-500 mt-1 line-clamp-2">
                     {course.description}
                   </p>
-                  
+
                   <div className="flex items-center gap-2 mt-3">
                     <div className="h-7 w-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs text-indigo-600">
                       {
                         typeof course.instructor === "string"
-                        ? course.instructor.charAt(0)
-                        : course.instructor?.name?.charAt(0) || "I"
+                          ? course.instructor.charAt(0)
+                          : course.instructor?.name?.charAt(0) || "I"
                       }
                     </div>
 
                     <span className="text-xs text-gray-500">
                       {
                         typeof course.instructor === "string"
-                        ? course.instructor
-                        : course.instructor?.name || "Instructor"
+                          ? course.instructor
+                          : course.instructor?.name || "Instructor"
                       }
                     </span>
                   </div>
 
                   <div className="flex justify-between mt-4 text-xs text-gray-500">
                     <span className="flex gap-1 items-center">
-                      <Clock size={13}/>
+                      <Clock size={13} />
                       {course.duration}
                     </span>
 
                     <span className="flex gap-1 items-center">
-                      <Users size={13}/>
+                      <Users size={13} />
                       {course.enrolled || 0}
                     </span>
 
                     <span className="flex gap-1 items-center">
-                      <Star size={13} className="text-yellow-500"/>
+                      <Star size={13} className="text-yellow-500" />
                       {course.rating || 0}
                     </span>
                   </div>
@@ -102,8 +108,11 @@ const Courses = () => {
                       {course.price === 0 ? "Free" : `₹${course.price}`}
                     </span>
 
-                    <button className="bg-indigo-600 text-white text-xs px-4 py-2 rounded-md hover:bg-indigo-700">
-                      Enroll
+                    <button
+                      onClick={() => navigate(`/course/${course._id}`)}
+                      className="bg-indigo-600 text-white text-xs px-4 py-2 rounded-md"
+                    >
+                      View Course
                     </button>
                   </div>
                 </div>
