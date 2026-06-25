@@ -37,7 +37,7 @@ const Courses = () => {
           Learn new skills from expert instructors
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5 pb-24">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-5 pb-24">
           {
             courses.map((course)=>(
               <div
