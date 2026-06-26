@@ -1,128 +1,94 @@
-import React, { useEffect, useState } from "react";
-import Navbar from "../components/shared/Navbar";
-import BottomNav from "@/components/shared/BottomNav";
-import { Clock, Users, Star, BookOpen } from "lucide-react";
-import axios from "axios";
-import { COURSE_API_END_POINT } from "@/utils/constant";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import useGetAllCourses from '../hooks/useGetAllCourses';
+import Navbar from '../components/shared/Navbar';
+import CourseCard from '../components/course/CourseCard';
+import CourseFilterCard from '../components/course/CourseFilterCard';
 
 const Courses = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false);
+  useGetAllCourses();
+  const courses = useSelector(store => store.course?.courses) ?? [];
+  const filters = useSelector(store => store.course?.filters) ?? {};
+  const [search, setSearch] = useState('');
 
-  const navigate = useNavigate();
-  useEffect(() => {
-    const fetchCourses = async (e) => {
-      try {
-        setLoading(true)
-        const res = await axios.get(
-          `${COURSE_API_END_POINT}/get`,
-          {
-            withCredentials: true
-          }
-        );
-        setCourses(res.data.courses);
-      } catch (error) {
-        console.log(error);
-      }
-      finally{
-        setLoading(false)
-      }
-    };
-    fetchCourses();
-  }, []);
+  const filteredCourses = useMemo(() => {
+    if (!courses || courses.length === 0) return [];
+
+    return courses.filter(course => {
+      if (!course) return false;
+
+      const matchSearch = course.title?.toLowerCase().includes(search.toLowerCase());
+
+      const matchCategory = filters.category
+        ? course.category === filters.category
+        : true;
+
+      const matchLevel = filters.level
+        ? course.level === filters.level
+        : true;
+
+      const matchPrice = filters.price
+        ? filters.price === 'Free' ? course.price === 0
+          : filters.price === 'Under ₹500' ? course.price < 500
+            : filters.price === '₹500-₹1000' ? course.price >= 500 && course.price <= 1000
+              : filters.price === '₹1000-₹2000' ? course.price > 1000 && course.price <= 2000
+                : course.price > 2000
+        : true;
+
+      return matchSearch && matchCategory && matchLevel && matchPrice;
+    });
+  }, [courses, filters, search]);
 
   return (
-    <div className="bg-white min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 mt-5 flex-1 w-full">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Explore Courses
-        </h1>
-        <p className="text-sm text-gray-500 mt-1 mb-6">
-          Learn new skills from expert instructors
-        </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-4 gap-5 pb-24">
-          {
-            courses.map((course) => (
-              <div
-                key={course._id}
-                className="bg-white border rounded-lg overflow-hidden hover:shadow-md transition"
-              >
-                <div className="h-36 bg-gray-100 flex items-center justify-center">
-                  <BookOpen
-                    size={38}
-                    className="text-gray-400"
-                  />
-                </div>
-                <div className="p-4">
-                  <span className="text-xs text-indigo-600 font-medium">
-                    {course.category}
-                  </span>
-                  <h2 className="mt-2 text-base font-semibold text-gray-900 line-clamp-2">
-                    {course.title}
-                  </h2>
+      <div className="max-w-7xl mx-auto px-4 mt-6">
 
-                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                    {course.description}
-                  </p>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-sm sm:text-2xl font-bold text-gray-900">📚 Explore Courses</h1>
+          <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm w-64">
+            <input
+              type="text"
+              placeholder="Search courses..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="text-sm text-gray-700 outline-none w-full bg-transparent"
+            />
+          </div>
+        </div>
 
-                  <div className="flex items-center gap-2 mt-3">
-                    <div className="h-7 w-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs text-indigo-600">
-                      {
-                        typeof course.instructor === "string"
-                          ? course.instructor.charAt(0)
-                          : course.instructor?.name?.charAt(0) || "I"
-                      }
-                    </div>
+        <div className="flex gap-6">
 
-                    <span className="text-xs text-gray-500">
-                      {
-                        typeof course.instructor === "string"
-                          ? course.instructor
-                          : course.instructor?.name || "Instructor"
-                      }
-                    </span>
-                  </div>
+          <div className="w-1/4 hidden md:block">
+            <CourseFilterCard />
+          </div>
 
-                  <div className="flex justify-between mt-4 text-xs text-gray-500">
-                    <span className="flex gap-1 items-center">
-                      <Clock size={13} />
-                      {course.duration}
-                    </span>
+          <div className="flex-1 pb-10">
+            <p className="text-xs text-gray-400 mb-4">
+              {filteredCourses.length} courses found
+            </p>
 
-                    <span className="flex gap-1 items-center">
-                      <Users size={13} />
-                      {course.enrolled || 0}
-                    </span>
-
-                    <span className="flex gap-1 items-center">
-                      <Star size={13} className="text-yellow-500" />
-                      {course.rating || 0}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between items-center mt-4">
-                    <span className="font-semibold text-sm">
-                      {course.price === 0 ? "Free" : `₹${course.price}`}
-                    </span>
-
-                    <button
-                      onClick={() => navigate(`/course/${course._id}`)}
-                      className="bg-indigo-600 text-white text-xs px-4 py-2 rounded-md"
-                    >
-                      View Course
-                    </button>
-                  </div>
-                </div>
+            {filteredCourses.length === 0 ? (
+              <div className="text-center py-16 text-gray-400">
+                <div className="text-5xl mb-4">📭</div>
+                <p>No courses found</p>
               </div>
-            ))
-          }
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredCourses.map(course => (
+                  <CourseCard key={course._id} course={course} />
+                ))}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
-      <BottomNav />
     </div>
   );
 };
+
 export default Courses;
