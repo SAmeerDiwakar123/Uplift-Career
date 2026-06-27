@@ -12,12 +12,12 @@ const Internship = () => {
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto w-full px-4 mt-6 flex-1">
-        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
+      <div className="max-w-7xl mx-auto w-full px-4 mt-4 sm:mb-6 flex-1">
+        <h1 className="text-sm sm:text-xl lg:text-2xl font-bold text-gray-900">
           💼 Internships
         </h1>
 
-        <p className="text-sm text-gray-500 mt-1 mb-6">
+        <p className="text-xs text-gray-500 mt-1 mb-4">
           Find the best internships for you
         </p>
 

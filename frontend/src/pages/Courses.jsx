@@ -6,6 +6,7 @@ import Navbar from '../components/shared/Navbar';
 import CourseCard from '../components/course/CourseCard';
 import CourseFilterCard from '../components/course/CourseFilterCard';
 import BottomNav from '@/components/shared/BottomNav';
+import Footer from '@/components/shared/Footer';
 
 const Courses = () => {
   useGetAllCourses();
@@ -88,6 +89,7 @@ const Courses = () => {
 
         </div>
       </div>
+      <Footer/>
       <BottomNav/>
     </div>
   );
