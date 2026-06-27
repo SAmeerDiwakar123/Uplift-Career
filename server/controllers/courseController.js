@@ -1,9 +1,8 @@
 import { Course } from "../models/CourseModel.js";
 import { Enrollment } from "../models/EnrolledModel.js";
 import cloudinary from "../utils/cloudinary.js";
-import DataUriParser from "datauri/parser.js";
-import path from "path";
-import getDataUri from "../utils/dataUri.js";
+import getDataUri from "../utils/dataUri.js"; 
+
 
 
 const createCourse = async (req, res) => {
