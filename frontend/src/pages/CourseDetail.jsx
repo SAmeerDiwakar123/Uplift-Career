@@ -9,6 +9,8 @@ import useRazorpay from '@/hooks/useRazorpay';
 // Components
 import CoursePurchaseCard from '@/components/course/CoursePurchaseCard';
 import VideoPlayer from '@/components/VideoPlayer';
+import BottomNav from '@/components/shared/BottomNav';
+import Footer from '@/components/shared/Footer';
 
 const CourseDetail = () => {
   const { id } = useParams();
@@ -239,6 +241,8 @@ const CourseDetail = () => {
           </div>
         </div>
       )}
+      <BottomNav/>
+      <Footer/>
     </div>
   );
 };

@@ -3,7 +3,8 @@
 // export const APPLICATION_API_END_POINT="http://localhost:5000/api/v1/application";
 // export const COMPANY_API_END_POINT="http://localhost:5000/api/v1/company";
 // export const COURSE_API_END_POINT="http://localhost:5000/api/v1/course";
-
+// export const ENROLLMENT_API_END_POINT = "http://localhost:5000/api/v1/enrollment"
+// export const ORDER_API_END_POINT = "http://localhost:5000/api/v1/order";
 
 
 export const USER_API_END_POINT="https://uplift-career-backend.vercel.app/api/v1/user";

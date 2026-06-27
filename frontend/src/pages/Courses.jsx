@@ -5,6 +5,7 @@ import useGetAllCourses from '../hooks/useGetAllCourses';
 import Navbar from '../components/shared/Navbar';
 import CourseCard from '../components/course/CourseCard';
 import CourseFilterCard from '../components/course/CourseFilterCard';
+import BottomNav from '@/components/shared/BottomNav';
 
 const Courses = () => {
   useGetAllCourses();
@@ -87,6 +88,7 @@ const Courses = () => {
 
         </div>
       </div>
+      <BottomNav/>
     </div>
   );
 };
