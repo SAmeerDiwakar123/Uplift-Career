@@ -26,6 +26,6 @@ export const APPLICATION_API_END_POINT = "https://uplift-career-backend.vercel.a
 export const COURSE_API_END_POINT = "https://uplift-career-backend.vercel.app/api/v1/course";
 export const INTERNSHIP_API_END_POINT = "https://uplift-career-backend.vercel.app/api/v1/internship";
 // export const SAVED_API_END_POINT = "https://uplift-career-backend.vercel.app/api/v1/saved";
-export const NOTIFICATION_API_END_POINT = "https://uplift-career-backend.vercel.app/api/v1/notification";
+// export const NOTIFICATION_API_END_POINT = "https://uplift-career-backend.vercel.app/api/v1/notification";
 export const ENROLLMENT_API_END_POINT = "https://uplift-career-backend.vercel.app/api/v1/enrollment";
 export const ORDER_API_END_POINT = "https://uplift-career-backend.vercel.app/api/v1/order";
