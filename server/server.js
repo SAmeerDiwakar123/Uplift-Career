@@ -3,6 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import ConnectDB from "./config/mongodb.js";
 import userRoute from "./routes/userRoute.js";
+import internshipRoute from "./routes/internshipRoute.js"
 import cookieParser from "cookie-parser";
 import companyRoute from "./routes/companyRoute.js";
 import jobRoute from "./routes/jobRoute.js";
@@ -13,19 +14,18 @@ import rateLimit from "express-rate-limit";
 import courseRoute from "./routes/courseRoute.js"
 import enrollmentRoute from "./routes/enrollmentRoute.js"
 import orderRoute from "./routes/orderRoute.js";
+import adminRoute from "./routes/adminRoute.js";
+import savedJobRoute from "./routes/savedJobRoute.js";
+import notificationRoute from "./routes/notificationRoute.js";
 
-
-// DNS config
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const app = express();
 
-// Helmet — crossOriginResourcePolicy off karo
 app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 
-// Manual CORS headers — sabse pehle
 app.use((req, res, next) => {
   const allowedOrigins = [
     "https://uplift-career-frontend.vercel.app",
@@ -69,10 +69,14 @@ await ConnectDB();
 
 // Routes
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/api/v1/course", courseRoute);
+app.use("/api/v1/internship", internshipRoute)
+app.use("/api/v1/saved", savedJobRoute);
+app.use("/api/v1/notification", notificationRoute);
 app.use("/api/v1/enrollment", enrollmentRoute);
 app.use("/api/v1/order", orderRoute);
 

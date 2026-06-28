@@ -26,17 +26,11 @@ const registerUser = async (req, res) => {
     const fileUri = getDataUri(file);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-    // const file = req.file;
-    // const fileUri = getDataUri(file);
-    // const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-
-    // Check if user already exists
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ success: false, message: "User already exists" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
@@ -193,4 +187,31 @@ const updateProfile = async (req, res) => {
 }
 
 
-export { registerUser, loginUser, logout, updateProfile }; 
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body
+
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+      const token = jwt.sign(
+        {
+          id: "admin",
+          role: "admin",
+          email
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      )
+
+      res.json({ success: true, token })
+    } else {
+      res.json({ success: false, message: "Invalid credentials" })
+    }
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: error.message })
+  }
+}
+export { registerUser, loginUser, logout, updateProfile, adminLogin }; 

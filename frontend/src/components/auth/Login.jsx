@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
-import Navbar from '../shared/Navbar';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { USER_API_END_POINT } from '@/utils/constant';
-import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { toast } from 'sonner';
 import { setLoading, setUser } from '@/redux/authSlice';
-import { Button } from '../ui/button';
-import { Loader2 } from 'lucide-react';
+import { USER_API_END_POINT } from '@/utils/constant';
+import { Loader2, Mail, Lock, Eye, EyeOff, GraduationCap, Briefcase } from 'lucide-react';
+import Navbar from '@/components/shared/Navbar';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
+
   const [input, setInput] = useState({
     email: '',
     password: '',
     role: '',
   });
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { loading } = useSelector((store) => store.auth);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const changeHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -45,7 +46,13 @@ const Login = () => {
         dispatch(setUser(res.data.user));
         localStorage.setItem('user', JSON.stringify(res.data.user));
         toast.success(res.data.message);
-        navigate('/jobs');
+        
+        // Role-based navigation
+        if (res.data.user?.role === 'recruiter') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/');
+        }
       }
     } catch (error) {
       console.log(error);
@@ -56,68 +63,83 @@ const Login = () => {
   };
 
   return (
-    <div className="overflow-hidden bg-[#f8f8f8] min-h-screen">
+    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
       <Navbar />
 
-      <div className="min-h-[calc(100vh-64px)] flex justify-center px-3 py-4">
-        <div className="w-full max-w-[320px] sm:max-w-md bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-8">
+      <div className="min-h-[calc(100vh-64px)] flex justify-center items-center px-3 py-8">
+        <div className="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-xl p-6 sm:p-8">
 
           {/* Heading */}
-          <div className="mb-4">
-            <h1 className="text-lg sm:text-2xl font-bold text-gray-800">
-              Welcome back! 👋
+          <div className="mb-6 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-100 to-indigo-100 border border-purple-200 text-purple-700 text-xs font-semibold mb-3">
+              🔐 Secure Login
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-indigo-800 bg-clip-text text-transparent">
+              Welcome Back! 👋
             </h1>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-500 mt-1">
               Login to your Uplift account
             </p>
           </div>
 
-          <form onSubmit={submitHandler} className="flex flex-col gap-3">
+          <form onSubmit={submitHandler} className="flex flex-col gap-4">
 
             {/* Email */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs sm:text-sm font-medium text-gray-700">
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
                 Email
               </label>
-
-              <input
-                type="email"
-                name="email"
-                value={input.email}
-                onChange={changeHandler}
-                placeholder="Enter your email"
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
+              <div className="relative">
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="email"
+                  name="email"
+                  value={input.email}
+                  onChange={changeHandler}
+                  placeholder="Enter your email"
+                  required
+                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                />
+              </div>
             </div>
 
             {/* Password */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs sm:text-sm font-medium text-gray-700">
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
                 Password
               </label>
-
-              <input
-                type="password"
-                name="password"
-                value={input.password}
-                onChange={changeHandler}
-                placeholder="Enter your password"
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
+              <div className="relative">
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={input.password}
+                  onChange={changeHandler}
+                  placeholder="Enter your password"
+                  required
+                  className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
-            {/* Role */}
+            {/* Role Selection */}
             <div>
-              <label className="text-xs sm:text-sm font-medium text-gray-700 block mb-2">
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">
                 Select Role
               </label>
-
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <label
-                  className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-lg border cursor-pointer text-xs sm:text-sm transition ${
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                     input.role === 'student'
-                      ? 'bg-indigo-50 border-indigo-500 text-indigo-600'
-                      : 'border-gray-200 text-gray-600'
+                      ? 'border-purple-500 bg-purple-50 text-purple-700'
+                      : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300'
                   }`}
                 >
                   <input
@@ -128,14 +150,15 @@ const Login = () => {
                     onChange={changeHandler}
                     className="hidden"
                   />
-                  Student
+                  <GraduationCap size={18} />
+                  <span className="text-sm font-medium">Student</span>
                 </label>
 
                 <label
-                  className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-lg border cursor-pointer text-xs sm:text-sm transition ${
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                     input.role === 'recruiter'
-                      ? 'bg-indigo-50 border-indigo-500 text-indigo-600'
-                      : 'border-gray-200 text-gray-600'
+                      ? 'border-purple-500 bg-purple-50 text-purple-700'
+                      : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300'
                   }`}
                 >
                   <input
@@ -146,36 +169,68 @@ const Login = () => {
                     onChange={changeHandler}
                     className="hidden"
                   />
-                  Recruiter
+                  <Briefcase size={18} />
+                  <span className="text-sm font-medium">Recruiter</span>
                 </label>
               </div>
             </div>
 
-            {/* Button */}
-            {loading ? (
-              <Button
-                disabled
-                className="w-full py-2 text-xs sm:text-sm"
-              >
-                <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                Please wait...
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                className="w-full bg-indigo-600 text-white py-2 text-xs sm:text-sm font-medium rounded-lg hover:bg-indigo-700 transition-all"
-              >
-                Login
-              </Button>
-            )}
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
+                  className="w-4 h-4 bg-gray-50 border-gray-300 rounded focus:ring-2 focus:ring-purple-500 accent-purple-600"
+                />
+                <span className="text-sm text-gray-600">Remember me</span>
+              </label>
+              <span className="text-sm text-purple-600 hover:underline cursor-pointer font-medium">
+                Forgot Password?
+              </span>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 text-sm font-semibold rounded-xl transition-all duration-300 ${
+                loading
+                  ? 'bg-gray-300 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02]'
+              }`}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Please wait...
+                </span>
+              ) : (
+                'Login →'
+              )}
+            </button>
           </form>
 
-          {/* Register Link */}
-          <p className="text-xs sm:text-sm text-center text-gray-500 mt-4">
+          {/* Role Indicators */}
+          <div className="mt-4 flex items-center justify-center gap-4 text-xs text-gray-400">
+            <div className="flex items-center gap-1.5">
+              <GraduationCap size={14} className="text-purple-500" />
+              <span>Student</span>
+            </div>
+            <div className="w-px h-4 bg-gray-200" />
+            <div className="flex items-center gap-1.5">
+              <Briefcase size={14} className="text-indigo-500" />
+              <span>Recruiter</span>
+            </div>
+          </div>
+
+          {/* Signup Link */}
+          <p className="text-sm text-center text-gray-500 mt-5">
             Don't have an account?{' '}
             <span
               onClick={() => navigate('/signup')}
-              className="text-indigo-600 font-medium cursor-pointer hover:underline"
+              className="text-purple-600 font-semibold cursor-pointer hover:underline"
             >
               Register
             </span>
