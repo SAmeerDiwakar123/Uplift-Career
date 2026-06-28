@@ -15,7 +15,7 @@ import courseRoute from "./routes/courseRoute.js"
 import enrollmentRoute from "./routes/enrollmentRoute.js"
 import orderRoute from "./routes/orderRoute.js";
 import adminRoute from "./routes/adminRoute.js";
-import savedJobRoute from "./routes/savedJobRoute.js";
+// import savedJobRoute from "./routes/savedJobRoute.js";
 import notificationRoute from "./routes/notificationRoute.js";
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
@@ -75,7 +75,7 @@ app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/internship", internshipRoute)
-app.use("/api/v1/saved", savedJobRoute);
+// app.use("/api/v1/saved", savedJobRoute);
 app.use("/api/v1/notification", notificationRoute);
 app.use("/api/v1/enrollment", enrollmentRoute);
 app.use("/api/v1/order", orderRoute);
