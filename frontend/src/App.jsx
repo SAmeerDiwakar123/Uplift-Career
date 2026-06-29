@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Home from './pages/public/Home';
 import About from './pages/public/About';
 import Contact from './pages/public/Contact';
@@ -10,35 +11,93 @@ import Internship from './pages/Internship';
 import Courses from './pages/Courses';
 import SavedJobs from './pages/SavedJobs';
 import Applications from './pages/Applications';
+import Profile from './pages/Profile';
+import JobDetail from './pages/JobDetail';
+import ApplyJob from './pages/ApplyJob';
+import Dashboard from './components/admin/Dashboard';
+import AddJobs from './components/admin/AddJobs';
+import ManageJob from './components/admin/ManageJob';
+import CreateCompany from './components/admin/CreateCompany';
+import Companies from './components/admin/Companies';
+import CompanySetup from './components/admin/CompanySetup';
+import Applicants from './components/admin/Applicants';
+import CourseDetail from './pages/CourseDetail';
 
+// Public Route — Login ho toh redirect
+const PublicRoute = ({ children }) => {
+  const { user } = useSelector((store) => store.auth);
+  if (user) {
+    return user.role === "recruiter"
+      ? <Navigate to="/admin/dashboard" replace />
+      : <Navigate to="/jobs" replace />;
+  }
+  return children;
+};
+
+// Protected Route — Login nahi ho toh redirect
+const ProtectedRoute = ({ children }) => {
+  const { user } = useSelector((store) => store.auth);
+  return user ? children : <Navigate to="/login" replace />;
+};
+
+// Student Only
+const StudentRoute = ({ children }) => {
+  const { user } = useSelector((store) => store.auth);
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== "student") return <Navigate to="/admin/dashboard" replace />;
+  return children;
+};
+
+// Recruiter Only
+const RecruiterRoute = ({ children }) => {
+  const { user } = useSelector((store) => store.auth);
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== "recruiter") return <Navigate to="/jobs" replace />;
+  return children;
+};
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        {/* Public Routes — Only for NOT logged in users */}
+        <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+        <Route path="/about" element={<PublicRoute><About /></PublicRoute>} />
+        <Route path="/contact" element={<PublicRoute><Contact /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
 
-        {/* Protected Routes*/}
-        <Route path="/jobs" element={<Jobs />} />
-        <Route path="/internship" element={<Internship />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/saved" element={<SavedJobs />} />
-        <Route path="/applications" element={<Applications />} />
+        {/* Student Routes */}
+        <Route path="/jobs" element={<StudentRoute><Jobs /></StudentRoute>} />
+        <Route path="/jobs/:id" element={<StudentRoute><JobDetail /></StudentRoute>} />
+        <Route path="/jobdetail/:id" element={<StudentRoute><JobDetail /></StudentRoute>} />
+        <Route path="/internship" element={<StudentRoute><Internship /></StudentRoute>} />
+        <Route path="/courses" element={<StudentRoute><Courses /></StudentRoute>} />
+        <Route path="/course/:id" element={<StudentRoute><CourseDetail /></StudentRoute>} />
+        <Route path="/saved" element={<StudentRoute><SavedJobs /></StudentRoute>} />
+        <Route path="/applications" element={<StudentRoute><Applications /></StudentRoute>} />
+        <Route path="/apply-job/:id" element={<StudentRoute><ApplyJob /></StudentRoute>} />
 
+        {/* Common Protected */}
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
+        {/* Recruiter Routes */}
+        <Route path="/admin/dashboard" element={<RecruiterRoute><Dashboard /></RecruiterRoute>} />
+        <Route path="/admin/add-jobs" element={<RecruiterRoute><AddJobs /></RecruiterRoute>} />
+        <Route path="/admin/manage-jobs" element={<RecruiterRoute><ManageJob /></RecruiterRoute>} />
+        <Route path="/admin/create-company" element={<RecruiterRoute><CreateCompany /></RecruiterRoute>} />
+        <Route path="/admin/companies" element={<RecruiterRoute><Companies /></RecruiterRoute>} />
+        <Route path="/admin/companies/:id" element={<RecruiterRoute><CompanySetup /></RecruiterRoute>} />
+        <Route path="/admin/jobs/:id/applicants" element={<RecruiterRoute><Applicants /></RecruiterRoute>} />
+
+        {/* Catch all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
-
-
 
 
 
