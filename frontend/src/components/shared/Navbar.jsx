@@ -131,11 +131,11 @@ const Navbar = () => {
           {/* Right Side Actions */}
           <div className="flex items-center gap-3">
 
-            {/* Saved Button (Student Only) */}
+            {/* Saved Button (Student Only) - MOBILE ONLY */}
             {user?.role === "student" && (
               <button
                 onClick={() => navigate("/saved")}
-                className="text-slate-400 hover:text-blue-400 transition"
+                className="text-slate-400 hover:text-blue-400 transition md:hidden"
               >
                 <Bookmark size={20} />
               </button>
