@@ -7,6 +7,8 @@ import savedJobReducer from "./savedJobSlice";
 import applicationSlice from "./applicationSlice";
 import companySlice from "./companySlice"
 import courseReducer from "./courseSlice"
+import internshipReducer from "./internshipSlice";
+
 const persistStorage = {
   getItem: (key) => Promise.resolve(localStorage.getItem(key)),
   setItem: (key, value) => Promise.resolve(localStorage.setItem(key, value)),
@@ -26,8 +28,8 @@ const rootReducer = combineReducers({
   savedJob: savedJobReducer,
   application: applicationSlice,
   company: companySlice,
-  course: courseReducer
-  
+  course: courseReducer,
+  internship: internshipReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

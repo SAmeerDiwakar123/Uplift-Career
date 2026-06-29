@@ -7,7 +7,6 @@ import Contact from './pages/public/Contact';
 import Login from './components/auth/Login';
 import SignUp from './components/auth/SignUp';
 import Jobs from './pages/Jobs';
-import Internship from './pages/Internship';
 import Courses from './pages/Courses';
 import SavedJobs from './pages/SavedJobs';
 import Applications from './pages/Applications';
@@ -22,6 +21,7 @@ import Companies from './components/admin/Companies';
 import CompanySetup from './components/admin/CompanySetup';
 import Applicants from './components/admin/Applicants';
 import CourseDetail from './pages/CourseDetail';
+import Internships from './pages/student/Internships';
 
 // Public Route — Login ho toh redirect
 const PublicRoute = ({ children }) => {
@@ -71,7 +71,7 @@ function App() {
         <Route path="/jobs" element={<StudentRoute><Jobs /></StudentRoute>} />
         <Route path="/jobs/:id" element={<StudentRoute><JobDetail /></StudentRoute>} />
         <Route path="/jobdetail/:id" element={<StudentRoute><JobDetail /></StudentRoute>} />
-        <Route path="/internship" element={<StudentRoute><Internship /></StudentRoute>} />
+        <Route path="/internship" element={<StudentRoute><Internships /></StudentRoute>} />
         <Route path="/courses" element={<StudentRoute><Courses /></StudentRoute>} />
         <Route path="/course/:id" element={<StudentRoute><CourseDetail /></StudentRoute>} />
         <Route path="/saved" element={<StudentRoute><SavedJobs /></StudentRoute>} />

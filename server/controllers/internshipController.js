@@ -6,19 +6,8 @@ import { Notification } from "../models/NotificationModel.js";
 export const postInternship = async (req, res) => {
   try {
     const {
-      title,
-      description,
-      location,
-      isRemote,
-      stipend,
-      duration,
-      openings,
-      skills,
-      applyBy,
-      category,
-      isPPO,
-      company,
-    } = req.body;
+      title,description,location,isRemote,stipend,duration,openings,skills,applyBy,category,
+      isPPO,company,} = req.body;
 
     if (!title || !description || !location || !duration) {
       return res.status(400).json({

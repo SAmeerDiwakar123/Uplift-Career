@@ -9,6 +9,7 @@ const courseSlice = createSlice({
     loading: false,
     filters: {},
   },
+  
   reducers: {
     setCourses: (state, action) => {
       state.courses = action.payload;
