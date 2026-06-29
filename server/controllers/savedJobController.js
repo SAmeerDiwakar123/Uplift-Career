@@ -2,7 +2,7 @@ import { SavedJob } from "../models/SavedJobModel.js";
 import { SavedInternship } from "../models/SavedInternshipModel.js";
 
 // Save Job
-export const saveJob = async (req, res) => {
+const saveJob = async (req, res) => {
   try {
     const { jobId } = req.params;
     const userId = req.id;
@@ -33,7 +33,7 @@ export const saveJob = async (req, res) => {
 };
 
 // Get Saved Jobs
-export const getSavedJobs = async (req, res) => {
+const getSavedJobs = async (req, res) => {
   try {
     const savedJobs = await SavedJob.find({ user: req.id })
       .populate({
@@ -56,7 +56,7 @@ export const getSavedJobs = async (req, res) => {
 };
 
 // Save Internship
-export const saveInternship = async (req, res) => {
+const saveInternship = async (req, res) => {
   try {
     const { internshipId } = req.params;
     const userId = req.id;
@@ -91,7 +91,7 @@ export const saveInternship = async (req, res) => {
 };
 
 // Get Saved Internships
-export const getSavedInternships = async (req, res) => {
+const getSavedInternships = async (req, res) => {
   try {
     const savedInternships = await SavedInternship.find({ user: req.id })
       .populate({
@@ -112,3 +112,4 @@ export const getSavedInternships = async (req, res) => {
     });
   }
 };
+export {saveJob, getSavedJobs, saveInternship,getSavedInternships}

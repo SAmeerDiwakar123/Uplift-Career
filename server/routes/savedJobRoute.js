@@ -4,7 +4,7 @@ import {
   getSavedJobs,
   saveInternship,
   getSavedInternships,
-} from "../controllers/savedJobController.js";
+} from "../controllers/savedJobController.js"
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 
 const router = express.Router();
