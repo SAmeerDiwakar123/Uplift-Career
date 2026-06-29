@@ -1,14 +1,32 @@
 import express from "express";
-import { createInternship,getAllInternship,getInternshipById,updatedInternship,deleteInternship,applyInternship,getInternshipApplicants,changeInternshipStatus} from "../controllers/internshipController.js";
+import {
+  postInternship,
+  getAllInternships,
+  getInternshipById,
+  applyInternship,
+  getMyInternshipApplications,
+  updateInternship,
+  deleteInternship,
+  getMyInternships,
+  updateApplicationStatus,
+} from "../controllers/internshipController.js";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 
 const router = express.Router();
-router.route("/create").post(isAuthenticated, createInternship);
-router.route("/get").get(getAllInternship);
+
+// Public
+router.route("/get").get(getAllInternships);
 router.route("/get/:id").get(getInternshipById);
-router.route("/update/:id").put(isAuthenticated, updatedInternship);
+
+// Student
+router.route("/apply/:id").post(isAuthenticated, applyInternship);
+router.route("/my-applications").get(isAuthenticated, getMyInternshipApplications);
+
+// Recruiter
+router.route("/post").post(isAuthenticated, postInternship);
+router.route("/my-internships").get(isAuthenticated, getMyInternships);
+router.route("/update/:id").put(isAuthenticated, updateInternship);
 router.route("/delete/:id").delete(isAuthenticated, deleteInternship);
-router.route("/:id/apply").post(isAuthenticated, applyInternship);
-router.route("/:id/applicants").get(isAuthenticated, getInternshipApplicants);
-router.route("/:id/status").patch(isAuthenticated, changeInternshipStatus);
+router.route("/application/status/:id").put(isAuthenticated, updateApplicationStatus);
+
 export default router;

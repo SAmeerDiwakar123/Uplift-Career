@@ -19,24 +19,20 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-3xl" />
-      </div>
+    <section className="relative bg-slate-950 overflow-hidden">
+      {/* Subtle glow - desktop pe zyada, mobile pe kam */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] sm:w-[600px] sm:h-[300px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-32 flex flex-col items-center">
-        <div className="text-center max-w-3xl mx-auto">
+      <div className="relative max-w-6xl mx-auto px-4 pt-10 pb-12 sm:pt-16 sm:pb-16 md:pt-24 md:pb-20 lg:pt-32 lg:pb-24">
+        <div className="text-center max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 px-4 py-1.5 rounded-full mb-6">
-            <Sparkles size={14} className="text-amber-400" />
-            <span className="text-xs font-medium text-slate-300">India's #1 Career Platform</span>
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/5 border border-white/10 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full mb-4 sm:mb-5 md:mb-6">
+            <Sparkles size={12} className="text-amber-400 sm:size-[14px]" />
+            <span className="text-[11px] sm:text-xs md:text-sm font-medium text-slate-400">India's #1 Career Platform</span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-3 sm:mb-4 md:mb-5">
             <span className="text-white">Learn.</span>{" "}
             <span className="text-white">Experience.</span>
             <br />
@@ -46,32 +42,32 @@ const Hero = () => {
           </h1>
 
           {/* Subheading */}
-          <p className="text-sm sm:text-base text-slate-400 mb-8 max-w-xl mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm md:text-base text-slate-500 mb-5 sm:mb-6 md:mb-8 max-w-sm sm:max-w-md md:max-w-xl mx-auto leading-relaxed px-2 sm:px-0">
             Affordable courses, real internships, and direct job opportunities —
-            <span className="font-medium text-slate-200"> everything you need</span> to launch your career.
+            <span className="text-slate-300"> everything you need</span> to launch your career.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-10">
+          {/* CTA */}
+          <div className="flex gap-2 sm:gap-3 justify-center mb-5 sm:mb-6 md:mb-10 px-4 sm:px-0">
             <button
               onClick={() => navigate("/jobs")}
-              className="w-full sm:w-auto bg-gradient-to-r from-amber-400 to-orange-400 text-slate-900 px-8 py-3 rounded-xl font-bold text-sm hover:shadow-xl hover:shadow-amber-400/20 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none bg-gradient-to-r from-amber-400 to-orange-400 text-slate-900 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm hover:shadow-lg hover:shadow-amber-400/20 transition-all active:scale-95 flex items-center justify-center gap-1.5 sm:gap-2"
             >
               Browse Jobs
-              <ArrowRight size={16} />
+              <ArrowRight size={14} className="sm:size-[16px]" />
             </button>
             <button
               onClick={() => navigate("/courses")}
-              className="w-full sm:w-auto bg-white/5 backdrop-blur-sm text-white px-8 py-3 rounded-xl font-bold text-sm border border-white/10 hover:bg-white/10 transition-all duration-300"
+              className="flex-1 sm:flex-none bg-white/5 text-white px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm border border-white/10 hover:bg-white/10 transition-all active:scale-95"
             >
               Explore Courses
             </button>
           </div>
 
-          {/* Search Bar */}
-          <div className="bg-white rounded-2xl p-2 flex flex-col md:flex-row gap-2 max-w-2xl mx-auto shadow-2xl shadow-black/20">
-            <div className="flex items-center gap-2.5 flex-1 px-4 py-2.5">
-              <Search size={18} className="text-slate-400 shrink-0" />
+          {/* Search Bar - mobile: stacked, md+: side by side */}
+          <div className="bg-white rounded-xl sm:rounded-2xl p-1.5 sm:p-2 flex flex-col md:flex-row gap-1.5 sm:gap-2 max-w-sm sm:max-w-md md:max-w-xl lg:max-w-2xl mx-auto shadow-xl sm:shadow-2xl">
+            <div className="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 md:py-3">
+              <Search size={16} className="text-slate-400 shrink-0 sm:size-[18px]" />
               <input
                 type="text"
                 placeholder="Job title, keywords..."
@@ -84,8 +80,8 @@ const Hero = () => {
 
             <div className="hidden md:block w-px bg-slate-200 my-2" />
 
-            <div className="flex items-center gap-2.5 flex-1 px-4 py-2.5">
-              <MapPin size={18} className="text-slate-400 shrink-0" />
+            <div className="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 border-t md:border-t-0 border-slate-100">
+              <MapPin size={16} className="text-slate-400 shrink-0 sm:size-[18px]" />
               <input
                 type="text"
                 placeholder="City, state..."
@@ -98,15 +94,16 @@ const Hero = () => {
 
             <button
               onClick={handleSearch}
-              className="bg-slate-900 text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-slate-800 transition-all duration-300 whitespace-nowrap"
+              className="bg-slate-900 text-white py-2.5 sm:py-3 md:px-6 rounded-lg sm:rounded-xl font-semibold text-sm hover:bg-slate-800 transition-all active:scale-95 md:whitespace-nowrap"
             >
-              Search
+              <span className="md:hidden">Search Jobs</span>
+              <span className="hidden md:inline">Search</span>
             </button>
           </div>
 
-          {/* Popular Tags */}
-          <div className="mt-6 flex flex-wrap justify-center gap-2 items-center">
-            <span className="text-xs text-slate-500 font-medium">Popular:</span>
+          {/* Tags */}
+          <div className="mt-4 sm:mt-5 md:mt-6 flex flex-wrap justify-center gap-1.5 sm:gap-2 px-2 sm:px-0">
+            <span className="text-[10px] sm:text-xs text-slate-600">Popular:</span>
             {["Remote", "MNC", "Engineering", "MBA", "Fresher", "Data Science"].map((tag) => (
               <button
                 key={tag}
@@ -114,7 +111,7 @@ const Hero = () => {
                   setSearchTitle(tag);
                   navigate(`/jobs?q=${encodeURIComponent(tag)}`);
                 }}
-                className="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-xs text-slate-400 hover:bg-white hover:text-slate-900 transition-all duration-200"
+                className="bg-white/5 border border-white/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs text-slate-500 hover:bg-white hover:text-slate-900 transition-all"
               >
                 {tag}
               </button>
@@ -122,8 +119,8 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="mt-16 w-full max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3">
+        {/* Stats - mobile: 2-col compact, sm+: 4-col proper */}
+        <div className="mt-8 sm:mt-10 md:mt-14 lg:mt-16 max-w-sm sm:max-w-lg md:max-w-2xl lg:max-w-3xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
           {[
             { number: "12K+", label: "Live Jobs", icon: Briefcase },
             { number: "3.5K+", label: "Companies", icon: Building },
@@ -132,13 +129,13 @@ const Hero = () => {
           ].map((stat, index) => (
             <div
               key={index}
-              className="bg-white/5 backdrop-blur-sm rounded-2xl px-4 py-5 border border-white/10 hover:bg-white/10 transition-all duration-300 text-center group"
+              className="bg-white/5 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-3 sm:py-4 md:py-5 border border-white/10 text-center hover:bg-white/10 transition-all"
             >
-              <div className="flex justify-center mb-2">
-                <stat.icon size={18} className="text-slate-500 group-hover:text-amber-400 transition-colors" />
+              <div className="flex justify-center mb-1 sm:mb-2">
+                <stat.icon size={14} className="text-slate-600 sm:size-[16px] md:size-[18px]" />
               </div>
-              <h2 className="text-xl font-bold text-white">{stat.number}</h2>
-              <p className="text-xs text-slate-500 mt-0.5">{stat.label}</p>
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">{stat.number}</h2>
+              <p className="text-[10px] sm:text-xs text-slate-600 mt-0.5">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -148,7 +145,6 @@ const Hero = () => {
 };
 
 export default Hero;
-
 // import React from "react";
 // import { useNavigate } from "react-router-dom";
 // import { Search, MapPin, Sparkles, ArrowRight, Briefcase, Building, Users, TrendingUp } from "lucide-react";
