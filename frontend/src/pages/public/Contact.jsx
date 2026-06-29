@@ -4,6 +4,7 @@ import Footer from '@/components/shared/Footer';
 import { Mail, Phone, MapPin, Clock, Facebook, Twitter, Linkedin, Instagram, Youtube, Send, MessageCircle, Sparkles, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CTASection from '@/components/home/CTASection';
+import BottomNav from '@/components/shared/BottomNav';
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -265,6 +266,7 @@ const Contact = () => {
       {/* CTA Section */}
       <CTASection/>
       <Footer />
+      <BottomNav/>
     </div>
   );
 };

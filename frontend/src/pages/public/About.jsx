@@ -6,6 +6,7 @@ import FoundersSection from '@/components/about/FoundersSection';
 import ValuesSection from '@/components/about/ValuesSection';
 import TeamSection from '@/components/about/TeamSection';
 import ImpactSection from '@/components/about/ImpactSection';
+import BottomNav from '@/components/shared/BottomNav';
 
 const About = () => {
   return (
@@ -17,6 +18,7 @@ const About = () => {
       <TeamSection />
       <ImpactSection />
       <Footer />
+      <BottomNav/>
     </div>
   );
 };
