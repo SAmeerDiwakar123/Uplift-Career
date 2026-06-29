@@ -9,6 +9,7 @@ import WhyUplift from "@/components/home/WhyUplift";
 import Footer from "@/components/shared/Footer";
 import Navbar from "@/components/shared/Navbar";
 import TopCompanies from "@/components/home/TopCompanies";
+import BottomNav from "@/components/shared/BottomNav";
 
 
 const Home = () => {
@@ -30,6 +31,7 @@ const Home = () => {
       <Testimonials />
       <CTASection />
       <Footer />
+      <BottomNav/>
     </div>
   );
 };

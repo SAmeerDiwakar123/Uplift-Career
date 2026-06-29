@@ -33,7 +33,7 @@ const Navbar = () => {
       const res = await axios.get(`${USER_API_END_POINT}/logout`, { 
         withCredentials: true  
       });
-      
+
       if (res.data.success) {
         dispatch(setUser(null));
         navigate("/");              
@@ -48,8 +48,10 @@ const Navbar = () => {
   };
 
   const navLinkStyles = ({ isActive }) => 
-    `text-gray-300 hover:text-purple-300 transition-all duration-200 text-sm flex items-center gap-1.5 ${
-      isActive ? 'text-purple-300 font-medium' : ''
+    `text-sm font-medium transition-all duration-200 flex items-center gap-1.5 ${
+      isActive 
+        ? 'text-blue-400' 
+        : 'text-slate-400 hover:text-slate-200'
     }`;
 
   // Navigation items based on user role
@@ -76,7 +78,7 @@ const Navbar = () => {
     return [
       { path: '/internship', label: 'Internship', icon: GraduationCap },
       { path: '/jobs', label: 'Jobs', icon: Briefcase },
-      { path: '/saved', label: 'Saved Jobs', icon: Bookmark },
+      { path: '/saved', label: 'Saved', icon: Bookmark },
       { path: '/applications', label: 'Applications', icon: ListChecks },
       { path: '/courses', label: 'Courses', icon: GraduationCap },
     ];
@@ -85,10 +87,10 @@ const Navbar = () => {
   const navItems = getNavItems();
 
   return (
-    <nav className='bg-[#0a0a0a] shadow-sm sticky top-0 z-50 border-b border-[#222] backdrop-blur-lg bg-opacity-80'>
-      <div className='max-w-7xl mx-auto px-4 py-3 sm:py-4'>
+    <nav className='bg-slate-950 border-b border-slate-800/50 sticky top-0 z-50'>
+      <div className='max-w-7xl mx-auto px-4 py-3 sm:py-3.5'>
         <div className='flex items-center justify-between'>
-          
+
           {/* Logo */}
           <div 
             onClick={() => navigate('/')} 
@@ -97,7 +99,7 @@ const Navbar = () => {
             <img
               src={logo}
               alt="Uplift Career"
-              className='h-7 sm:h-10'
+              className='h-7 sm:h-9'
             />
           </div>
 
@@ -109,7 +111,7 @@ const Navbar = () => {
                 to={item.path} 
                 className={navLinkStyles}
               >
-                <item.icon size={16} />
+                <item.icon size={15} />
                 {item.label}
               </NavLink>
             ))}
@@ -118,26 +120,26 @@ const Navbar = () => {
           {/* Right Side - Auth / User Menu */}
           <div className="flex items-center gap-2">
             {!user ? (
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <Link to="/login">
-                  <button className="text-gray-300 text-xs sm:text-sm px-3 py-1.5 rounded-lg hover:text-purple-300 hover:bg-[#1a1a1a] transition-all duration-200">
+                  <button className="text-slate-400 text-sm px-3 py-1.5 rounded-lg hover:text-slate-200 transition-all">
                     Login
                   </button>
                 </Link>
                 <Link to="/signup">
-                  <button className="bg-purple-700 text-white text-xs sm:text-sm px-4 py-1.5 rounded-lg hover:bg-purple-600 transition-all duration-200 hover:scale-105">
+                  <button className="bg-blue-600 text-white text-sm px-4 py-1.5 rounded-lg hover:bg-blue-500 transition-all font-medium">
                     Get Started
                   </button>
                 </Link>
               </div>
             ) : (
               <div className="flex items-center gap-2 md:gap-3">
-                
+
                 {/* Saved Jobs - Mobile Only */}
                 {user?.role === "student" && (
                   <button
                     onClick={() => navigate("/saved")}
-                    className="md:hidden text-gray-300 hover:text-purple-300 transition p-1.5"
+                    className="md:hidden text-slate-400 hover:text-blue-400 transition p-1.5"
                     aria-label="Saved Jobs"
                   >
                     <Bookmark size={20} />
@@ -147,17 +149,17 @@ const Navbar = () => {
                 {/* Mobile Menu Toggle */}
                 <button
                   onClick={() => setShowMobileMenu(!showMobileMenu)}
-                  className="md:hidden text-gray-300 hover:text-purple-300 transition p-1.5"
+                  className="md:hidden text-slate-400 hover:text-slate-200 transition p-1.5"
                   aria-label="Toggle Menu"
                 >
-                  {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
+                  {showMobileMenu ? <X size={22} /> : <Menu size={22} />}
                 </button>
 
                 {/* User Avatar / Menu */}
                 <div className="relative" ref={menuRef}>
                   <button
                     onClick={() => setShowMenu(!showMenu)}
-                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-purple-700 flex items-center justify-center overflow-hidden border-2 border-purple-400 hover:border-purple-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 hover:border-blue-500/50 transition-all focus:outline-none"
                     aria-label="User Menu"
                   >
                     {user?.profile?.profilePhoto ? (
@@ -167,7 +169,7 @@ const Navbar = () => {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <span className="text-white text-sm font-bold">
+                      <span className="text-slate-300 text-sm font-bold">
                         {user?.fullname?.charAt(0).toUpperCase() || 'U'}
                       </span>
                     )}
@@ -175,15 +177,15 @@ const Navbar = () => {
 
                   {/* Dropdown Menu */}
                   {showMenu && (
-                    <div className="absolute right-0 top-11 w-56 bg-[#1a1a1a] rounded-xl shadow-2xl border border-[#333] overflow-hidden animate-slideDown">
-                      
+                    <div className="absolute right-0 top-11 w-52 bg-slate-900 rounded-xl shadow-xl border border-slate-800 overflow-hidden">
+
                       {/* User Info */}
-                      <div className="bg-[#111827] px-4 py-3 flex items-center gap-3 border-b border-[#222]">
-                        <div className="h-10 w-10 rounded-full bg-purple-700 flex items-center justify-center overflow-hidden shrink-0">
+                      <div className="px-4 py-3 flex items-center gap-3 border-b border-slate-800">
+                        <div className="h-9 w-9 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 border border-slate-700">
                           {user?.profile?.profilePhoto ? (
                             <img src={user.profile.profilePhoto} alt={user?.fullname} className="h-full w-full object-cover" />
                           ) : (
-                            <span className="text-white text-sm font-bold">
+                            <span className="text-slate-300 text-sm font-bold">
                               {user?.fullname?.charAt(0).toUpperCase() || 'U'}
                             </span>
                           )}
@@ -192,27 +194,24 @@ const Navbar = () => {
                           <h4 className="text-sm font-semibold text-white truncate">
                             {user?.fullname || 'User'}
                           </h4>
-                          <p className="text-xs text-gray-400 truncate">
+                          <p className="text-xs text-slate-500 truncate">
                             {user?.profile?.bio || user?.role || 'Member'}
                           </p>
-                          <span className="text-[10px] text-purple-400 font-medium uppercase">
-                            {user?.role}
-                          </span>
                         </div>
                       </div>
 
                       {/* Menu Items */}
-                      <div className="p-1.5">
+                      <div className="p-1">
                         {user?.role === "student" && (
                           <button
                             onClick={() => { 
                               navigate('/profile'); 
                               setShowMenu(false); 
                             }}
-                            className="w-full flex items-center gap-2.5 cursor-pointer px-3 py-2 rounded-lg hover:bg-[#2a2a2a] transition-all duration-200"
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-slate-800 transition-all text-left"
                           >
-                            <User2 size={15} className="text-gray-400" />
-                            <span className="text-sm text-gray-300">View Profile</span>
+                            <User2 size={15} className="text-slate-500" />
+                            <span className="text-sm text-slate-300">View Profile</span>
                           </button>
                         )}
 
@@ -222,16 +221,16 @@ const Navbar = () => {
                               navigate('/admin/dashboard'); 
                               setShowMenu(false); 
                             }}
-                            className="w-full flex items-center gap-2.5 cursor-pointer px-3 py-2 rounded-lg hover:bg-[#2a2a2a] transition-all duration-200"
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-slate-800 transition-all text-left"
                           >
-                            <LayoutDashboard size={15} className="text-gray-400" />
-                            <span className="text-sm text-gray-300">Dashboard</span>
+                            <LayoutDashboard size={15} className="text-slate-500" />
+                            <span className="text-sm text-slate-300">Dashboard</span>
                           </button>
                         )}
 
                         <button
                           onClick={logoutHandler}
-                          className="w-full flex items-center gap-2.5 cursor-pointer px-3 py-2 rounded-lg hover:bg-red-900/20 transition-all duration-200"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-red-950/30 transition-all text-left"
                         >
                           <LogOut size={15} className="text-red-400" />
                           <span className="text-sm text-red-400">Logout</span>
@@ -247,18 +246,18 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {showMobileMenu && user && (
-          <div className="md:hidden mt-3 pt-3 border-t border-[#222] animate-slideDown">
-            <div className="flex flex-col gap-1">
+          <div className="md:hidden mt-3 pt-3 border-t border-slate-800/50">
+            <div className="flex flex-col gap-0.5">
               {navItems.map((item) => (
                 <NavLink
                   key={item.path}
                   to={item.path}
                   onClick={() => setShowMobileMenu(false)}
                   className={({ isActive }) => 
-                    `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                    `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                       isActive 
-                        ? 'bg-purple-900/30 text-purple-300' 
-                        : 'text-gray-300 hover:bg-[#1a1a1a] hover:text-purple-300'
+                        ? 'bg-blue-500/10 text-blue-400' 
+                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
                     }`
                   }
                 >
@@ -270,23 +269,6 @@ const Navbar = () => {
           </div>
         )}
       </div>
-
-      {/* Custom Animation Keyframes - Add to your global CSS */}
-<style>{`
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .animate-slideDown {
-    animation: slideDown 0.2s ease-out;
-  }
-`}</style>
     </nav>
   );
 };

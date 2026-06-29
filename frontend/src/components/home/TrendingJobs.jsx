@@ -1,36 +1,49 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { TrendingUp, ArrowRight } from 'lucide-react';
 import Job from '@/pages/Job';
 
 const TrendingJobs = () => {
   const { alljobs } = useSelector(store => store.job);
   const navigate = useNavigate();
 
-  const trendingJobs = alljobs.slice(0, 3);
+  const trendingJobs = alljobs?.slice(0, 3) || [];
 
   return (
-    <section className="py-8 sm:py-16 bg-gray-100">
-      <div className="max-w-5xl mx-auto px-4">
+    <section className="py-10 sm:py-16 bg-gray-100">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
-        <div className="flex justify-between items-center mb-5 sm:mb-8">
-          <h2 className="text-lg sm:text-3xl font-bold text-gray-900">
-            🔥 Trending Jobs
-          </h2>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6 sm:mb-10">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <TrendingUp size={20} className="text-amber-500 sm:size-6" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">
+              Trending Jobs
+            </h2>
+          </div>
 
           <button
             onClick={() => navigate('/jobs')}
-            className="text-xs sm:text-base text-indigo-600 font-medium hover:underline"
+            className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
           >
-            View All →
+            View All
+            <ArrowRight size={14} className="sm:size-4" />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-          {trendingJobs.map((job) => (
-            <Job key={job._id} job={job} />
-          ))}
-        </div>
+        {/* Jobs Grid */}
+        {trendingJobs.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {trendingJobs.map((job) => (
+              <Job key={job._id} job={job} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-10 sm:py-16">
+            <p className="text-sm text-slate-400">No trending jobs available right now.</p>
+          </div>
+        )}
 
       </div>
     </section>
