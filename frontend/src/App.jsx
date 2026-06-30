@@ -11,7 +11,7 @@ import Courses from './pages/Courses';
 import SavedJobs from './pages/SavedJobs';
 import Applications from './pages/Applications';
 import Profile from './pages/Profile';
-import JobDetail from './pages/JobDetail';
+import JobDetail from './pages/student/JobDetail';
 import ApplyJob from './pages/ApplyJob';
 import Dashboard from './components/admin/Dashboard';
 import AddJobs from './components/admin/AddJobs';
@@ -22,6 +22,7 @@ import CompanySetup from './components/admin/CompanySetup';
 import Applicants from './components/admin/Applicants';
 import CourseDetail from './pages/CourseDetail';
 import Internships from './pages/student/Internships';
+import InternshipDetail from './pages/student/InternshipDetail';
 
 // Public Route — Login ho toh redirect
 const PublicRoute = ({ children }) => {
@@ -72,6 +73,8 @@ function App() {
         <Route path="/jobs/:id" element={<StudentRoute><JobDetail /></StudentRoute>} />
         <Route path="/jobdetail/:id" element={<StudentRoute><JobDetail /></StudentRoute>} />
         <Route path="/internship" element={<StudentRoute><Internships /></StudentRoute>} />
+        <Route path="/Internship/:id" element={<StudentRoute><InternshipDetail /></StudentRoute>} />
+        <Route path="/InternshipDetail/:id" element={<StudentRoute><InternshipDetail /></StudentRoute>} />
         <Route path="/courses" element={<StudentRoute><Courses /></StudentRoute>} />
         <Route path="/course/:id" element={<StudentRoute><CourseDetail /></StudentRoute>} />
         <Route path="/saved" element={<StudentRoute><SavedJobs /></StudentRoute>} />

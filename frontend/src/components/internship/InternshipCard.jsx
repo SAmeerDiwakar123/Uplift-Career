@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const InternshipCard = ({ internship }) => {
   const navigate = useNavigate();
 
+
   const daysAgo = (time) => {
     if (!time) return 0;
     const diff = new Date() - new Date(time);
@@ -20,7 +21,7 @@ const InternshipCard = ({ internship }) => {
         </span>
 
         <button className="w-8 h-8 rounded-full border flex items-center justify-center text-gray-400 hover:text-indigo-600">
-          <Bookmark size={14}/>
+          <Bookmark size={14} />
         </button>
       </div>
 
@@ -44,10 +45,7 @@ const InternshipCard = ({ internship }) => {
 
       </div>
 
-
-
       <div>
-
         <h2 className="text-sm font-semibold text-gray-900">
           {internship?.title}
         </h2>
@@ -63,24 +61,24 @@ const InternshipCard = ({ internship }) => {
       <div className="flex gap-3 text-xs text-gray-500">
 
         <span className="flex items-center gap-1">
-          <MapPin size={12}/>
+          <MapPin size={12} />
           {internship?.location}
         </span>
 
 
         <span className="flex items-center gap-1">
-          <Users size={12}/>
+          <Users size={12} />
           {internship?.openings || 0} openings
         </span>
 
 
         <span className="flex items-center gap-1">
-          <Clock size={12}/>
+          <Clock size={12} />
 
           {
             daysAgo(internship?.createdAt) === 0
-            ? "Today"
-            : `${daysAgo(internship?.createdAt)}d ago`
+              ? "Today"
+              : `${daysAgo(internship?.createdAt)}d ago`
           }
 
         </span>
@@ -120,15 +118,18 @@ const InternshipCard = ({ internship }) => {
       <div className="flex gap-2">
 
         <button
-        onClick={()=>navigate(`/internship/${internship._id}`)}
-        className="flex-1 bg-indigo-600 text-white text-xs py-2 rounded-lg hover:bg-indigo-700">
+          onClick={() => {
+            console.log(internship._id)
+            navigate(`/internship/${internship._id}`)
+          }}
+          className="flex-1 bg-indigo-600 text-white text-xs py-2 rounded-lg hover:bg-indigo-700">
           View details
         </button>
 
 
         <button
-        onClick={()=>navigate(`/internship/${internship._id}`)}
-        className="px-5 border rounded-lg text-xs hover:border-indigo-500 hover:text-indigo-600">
+          onClick={() => navigate(`/internship/${internship?._id}`)}
+          className="px-5 border rounded-lg text-xs hover:border-indigo-500 hover:text-indigo-600">
           Apply
         </button>
 

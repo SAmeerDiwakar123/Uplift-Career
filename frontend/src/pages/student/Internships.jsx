@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import useGetAllInternships from "@/hooks/useGetAllInternships";
-import useGetFilteredInternships from "@/hooks/useGetFilteredInternships";
+import useGetAllInternships from "@/hooks/Internship/useGetAllInternships";
+import useGetFilteredInternships from "@/hooks/Internship/useGetFilteredInternships";
 import Navbar from "../../components/shared/Navbar"
 import InternshipCard from "../../components/internship/InternshipCard";
 import BottomNav from "@/components/shared/BottomNav";
