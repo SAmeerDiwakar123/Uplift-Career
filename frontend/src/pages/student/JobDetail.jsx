@@ -1,9 +1,8 @@
 import { setSingleJob } from '@/redux/jobSlice';
-import store from '@/redux/store';
 import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from '@/utils/constant';
 import axios from 'axios';
-import { Bookmark, MapPin, Briefcase, ArrowLeft, Clock } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import { Bookmark, MapPin, Briefcase, ArrowLeft, Clock, FileText, Wrench, Info, DollarSign, Users, Calendar } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -12,8 +11,11 @@ const JobDetail = () => {
   const params = useParams();
   const jobId = params.id;
   const { user } = useSelector(store => store.auth);
-  const { singleJob } = useSelector(store => store.job)
-  const isIntiallyApplied = singleJob?.applications?.some(application => application.applicant === user?._id || false);
+  const { singleJob } = useSelector(store => store.job);
+  
+  const isIntiallyApplied = singleJob?.applications?.some(
+    application => application.applicant === user?._id || false
+  );
   const [isApplied, setIsApplied] = useState(isIntiallyApplied);
 
   const navigate = useNavigate();
@@ -28,155 +30,178 @@ const JobDetail = () => {
       );
       if (res.data.success) {
         setIsApplied(true);
-        const updateSingleJob = { ...singleJob, applications: [...singleJob.applications, { applicant: user._id }] }
+        const updateSingleJob = { 
+          ...singleJob, 
+          applications: [...singleJob.applications, { applicant: user._id }] 
+        };
         dispatch(setSingleJob(updateSingleJob));
         toast.success(res.data.message);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
-  }
+  };
 
   useEffect(() => {
     const fetchsinglejob = async () => {
       try {
         const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, { withCredentials: true });
         if (res.data.success) {
-          dispatch(setSingleJob(res.data.job))
-          setIsApplied(res.data.job.applications.some(application => application.applicant === user?._id || false))
+          dispatch(setSingleJob(res.data.job));
+          setIsApplied(res.data.job.applications.some(
+            application => application.applicant === user?._id || false
+          ));
         }
       } catch (error) {
         console.error(error);
       }
-    }
+    };
     fetchsinglejob();
-  }, [jobId, dispatch, user?._id])
+  }, [jobId, dispatch, user?._id]);
+
+  const daysAgo = (time) => {
+    const diff = new Date() - new Date(time);
+    return Math.floor(diff / (1000 * 60 * 60 * 24));
+  };
+
+  if (!singleJob) {
+    return (
+      <div className="bg-gray-50 min-h-screen flex items-center justify-center text-gray-500 text-sm">
+        Loading...
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-8 pb-20 sm:pb-8">
-      <div className="max-w-5xl mx-auto px-3 sm:px-4">
+    <div className="min-h-screen bg-gray-50 text-gray-900 max-w-md mx-auto">
 
-        {/* Back */}
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 hover:text-indigo-600 mb-4 sm:mb-6"
-        >
-          <ArrowLeft size={15} /> Back
+      {/* Compact Header */}
+      <div className="bg-white px-3 py-2 flex items-center gap-2 sticky top-0 z-20 border-b">
+        <button onClick={() => navigate(-1)} className="p-1 -ml-1">
+          <ArrowLeft size={18} className="text-gray-700" />
         </button>
+        <h1 className="text-sm font-semibold truncate">Job Details</h1>
+      </div>
 
-        <div className="grid lg:grid-cols-3 gap-3 sm:gap-6">
-
-          {/* Left */}
-          <div className="lg:col-span-2 space-y-3 sm:space-y-6">
-
-            {/* Main Card */}
-            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border p-4 sm:p-6">
-
-              <div className="flex justify-between items-start">
-                <div className="flex gap-3 sm:gap-4">
-                  <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-lg sm:rounded-xl bg-indigo-50 flex items-center justify-center text-base sm:text-xl font-bold text-indigo-600 shrink-0">
-                    {singleJob?.company?.name?.charAt(0)}
-                  </div>
-
-                  <div>
-                    <h1 className="text-base sm:text-2xl font-bold">
-                      {singleJob?.title}
-                    </h1>
-                    <p className="text-xs sm:text-base text-gray-600">
-                      {singleJob?.company?.name}
-                    </p>
-                    <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 sm:mt-3 text-[10px] sm:text-sm text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <MapPin size={11} />{singleJob?.location}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Briefcase size={11} />{singleJob?.jobType}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock size={11} />{singleJob?.createdAt?.split("T")[0]}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <Bookmark size={16} className="text-gray-400 shrink-0" />
-              </div>
-
-              {/* Salary */}
-              <div className="mt-4 sm:mt-6 bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 flex justify-between">
-                <span className="text-xs sm:text-sm text-gray-500">Salary</span>
-                <span className="text-xs sm:text-base font-bold text-indigo-600">
-                  ₹ {singleJob?.salary}
-                </span>
-              </div>
-
-              {/* Apply */}
-              <button
-                onClick={!isApplied ? applyJobHandler : null}
-                disabled={isApplied}
-                className={`w-full mt-3 sm:mt-6 py-2 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold transition text-white
-                  ${isApplied ? "bg-green-600 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"}`}
-              >
-                {isApplied ? "Already Applied" : "Apply Now"}
-              </button>
-            </div>
-
-            {/* Description */}
-            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border p-4 sm:p-6">
-              <h2 className="text-sm sm:text-lg font-bold mb-2 sm:mb-4">
-                Job Description
-              </h2>
-              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                {singleJob?.description}
-              </p>
-            </div>
-
-            {/* Requirements */}
-            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border p-4 sm:p-6">
-              <h2 className="text-sm sm:text-lg font-bold mb-2 sm:mb-4">
-                Requirements
-              </h2>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {singleJob?.requirements?.map((req, i) => req && (
-                  <span key={i} className="text-[10px] sm:text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-lg">
-                    {req}
-                  </span>
-                ))}
-              </div>
-            </div>
-
+      {/* Company + Title */}
+      <div className="bg-white px-3 py-3">
+        <div className="flex gap-2.5">
+          <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-base font-bold text-indigo-600 shrink-0">
+            {singleJob?.company?.name?.charAt(0) || 'C'}
           </div>
-
-          {/* Right Sidebar */}
-          <div>
-            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border p-4 sm:p-6">
-              <h2 className="text-sm sm:text-base font-bold mb-3 sm:mb-4">
-                Company Info
-              </h2>
-              <p className="text-sm sm:text-base font-semibold">
-                {singleJob?.company?.name}
-              </p>
-              <p className="text-[10px] sm:text-sm text-gray-500 mt-1 sm:mt-2">
-                {singleJob?.location}
-              </p>
-              <div className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2">
-                <p className="text-[10px] sm:text-sm text-gray-600">
-                  Experience: {singleJob?.experienceLevel} Years
-                </p>
-                <p className="text-[10px] sm:text-sm text-gray-600">
-                  Applicants: {singleJob?.applications?.length || 0}
-                </p>
-                <p className="text-[10px] sm:text-sm text-gray-600">
-                  Openings: {singleJob?.position}
-                </p>
-              </div>
-            </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-sm font-semibold text-gray-900 leading-tight">
+              {singleJob?.title}
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">{singleJob?.company?.name}</p>
           </div>
+          <button className="shrink-0 w-8 h-8 flex items-center justify-center text-gray-400">
+            <Bookmark size={16} />
+          </button>
+        </div>
 
+        {/* Chips */}
+        <div className="flex gap-1.5 mt-2.5 flex-wrap">
+          <span className="text-[10px] px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+            {singleJob?.jobType}
+          </span>
+          <span className="text-[10px] px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+            {singleJob?.experienceLevel || 'Fresher'}
+          </span>
+          {singleJob?.isRemote && (
+            <span className="text-[10px] px-2 py-0.5 rounded bg-green-50 text-green-600">
+              Remote
+            </span>
+          )}
         </div>
       </div>
+
+      {/* Salary + CTA */}
+      <div className="bg-white mt-1.5 px-3 py-3">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-[10px] text-gray-500">Salary</p>
+            <p className="text-base font-bold text-gray-900">₹{singleJob?.salary} <span className="text-xs font-normal text-gray-500">LPA</span></p>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] text-gray-500">{singleJob?.applications?.length || 0} applicants</p>
+          </div>
+        </div>
+
+        {user?.role === 'student' && (
+          <button
+            onClick={!isApplied ? applyJobHandler : null}
+            disabled={isApplied}
+            className={`w-full py-2.5 rounded-lg text-xs font-semibold ${
+              isApplied
+                ? 'bg-green-50 text-green-600 border border-green-200'
+                : 'bg-indigo-600 text-white'
+            }`}
+          >
+            {isApplied ? 'Applied ✓' : 'Apply Now'}
+          </button>
+        )}
+      </div>
+
+      {/* Details Grid */}
+      <div className="bg-white mt-1.5 px-3 py-3">
+        <h3 className="text-xs font-semibold text-gray-900 mb-2">Details</h3>
+        <div className="grid grid-cols-2 gap-2.5">
+          <div className="flex items-center gap-2">
+            <MapPin size={13} className="text-gray-400 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-[10px] text-gray-500">Location</p>
+              <p className="text-xs text-gray-900 truncate">{singleJob?.location}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Briefcase size={13} className="text-gray-400 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-[10px] text-gray-500">Type</p>
+              <p className="text-xs text-gray-900 truncate">{singleJob?.jobType}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Users size={13} className="text-gray-400 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-[10px] text-gray-500">Experience</p>
+              <p className="text-xs text-gray-900 truncate">{singleJob?.experienceLevel || 'Fresher'} Yrs</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar size={13} className="text-gray-400 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-[10px] text-gray-500">Posted</p>
+              <p className="text-xs text-gray-900 truncate">{singleJob?.createdAt ? daysAgo(singleJob.createdAt) + 'd ago' : 'Recent'}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="bg-white mt-1.5 px-3 py-3">
+        <h3 className="text-xs font-semibold text-gray-900 mb-1.5">About this job</h3>
+        <p className="text-xs text-gray-600 leading-relaxed">
+          {singleJob?.description}
+        </p>
+      </div>
+
+      {/* Requirements */}
+      {singleJob?.requirements?.length > 0 && (
+        <div className="bg-white mt-1.5 px-3 py-3">
+          <h3 className="text-xs font-semibold text-gray-900 mb-1.5">Requirements</h3>
+          <div className="flex flex-wrap gap-1.5">
+            {singleJob.requirements.map((req, i) => req && (
+              <span key={i} className="text-[10px] px-2 py-1 rounded bg-gray-50 text-gray-600 border border-gray-100">
+                {req}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
-  )
-}
+  );
+};
 
 export default JobDetail;

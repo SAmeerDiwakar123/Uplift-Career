@@ -74,7 +74,6 @@ function App() {
         <Route path="/jobdetail/:id" element={<StudentRoute><JobDetail /></StudentRoute>} />
         <Route path="/internship" element={<StudentRoute><Internships /></StudentRoute>} />
         <Route path="/Internship/:id" element={<StudentRoute><InternshipDetail /></StudentRoute>} />
-        <Route path="/InternshipDetail/:id" element={<StudentRoute><InternshipDetail /></StudentRoute>} />
         <Route path="/courses" element={<StudentRoute><Courses /></StudentRoute>} />
         <Route path="/course/:id" element={<StudentRoute><CourseDetail /></StudentRoute>} />
         <Route path="/saved" element={<StudentRoute><SavedJobs /></StudentRoute>} />
