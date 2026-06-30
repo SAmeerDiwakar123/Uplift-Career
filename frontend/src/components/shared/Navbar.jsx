@@ -111,7 +111,7 @@ const Navbar = () => {
             onClick={() => navigate('/')}
             className='flex items-center gap-2 cursor-pointer'
           >
-            <img src={logo} alt="Uplift Career" className='h-7 sm:h-9' />
+            <img src={logo} alt="Uplift Career" className='h-8 sm:h-' />
           </div>
 
           {/* Navigation Links */}

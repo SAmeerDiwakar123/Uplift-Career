@@ -60,20 +60,6 @@ const InternshipCard = ({ internship }) => {
 
 
 
-      <div className="flex flex-wrap gap-2">
-
-        {internship?.skills?.slice(0,3).map((skill,index)=>(
-          <span
-          key={index}
-          className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-            {skill}
-          </span>
-        ))}
-
-      </div>
-
-
-
       <div className="flex gap-3 text-xs text-gray-500">
 
         <span className="flex items-center gap-1">

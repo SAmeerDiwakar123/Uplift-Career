@@ -89,18 +89,6 @@ const Job = ({ job }) => {
         </p>
       </div>
 
-      {/* Skills */}
-      <div className="flex flex-wrap gap-2">
-        {job?.requirements?.slice(0, 3).map((req, index) => (
-          <span
-            key={index}
-            className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600"
-          >
-            {req}
-          </span>
-        ))}
-      </div>
-
       {/* Meta Info */}
       <div className="flex gap-3 text-xs text-gray-500">
         <span className="flex items-center gap-1">

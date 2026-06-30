@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useGetAllInternships from "@/hooks/useGetAllInternships";
 import useGetFilteredInternships from "@/hooks/useGetFilteredInternships";
-import { setSearchInternshipByText } from "@/redux/internshipSlice";
 import Navbar from "../../components/shared/Navbar"
 import InternshipCard from "../../components/internship/InternshipCard";
 import BottomNav from "@/components/shared/BottomNav";
