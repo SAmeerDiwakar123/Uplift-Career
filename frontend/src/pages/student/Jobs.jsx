@@ -1,7 +1,7 @@
 import Navbar from '../../components/shared/Navbar';
 import JobCard from '../../components/job/JobCard';
-import FilterDrawer from '../../components/FilterDrawer';
-import FilterMegaDropdown from '../../components/FilterMegaDropdown';
+import FilterDrawer from '../../components/job/FilterDrawer';
+import FilterMegaDropdown from '../../components/job/FilterMegaDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchJobByText, clearFilter, setFilters } from '@/redux/jobSlice';
 import left from "../../assets/left.png";
@@ -101,8 +101,7 @@ const Jobs = () => {
       <div className="max-w-7xl mx-auto px-2 sm:px-4 mt-4 flex-1 w-full pb-24">
         <div className="flex items-center justify-between mb-4">
           <div className="hidden sm:block">
-            <h1 className="text-xl lg:text-2xl font-bold">💼 Explore Jobs</h1>
-            <p className="text-xs text-gray-500 mt-1">{filteredJobs.length} jobs found</p>
+            <p className="text-sm text-gray-500 mt-1">{filteredJobs.length} jobs found</p>
           </div>
           <div className="w-full sm:w-auto flex justify-center sm:justify-end">
             <div className="flex items-center gap-2 bg-white border rounded-xl px-3 py-2 w-full sm:w-64">
