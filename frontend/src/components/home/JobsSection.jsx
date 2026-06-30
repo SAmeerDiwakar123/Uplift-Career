@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
-import Job from '@/pages/Job';
+import JobCard from '../job/JobCard'
 
 const JobsSection = () => {
 
@@ -60,7 +60,7 @@ const JobsSection = () => {
 
         <div className='grid grid-cols-1 sm:grid-cols-3 lg:grid-3 gap-3 sm:gap-4'>
           {filteredJobs.slice(0, 3).map((job) => (
-            <Job key={job._id} job={job}/>
+            <JobCard key={job._id} job={job}/>
           ))}
         </div>
 

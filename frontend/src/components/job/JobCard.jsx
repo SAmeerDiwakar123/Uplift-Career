@@ -1,173 +1,159 @@
-import React from 'react';
-import { Bookmark, MapPin, Clock, Users, BadgeCheck, Briefcase } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleSavedJob } from '@/redux/savedJobSlice';
-import { toast } from 'sonner';
+import React from "react";
+import { MapPin, Clock, Users, Bookmark } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSavedJob } from "@/redux/savedJobSlice";
 
-const JobCard = ({ job }) => {
+const Job = ({ job }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const savedJobs = useSelector((store) => store.savedJob?.savedJobs) ?? [];
-  const { user } = useSelector((store) => store.auth);
-
   const isSaved = savedJobs.some((savedJob) => savedJob._id === job._id);
 
-  const handleSaveJob = (e) => {
-    e.stopPropagation();
-    if (!user) {
-      toast.error('Please login to save jobs');
-      return;
-    }
+  const handleSaveJob = () => {
     dispatch(toggleSavedJob(job));
-    toast.success(isSaved ? 'Removed from saved' : 'Saved successfully!');
   };
 
-  const handleViewDetails = () => {
-    navigate(`/jobdetail/${job._id}`);
+  const daysAgo = (time) => {
+    if (!time) return 0;
+    const diff = new Date() - new Date(time);
+    return Math.floor(diff / (1000 * 60 * 60 * 24));
   };
 
-  const handleApply = (e) => {
-    e.stopPropagation();
-    if (!user) {
-      toast.error('Please login to apply');
-      return;
+  const formatSalary = () => {
+    if (!job?.salary) return "Not disclosed";
+    return `₹${job.salary} LPA`;
+  };
+
+  const getJobType = () => {
+    const type = job?.jobType?.toLowerCase();
+    if (type === "part-time" || type === "parttime" || type === "part time") {
+      return "Part-time";
     }
-    navigate(`/jobdetail/${job._id}#apply`);
+    return "Full-time";
   };
 
-  const daysAgoFunction = (mongodbTime) => {
-    if (!mongodbTime) return 'Recently';
-    const createdAt = new Date(mongodbTime);
-    const currentTime = new Date();
-    const timeDifference = currentTime - createdAt;
-    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-    
-    if (days === 0) return 'Today';
-    if (days === 1) return 'Yesterday';
-    if (days < 7) return `${days}d ago`;
-    if (days < 30) return `${Math.floor(days / 7)}w ago`;
-    return `${Math.floor(days / 30)}m ago`;
-  };
+  const isFresher = !job?.experienceLevel || job?.experienceLevel == 0;
 
   return (
-    <div 
-      onClick={handleViewDetails}
-      className="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-2xl hover:border-purple-200 transition-all duration-300 hover:-translate-y-1 p-5 flex flex-col gap-3 cursor-pointer"
-    >
-      {/* Top */}
-      <div className="flex items-center justify-between">
-        <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
-          job?.jobType?.toLowerCase() === 'internship'
-            ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
-            : 'bg-green-50 text-green-600 border border-green-200'
-        }`}>
-          {job?.jobType?.toLowerCase() === 'internship' ? '💼 Internship' : '🎓 Job'}
-        </span>
+    <div className="bg-white rounded-xl border p-4 flex flex-col gap-3 hover:shadow-md transition">
+
+      {/* Badge & Bookmark */}
+      <div className="flex justify-between items-center">
+        <div className="flex gap-2">
+          {/* Full-time / Part-time */}
+          <span className="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-600">
+            {getJobType()}
+          </span>
+
+          {/* Fresher Badge */}
+          {isFresher && (
+            <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-600">
+              🌱 Fresher
+            </span>
+          )}
+        </div>
 
         <button
           onClick={handleSaveJob}
-          className={`p-1.5 rounded-full border transition-all duration-200 ${
+          className={`w-8 h-8 rounded-full border flex items-center justify-center transition ${
             isSaved
-              ? 'bg-purple-600 text-white border-purple-600 hover:bg-purple-700'
-              : 'border-gray-200 text-gray-400 hover:border-purple-400 hover:text-purple-500 hover:bg-purple-50'
+              ? "bg-indigo-600 text-white border-indigo-600"
+              : "text-gray-400 hover:text-indigo-600"
           }`}
         >
-          <Bookmark size={14} className={isSaved ? 'fill-white' : ''} />
+          <Bookmark size={14} fill={isSaved ? "currentColor" : "none"} />
         </button>
       </div>
 
       {/* Company */}
       <div className="flex items-center gap-3">
-        <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-xl font-bold text-purple-600 border border-purple-200 group-hover:scale-110 transition-transform duration-300">
-          {job?.company?.name?.charAt(0) || 'C'}
+        <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+          {job?.company?.name?.charAt(0) || "C"}
         </div>
 
         <div>
-          <h3 className="text-sm font-bold text-gray-800 flex items-center gap-1">
-            {job?.company?.name || 'Company'}
-            <BadgeCheck size={14} className="text-purple-500" />
-          </h3>
-          <p className="text-xs text-gray-400">{job?.location || 'India'}</p>
+          <p className="text-sm font-semibold text-gray-800">
+            {job?.company?.name || "Company"}
+          </p>
+          <p className="text-xs text-gray-500">{job?.location}</p>
         </div>
       </div>
 
-      {/* Title */}
+      {/* Title & Description */}
       <div>
-        <h2 className="text-base font-bold text-gray-900 line-clamp-1 group-hover:text-purple-700 transition-colors">
-          {job?.title || 'Job Title'}
-        </h2>
-        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-          {job?.description || 'No description available'}
+        <h2 className="text-sm font-semibold text-gray-900">{job?.title}</h2>
+        <p className="text-xs text-gray-500 line-clamp-2 mt-1">
+          {job?.description}
         </p>
       </div>
 
       {/* Skills */}
-      {job?.requirements && job.requirements.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {job.requirements.slice(0, 3).map((skill, index) => (
-            <span key={index} className="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-lg">
-              {skill}
-            </span>
-          ))}
-          {job.requirements.length > 3 && (
-            <span className="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-lg">
-              +{job.requirements.length - 3}
-            </span>
-          )}
-        </div>
-      )}
+      <div className="flex flex-wrap gap-2">
+        {job?.requirements?.slice(0, 3).map((req, index) => (
+          <span
+            key={index}
+            className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600"
+          >
+            {req}
+          </span>
+        ))}
+      </div>
 
-      {/* Info */}
-      <div className="flex items-center justify-between text-xs text-gray-500">
+      {/* Meta Info */}
+      <div className="flex gap-3 text-xs text-gray-500">
         <span className="flex items-center gap-1">
-          <MapPin size={13} />
-          {job?.location || 'Remote'}
+          <MapPin size={12} />
+          {job?.location}
         </span>
         <span className="flex items-center gap-1">
-          <Users size={13} />
-          {job?.position || 1} openings
+          <Users size={12} />
+          {job?.position || 0} openings
         </span>
         <span className="flex items-center gap-1">
-          <Clock size={13} />
-          {daysAgoFunction(job?.createdAt)}
+          <Clock size={12} />
+          {daysAgo(job?.createdAt) === 0
+            ? "Today"
+            : `${daysAgo(job?.createdAt)}d ago`}
         </span>
       </div>
 
       {/* Salary */}
-      <div className="flex items-center justify-between bg-purple-50 rounded-xl px-3 py-2">
+      <div className="flex justify-between bg-gray-50 rounded-lg px-3 py-2">
         <span className="text-xs text-gray-500">Salary</span>
-        <span className="text-sm font-bold text-purple-600">
-          ₹{job?.salary?.toLocaleString() || '0'}
+        <span className="text-sm font-semibold text-blue-600">
+          {formatSalary()}
         </span>
       </div>
 
       {/* Experience */}
-      <div className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2">
+      <div className="flex justify-between bg-blue-50 rounded-lg px-3 py-2">
         <span className="text-xs text-gray-500">Experience</span>
-        <span className="text-sm font-bold text-gray-700">
-          {job?.experienceLevel || '0-1'} Year
+        <span className="text-sm font-semibold text-blue-600">
+          {isFresher ? "🌱 Fresher" : `${job.experienceLevel} Yr`}
         </span>
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-2 mt-1">
+      <div className="flex gap-2">
         <button
-          onClick={handleViewDetails}
-          className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-semibold py-2 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-[1.02]"
+          onClick={() => navigate(`/jobdetail/${job?._id}`)}
+          className="flex-1 bg-indigo-600 text-white text-xs py-2 rounded-lg hover:bg-indigo-700"
         >
-          View Details
+          View details
         </button>
         <button
-          onClick={handleApply}
-          className="px-4 text-sm font-semibold py-2 rounded-xl border-2 border-gray-200 text-gray-600 hover:border-purple-400 hover:text-purple-600 hover:bg-purple-50 transition-all duration-200"
+          onClick={() => navigate(`/jobdetail/${job?._id}`)}
+          className="px-5 border rounded-lg text-xs hover:border-indigo-500 hover:text-indigo-600"
         >
           Apply
         </button>
       </div>
+
     </div>
   );
 };
 
-export default JobCard;
+export default Job;
+

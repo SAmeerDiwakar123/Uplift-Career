@@ -2,7 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { TrendingUp, ArrowRight } from 'lucide-react';
-import Job from '@/pages/Job';
+import JobCard from '../job/JobCard'
+
 
 const TrendingJobs = () => {
   const { alljobs } = useSelector(store => store.job);
@@ -34,9 +35,9 @@ const TrendingJobs = () => {
 
         {/* Jobs Grid */}
         {trendingJobs.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
             {trendingJobs.map((job) => (
-              <Job key={job._id} job={job} />
+              <JobCard key={job._id} job={job} />
             ))}
           </div>
         ) : (

@@ -6,6 +6,7 @@ import { setSearchInternshipByText } from "@/redux/internshipSlice";
 import Navbar from "../../components/shared/Navbar"
 import InternshipCard from "../../components/internship/InternshipCard";
 import BottomNav from "@/components/shared/BottomNav";
+import { Filter, Search } from "lucide-react";
 
 const Internship = () => {
   const dispatch = useDispatch();
@@ -23,32 +24,28 @@ const Internship = () => {
 
       <div className="max-w-7xl mx-auto w-full px-4 mt-4 sm:mb-6 flex-1">
 
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-sm sm:text-xl lg:text-2xl font-bold text-gray-900">
-              💼 Internships
-            </h1>
+        <div className="flex items-center justify-between mb-3 sm:mb-6">
+          <h1 className="hidden sm:block text-sm sm:text-2xl font-bold text-gray-900">
+            💼 Internship
+          </h1>
 
-            <p className="text-xs text-gray-500 mt-1">
-              Find the best internships for you
-            </p>
-          </div>
-          <div className="flex items-center gap-2 bg-white border rounded-xl px-3 py-2 w-56">
-            <span className="text-gray-400">🔍</span>
+          <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
+            {/* Mobile Filter Button */}
 
-            <input
-              type="text"
-              placeholder="Search internships..."
-              onChange={(e) =>
-                dispatch(setSearchInternshipByText(e.target.value))
-              }
-              className="w-full outline-none text-sm bg-transparent"
-            />
+            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-2 py-1.5 shadow-sm flex-1 sm:flex-none sm:w-64">
+              <Search size={14} className="text-gray-400 flex-shrink-0" />
+              <input
+                type="text"
+                placeholder="Search jobs..."
+                onChange={(e) => dispatch(setSearchJobByText(e.target.value))}
+                className="text-xs text-gray-700 outline-none w-full bg-transparent"
+              />
+            </div>
           </div>
         </div>
 
 
-        <p className="text-xs text-gray-500 mb-4">
+        <p className="hidden sm:block text-xs text-gray-500 mb-4">
           {filterInternships?.length || 0} internships found
         </p>
 

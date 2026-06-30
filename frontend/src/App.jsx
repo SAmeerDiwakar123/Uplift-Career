@@ -6,7 +6,7 @@ import About from './pages/public/About';
 import Contact from './pages/public/Contact';
 import Login from './components/auth/Login';
 import SignUp from './components/auth/SignUp';
-import Jobs from './pages/Jobs';
+import Jobs from './pages/student/Jobs';
 import Courses from './pages/Courses';
 import SavedJobs from './pages/SavedJobs';
 import Applications from './pages/Applications';
