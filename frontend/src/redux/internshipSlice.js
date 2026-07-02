@@ -9,7 +9,7 @@ const internshipSlice = createSlice({
     myApplications: [],
     searchInternshipByText: "",
     filterInternships: [],
-    filters: {},        // ← Yeh add karo
+    filters: {},
   },
   reducers: {
     setAllInternships: (state, action) => {

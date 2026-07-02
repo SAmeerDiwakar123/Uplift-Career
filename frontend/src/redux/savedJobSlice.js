@@ -6,6 +6,7 @@ const savedJobSlice = createSlice({
   initialState: {
     savedJobs: [],
     savedInternships: [],
+    searchInternshipByText: "",
   },
 
   reducers: {

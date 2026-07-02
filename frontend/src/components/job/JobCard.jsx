@@ -1,14 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { MapPin, Clock, Users, Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSavedJob } from "@/redux/savedJobSlice";
 import axios from "axios";
-import { SAVED_API_END_POINT } from "@/utils/constant";
+import { APPLICATION_API_END_POINT, SAVED_API_END_POINT } from "@/utils/constant";
+import { toast } from "sonner";
 
 const JobCard = ({ job }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
+
+  const [isApplied, setIsApplied] = useState(
+    job?.applications?.some((app) => app.applicant === user?._id) || false
+  );
+
+  const savedJobs = useSelector((store) => store.savedJob?.savedJobs) || [];
+  const isJobSaved = savedJobs.some((j) => j._id === job?._id);
 
   const daysAgo = (time) => {
     if (!time) return 0;
@@ -16,33 +25,35 @@ const JobCard = ({ job }) => {
     return Math.floor(diff / (1000 * 60 * 60 * 24));
   };
 
-  const formatSalary = () => {
-    if (!job?.salary) return "Not disclosed";
-    return `₹${job.salary} LPA`;
+  const handleSaveJob = async () => {
+    try {
+      dispatch(toggleSavedJob(job));
+      await axios.post(`${SAVED_API_END_POINT}/job/${job._id}`, {}, { withCredentials: true });
+    } catch (error) {
+      dispatch(toggleSavedJob(job));
+      console.log(error);
+    }
   };
 
-  const getJobType = () => {
-    const type = job?.jobType?.toLowerCase();
-    if (type === "part-time" || type === "parttime" || type === "part time") {
-      return "Part-time";
+  const handleApplyJob = async () => {
+    if (isApplied) return;
+    try {
+      const res = await axios.post(
+        `${APPLICATION_API_END_POINT}/apply/${job._id}`,
+        {},
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        setIsApplied(true);
+        toast.success(res.data.message || "Applied successfully");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+      console.log(error);
     }
-    return "Full-time";
   };
 
   const isFresher = !job?.experienceLevel || job?.experienceLevel == 0;
-
-  const savedJobs = useSelector((store) => store.savedJob?.savedJobs) || [];
-  const isJobSaved = savedJobs.some((j) => j._id === job?._id);
-
-const handleSaveJob = async () => {
-  try {
-    dispatch(toggleSavedJob(job)); // optimistic update
-    await axios.post(`${SAVED_API_END_POINT}/job/${job._id}`, {}, { withCredentials: true });
-  } catch (error) {
-    dispatch(toggleSavedJob(job)); 
-    console.log(error);
-  }
-};
 
   return (
     <div className="bg-white rounded-xl border p-4 flex flex-col gap-3 hover:shadow-md transition">
@@ -50,19 +61,16 @@ const handleSaveJob = async () => {
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <span className="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-600">
-            {getJobType()}
+            {job?.jobType || "Full-time"}
           </span>
-
           {isFresher && (
             <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-600">
-              🌱 Fresher
+              Fresher
             </span>
           )}
         </div>
-
-        {/* Sahi onClick handler loop se bachne ke liye */}
-        <button 
-          onClick={() => handleSaveJob()}
+        <button
+          onClick={handleSaveJob}
           className={`w-8 h-8 rounded-full border flex items-center justify-center transition ${
             isJobSaved ? "bg-indigo-50 border-indigo-200 text-indigo-600" : "text-gray-400 hover:text-indigo-600"
           }`}
@@ -80,37 +88,27 @@ const handleSaveJob = async () => {
           <p className="text-sm font-semibold text-gray-800">
             {job?.company?.name || "Company"}
           </p>
-          <p className="text-xs text-gray-500">
-            {job?.location}
-          </p>
+          <p className="text-xs text-gray-500">{job?.location}</p>
         </div>
       </div>
 
       {/* Title */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">
-          {job?.title}
-        </h2>
-        <p className="text-xs text-gray-500 line-clamp-2 mt-1">
-          {job?.description}
-        </p>
+        <h2 className="text-sm font-semibold text-gray-900">{job?.title}</h2>
+        <p className="text-xs text-gray-500 line-clamp-2 mt-1">{job?.description}</p>
       </div>
 
       {/* Details */}
       <div className="flex gap-3 text-xs text-gray-500">
         <span className="flex items-center gap-1">
-          <MapPin size={12} />
-          {job?.location}
+          <MapPin size={12} /> {job?.location}
         </span>
         <span className="flex items-center gap-1">
-          <Users size={12} />
-          {job?.position || 0} openings
+          <Users size={12} /> {job?.position || 0} openings
         </span>
         <span className="flex items-center gap-1">
           <Clock size={12} />
-          {daysAgo(job?.createdAt) === 0
-            ? "Today"
-            : `${daysAgo(job?.createdAt)}d ago`}
+          {daysAgo(job?.createdAt) === 0 ? "Today" : `${daysAgo(job?.createdAt)}d ago`}
         </span>
       </div>
 
@@ -118,7 +116,7 @@ const handleSaveJob = async () => {
       <div className="flex justify-between bg-gray-50 rounded-lg px-3 py-2">
         <span className="text-xs text-gray-500">Salary</span>
         <span className="text-sm font-semibold text-blue-600">
-          {formatSalary()}
+          {job?.salary ? `₹${job.salary} LPA` : "Not disclosed"}
         </span>
       </div>
 
@@ -126,7 +124,7 @@ const handleSaveJob = async () => {
       <div className="flex justify-between bg-blue-50 rounded-lg px-3 py-2">
         <span className="text-xs text-gray-500">Experience</span>
         <span className="text-sm font-semibold text-blue-600">
-          {isFresher ? "🌱 Fresher" : `${job?.experienceLevel} Yr`}
+          {isFresher ? "Fresher" : `${job?.experienceLevel} Yr`}
         </span>
       </div>
 
@@ -139,10 +137,15 @@ const handleSaveJob = async () => {
           View details
         </button>
         <button
-          onClick={() => navigate(`/jobdetail/${job?._id}`)}
-          className="px-5 border rounded-lg text-xs hover:border-indigo-500 hover:text-indigo-600"
+          onClick={handleApplyJob}
+          disabled={isApplied}
+          className={`px-5 border rounded-lg text-xs ${
+            isApplied
+              ? "bg-green-50 text-green-600 border-green-200 cursor-default"
+              : "hover:border-indigo-500 hover:text-indigo-600"
+          }`}
         >
-          Apply
+          {isApplied ? "Applied" : "Apply"}
         </button>
       </div>
     </div>

@@ -16,6 +16,8 @@ const SavedJobs = () => {
   const savedJobs = useSelector((store) => store.savedJob?.savedJobs) ?? [];
   const savedInternships = useSelector((store) => store.savedJob?.savedInternships) ?? [];
 
+
+  // Fetch saved jobs and internships on component mount
   useEffect(() => {
     const fetchSaved = async () => {
       try {
@@ -38,13 +40,8 @@ const SavedJobs = () => {
     <div className="min-h-screen bg-slate-50 pb-20">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 pt-4">
-        {/* Compact Header */}
-        <div className="hidden sm:block flex items-center gap-2 mb-4">
-          <Bookmark size={18} className="text-blue-600" />
-          <h1 className="text-base sm:text-lg font-bold text-slate-900">Saved</h1>
-        </div>
-
+      <div className="max-w-6xl mx-auto px-4 pt-28">
+        
         {isEmpty ? (
           <div className="text-center py-16">
             <Bookmark size={32} className="mx-auto text-slate-300 mb-3" />

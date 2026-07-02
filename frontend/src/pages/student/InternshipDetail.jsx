@@ -24,12 +24,7 @@ const InternshipDetail = () => {
 
   const handleApply = async () => {
     try {
-      const res = await axios.post(
-        `${INTERNSHIP_API_END_POINT}/${internshipId}/apply`,
-        {},
-        { withCredentials: true }
-      );
-
+      const res = await axios.post(`${INTERNSHIP_API_END_POINT}/apply/${internshipId}`, {}, { withCredentials: true });
       if (res.data.success) {
         toast.success(res.data.message);
       }

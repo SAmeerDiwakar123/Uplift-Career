@@ -1,25 +1,40 @@
 import { setSingleJob } from '@/redux/jobSlice';
 import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from '@/utils/constant';
 import axios from 'axios';
-import { Bookmark, MapPin, Briefcase, ArrowLeft, Clock, FileText, Wrench, Info, DollarSign, Users, Calendar } from 'lucide-react';
+import { Bookmark, MapPin, ArrowLeft, Users, Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const JobDetail = () => {
-  const params = useParams();
-  const jobId = params.id;
-  const { user } = useSelector(store => store.auth);
-  const { singleJob } = useSelector(store => store.job);
-  
+  const { id: jobId } = useParams();
+  const { user } = useSelector(s => s.auth);
+  const { singleJob } = useSelector(s => s.job);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const isIntiallyApplied = singleJob?.applications?.some(
     application => application.applicant === user?._id || false
   );
   const [isApplied, setIsApplied] = useState(isIntiallyApplied);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  useEffect(() => {
+    const fetchsinglejob = async () => {
+      try {
+        const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, { withCredentials: true });
+        if (res.data.success) {
+          dispatch(setSingleJob(res.data.job));
+          setIsApplied(res.data.job.applications.some(
+            application => application.applicant === user?._id || false
+          ));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchsinglejob();
+  }, [jobId, dispatch, user?._id]);
 
   const applyJobHandler = async () => {
     try {
@@ -42,23 +57,6 @@ const JobDetail = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchsinglejob = async () => {
-      try {
-        const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, { withCredentials: true });
-        if (res.data.success) {
-          dispatch(setSingleJob(res.data.job));
-          setIsApplied(res.data.job.applications.some(
-            application => application.applicant === user?._id || false
-          ));
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchsinglejob();
-  }, [jobId, dispatch, user?._id]);
-
   const daysAgo = (time) => {
     const diff = new Date() - new Date(time);
     return Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -66,326 +64,222 @@ const JobDetail = () => {
 
   if (!singleJob) {
     return (
-      <div className="bg-gray-50 min-h-screen flex items-center justify-center text-gray-500">
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
         Loading...
       </div>
     );
   }
 
+  const { title, company, jobType, experienceLevel, isRemote, salary, location, createdAt, description, requirements, applications, position } = singleJob;
+
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-
-      {/* ========== MOBILE VIEW (BlinkIt style) ========== */}
-      <div className="md:hidden max-w-md mx-auto">
-
-        {/* Compact Header */}
-        <div className="bg-white px-3 py-2 flex items-center gap-2 sticky top-0 z-20 border-b">
-          <button onClick={() => navigate(-1)} className="p-1 -ml-1">
-            <ArrowLeft size={18} className="text-gray-700" />
+    <div className="min-h-screen bg-[#f8f9fa]">
+      {/* Top Nav */}
+      <div className="bg-white border-b sticky top-0 z-30">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-1 hover:bg-gray-100 rounded-full">
+            <ArrowLeft size={20} className="text-gray-600" />
           </button>
-          <h1 className="text-sm font-semibold truncate">Job Details</h1>
+          <h1 className="text-sm font-medium text-gray-700">Job Details</h1>
         </div>
-
-        {/* Company + Title */}
-        <div className="bg-white px-3 py-3">
-          <div className="flex gap-2.5">
-            <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-base font-bold text-indigo-600 shrink-0">
-              {singleJob?.company?.name?.charAt(0) || 'C'}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="text-sm font-semibold text-gray-900 leading-tight">
-                {singleJob?.title}
-              </h2>
-              <p className="text-xs text-gray-500 mt-0.5">{singleJob?.company?.name}</p>
-            </div>
-            <button className="shrink-0 w-8 h-8 flex items-center justify-center text-gray-400">
-              <Bookmark size={16} />
-            </button>
-          </div>
-
-          {/* Chips */}
-          <div className="flex gap-1.5 mt-2.5 flex-wrap">
-            <span className="text-[10px] px-2 py-0.5 rounded bg-gray-100 text-gray-600">
-              {singleJob?.jobType}
-            </span>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-gray-100 text-gray-600">
-              {singleJob?.experienceLevel || 'Fresher'}
-            </span>
-            {singleJob?.isRemote && (
-              <span className="text-[10px] px-2 py-0.5 rounded bg-green-50 text-green-600">
-                Remote
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Salary + CTA */}
-        <div className="bg-white mt-1.5 px-3 py-3">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-[10px] text-gray-500">Salary</p>
-              <p className="text-base font-bold text-gray-900">₹{singleJob?.salary} <span className="text-xs font-normal text-gray-500">LPA</span></p>
-            </div>
-            <div className="text-right">
-              <p className="text-[10px] text-gray-500">{singleJob?.applications?.length || 0} applicants</p>
-            </div>
-          </div>
-
-          {user?.role === 'student' && (
-            <button
-              onClick={!isApplied ? applyJobHandler : null}
-              disabled={isApplied}
-              className={`w-full py-2.5 rounded-lg text-xs font-semibold ${
-                isApplied
-                  ? 'bg-green-50 text-green-600 border border-green-200'
-                  : 'bg-indigo-600 text-white'
-              }`}
-            >
-              {isApplied ? 'Applied ✓' : 'Apply Now'}
-            </button>
-          )}
-        </div>
-
-        {/* Details Grid */}
-        <div className="bg-white mt-1.5 px-3 py-3">
-          <h3 className="text-xs font-semibold text-gray-900 mb-2">Details</h3>
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="flex items-center gap-2">
-              <MapPin size={13} className="text-gray-400 shrink-0" />
-              <div className="min-w-0">
-                <p className="text-[10px] text-gray-500">Location</p>
-                <p className="text-xs text-gray-900 truncate">{singleJob?.location}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Briefcase size={13} className="text-gray-400 shrink-0" />
-              <div className="min-w-0">
-                <p className="text-[10px] text-gray-500">Type</p>
-                <p className="text-xs text-gray-900 truncate">{singleJob?.jobType}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users size={13} className="text-gray-400 shrink-0" />
-              <div className="min-w-0">
-                <p className="text-[10px] text-gray-500">Experience</p>
-                <p className="text-xs text-gray-900 truncate">{singleJob?.experienceLevel || 'Fresher'} Yrs</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar size={13} className="text-gray-400 shrink-0" />
-              <div className="min-w-0">
-                <p className="text-[10px] text-gray-500">Posted</p>
-                <p className="text-xs text-gray-900 truncate">{singleJob?.createdAt ? daysAgo(singleJob.createdAt) + 'd ago' : 'Recent'}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="bg-white mt-1.5 px-3 py-3">
-          <h3 className="text-xs font-semibold text-gray-900 mb-1.5">About this job</h3>
-          <p className="text-xs text-gray-600 leading-relaxed">
-            {singleJob?.description}
-          </p>
-        </div>
-
-        {/* Requirements */}
-        {singleJob?.requirements?.length > 0 && (
-          <div className="bg-white mt-1.5 px-3 py-3">
-            <h3 className="text-xs font-semibold text-gray-900 mb-1.5">Requirements</h3>
-            <div className="flex flex-wrap gap-1.5">
-              {singleJob.requirements.map((req, i) => req && (
-                <span key={i} className="text-[10px] px-2 py-1 rounded bg-gray-50 text-gray-600 border border-gray-100">
-                  {req}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* ========== DESKTOP VIEW (InternshipDetail style) ========== */}
-      <div className="hidden md:block px-4 py-5 max-w-2xl mx-auto">
-
-        {/* Back */}
-        <div
-          onClick={() => navigate('/jobs')}
-          className="inline-flex items-center gap-1.5 text-xs text-gray-500 mb-4 cursor-pointer hover:text-gray-700"
-        >
-          <ArrowLeft size={14} /> Back to jobs
-        </div>
-
-        {/* Header Card */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-4 shadow-sm">
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex gap-3 items-center">
-              <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-lg font-semibold text-indigo-600">
-                {singleJob?.company?.name?.charAt(0) || 'C'}
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* ===== LEFT COLUMN ===== */}
+          <div className="lg:col-span-2 space-y-4">
+            
+            {/* Header Card */}
+            <div className="bg-white rounded-xl border p-5">
+              <div className="flex gap-4">
+                <div className="w-14 h-14 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-xl font-bold text-blue-600 shrink-0">
+                  {company?.name?.[0] || 'C'}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg font-semibold text-gray-900 leading-snug">{title}</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">{company?.name}</p>
+                  <div className="flex items-center gap-1 mt-1.5 text-xs text-gray-500">
+                    <MapPin size={13} />
+                    <span>{isRemote ? 'Work from home' : location}</span>
+                  </div>
+                </div>
+                <button className="shrink-0 w-9 h-9 rounded-full border border-gray-200 text-gray-400 flex items-center justify-center hover:text-blue-500 hover:border-blue-300 transition">
+                  <Bookmark size={16} />
+                </button>
               </div>
-              <div>
-                <h1 className="text-lg font-semibold text-gray-900 mb-0.5">
-                  {singleJob?.title}
-                </h1>
-                <p className="text-sm text-gray-500">
-                  {singleJob?.company?.name}
-                </p>
-              </div>
-            </div>
-            <button className="w-9 h-9 rounded-full border border-gray-200 text-gray-400 flex items-center justify-center hover:border-indigo-400 hover:text-indigo-500 transition">
-              <Bookmark size={15} />
-            </button>
-          </div>
 
-          {/* Badges */}
-          <div className="flex gap-2 flex-wrap mb-4">
-            {singleJob?.jobType && (
-              <span className="text-[11px] px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200 font-medium">
-                {singleJob?.jobType}
-              </span>
-            )}
-            <span className="text-[11px] px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
-              {singleJob?.experienceLevel || 'Fresher'}
-            </span>
-            {singleJob?.isRemote && (
-              <span className="text-[11px] px-2.5 py-1 rounded-full bg-green-50 text-green-600 border border-green-200 font-medium">
-                Remote
-              </span>
-            )}
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-2.5 text-center">
-              <div className="text-sm font-semibold text-gray-900">
-                ₹{singleJob?.salary} LPA
-              </div>
-              <div className="text-[10px] text-gray-500 mt-0.5">Salary</div>
-            </div>
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-2.5 text-center">
-              <div className="text-sm font-semibold text-gray-900">
-                {singleJob?.position || 'Multiple'}
-              </div>
-              <div className="text-[10px] text-gray-500 mt-0.5">Openings</div>
-            </div>
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-2.5 text-center">
-              <div className="text-sm font-semibold text-gray-900">
-                {singleJob?.applications?.length || 0}
-              </div>
-              <div className="text-[10px] text-gray-500 mt-0.5">Applicants</div>
-            </div>
-          </div>
-
-          {/* Apply Button */}
-          {user?.role === 'student' && (
-            <button
-              onClick={!isApplied ? applyJobHandler : null}
-              disabled={isApplied}
-              className={`w-full py-3 rounded-xl text-sm font-medium transition-colors ${
-                isApplied
-                  ? 'bg-green-50 text-green-600 border border-green-200 cursor-default'
-                  : 'bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer'
-              }`}
-            >
-              {isApplied ? 'Already applied' : 'Apply now'}
-            </button>
-          )}
-        </div>
-
-        {/* About */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-3.5 shadow-sm">
-          <div className="flex items-center gap-1.5 text-sm font-semibold text-gray-900 mb-2.5">
-            <FileText size={15} className="text-gray-500" /> About this job
-          </div>
-          <p className="text-[13px] text-gray-600 leading-relaxed">
-            {singleJob?.description}
-          </p>
-        </div>
-
-        {/* Requirements */}
-        {singleJob?.requirements?.length > 0 && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-3.5 shadow-sm">
-            <div className="flex items-center gap-1.5 text-sm font-semibold text-gray-900 mb-2.5">
-              <Wrench size={15} className="text-gray-500" /> Requirements
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {singleJob.requirements.map((req, i) => req && (
-                <span
-                  key={i}
-                  className="text-[11px] px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 bg-gray-50"
-                >
-                  {req}
+              <div className="flex flex-wrap gap-2 mt-4">
+                <span className="text-xs px-2.5 py-1 rounded bg-blue-50 text-blue-700 font-medium border border-blue-100">
+                  {jobType}
                 </span>
-              ))}
-            </div>
-          </div>
-        )}
+                <span className="text-xs px-2.5 py-1 rounded bg-gray-100 text-gray-600 border border-gray-200">
+                  {experienceLevel || 'Fresher'}
+                </span>
+                {isRemote && (
+                  <span className="text-xs px-2.5 py-1 rounded bg-green-50 text-green-700 font-medium border border-green-100">
+                    Remote
+                  </span>
+                )}
+              </div>
 
-        {/* Details */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-3.5 shadow-sm">
-          <div className="flex items-center gap-1.5 text-sm font-semibold text-gray-900 mb-3">
-            <Info size={15} className="text-gray-500" /> Job details
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
-                <MapPin size={14} />
-              </div>
-              <div>
-                <div className="text-[10px] text-gray-500">Location</div>
-                <div className="text-xs font-medium text-gray-900">{singleJob?.location}</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
-                <Calendar size={14} />
-              </div>
-              <div>
-                <div className="text-[10px] text-gray-500">Posted</div>
-                <div className="text-xs font-medium text-gray-900">
-                  {singleJob?.createdAt ? daysAgo(singleJob.createdAt) + 'd ago' : 'Recently'}
+              <div className="grid grid-cols-3 gap-3 mt-5 pt-5 border-t">
+                <div>
+                  <p className="text-[11px] text-gray-500 mb-0.5 flex items-center gap-1">
+                    <span className="text-gray-400">₹</span> Salary
+                  </p>
+                  <p className="text-sm font-semibold text-gray-900">₹{salary} LPA</p>
+                </div>
+                <div>
+                  <p className="text-[11px] text-gray-500 mb-0.5 flex items-center gap-1">
+                    <Users size={11} /> Openings
+                  </p>
+                  <p className="text-sm font-semibold text-gray-900">{position || 'Multiple'}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] text-gray-500 mb-0.5 flex items-center gap-1">
+                    <Users size={11} /> Applicants
+                  </p>
+                  <p className="text-sm font-semibold text-gray-900">{applications?.length || 0}</p>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
-                <DollarSign size={14} />
+
+            {/* About Job */}
+            <div className="bg-white rounded-xl border p-5">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">About the job</h3>
+              <p className="text-[13px] text-gray-600 leading-relaxed whitespace-pre-line">
+                {description}
+              </p>
+            </div>
+
+            {/* Skills */}
+            {requirements?.length > 0 && (
+              <div className="bg-white rounded-xl border p-5">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Skill(s) required</h3>
+                <div className="flex flex-wrap gap-2">
+                  {requirements.map((req, i) => req && (
+                    <span key={i} className="text-xs px-3 py-1.5 rounded-full bg-gray-50 text-gray-700 border border-gray-200 font-medium">
+                      {req}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div>
-                <div className="text-[10px] text-gray-500">Salary</div>
-                <div className="text-xs font-medium text-gray-900">₹{singleJob?.salary} LPA</div>
+            )}
+
+            {/* Who can apply */}
+            <div className="bg-white rounded-xl border p-5">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Who can apply</h3>
+              <ul className="text-[13px] text-gray-600 space-y-1.5 list-disc list-inside">
+                <li>Only {experienceLevel || 'Fresher'} candidates can apply</li>
+                <li>Must have relevant skills mentioned above</li>
+                <li>Available for {jobType?.toLowerCase()} role</li>
+                {isRemote && <li>Comfortable working remotely</li>}
+              </ul>
+            </div>
+
+            {/* Perks */}
+            <div className="bg-white rounded-xl border p-5">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Perks</h3>
+              <div className="flex flex-wrap gap-2">
+                {['Certificate', 'Letter of recommendation', 'Flexible work hours', '5 days a week'].map((perk, i) => (
+                  <span key={i} className="text-xs px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-medium">
+                    {perk}
+                  </span>
+                ))}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
-                <Users size={14} />
-              </div>
-              <div>
-                <div className="text-[10px] text-gray-500">Experience</div>
-                <div className="text-xs font-medium text-gray-900">{singleJob?.experienceLevel || 'Fresher'} Years</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
-                <Briefcase size={14} />
-              </div>
-              <div>
-                <div className="text-[10px] text-gray-500">Job Type</div>
-                <div className="text-xs font-medium text-gray-900">{singleJob?.jobType}</div>
+
+            {/* Activity */}
+            <div className="bg-white rounded-xl border p-5">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Activity on job</h3>
+              <div className="space-y-2 text-[13px] text-gray-600">
+                <div className="flex items-center gap-2">
+                  <Calendar size={14} className="text-gray-400" />
+                  <span>Posted: {createdAt ? `${daysAgo(createdAt)} days ago` : 'Recently'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users size={14} className="text-gray-400" />
+                  <span>{applications?.length || 0} applicants</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
-                <Clock size={14} />
+          </div>
+
+          {/* ===== RIGHT COLUMN ===== */}
+          <div className="space-y-4">
+            
+            {/* Apply Card */}
+            <div className="bg-white rounded-xl border p-5 sticky top-20">
+              <div className="text-center mb-4">
+                <p className="text-xs text-gray-500 mb-1">Application deadline</p>
+                <p className="text-sm font-semibold text-gray-900 flex items-center justify-center gap-1">
+                  <Clock size={14} className="text-red-500" />
+                  Apply soon
+                </p>
               </div>
-              <div>
-                <div className="text-[10px] text-gray-500">Applicants</div>
-                <div className="text-xs font-medium text-gray-900">{singleJob?.applications?.length || 0}</div>
+
+              {user?.role === 'student' && (
+                <button
+                  onClick={!isApplied ? applyJobHandler : null}
+                  disabled={isApplied}
+                  className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                    isApplied
+                      ? 'bg-green-50 text-green-700 border border-green-200 flex items-center justify-center gap-1.5'
+                      : 'bg-[#008bdc] hover:bg-[#0070b0] text-white'
+                  }`}
+                >
+                  {isApplied ? (
+                    <>
+                      <CheckCircle2 size={16} /> Applied
+                    </>
+                  ) : (
+                    'Apply now'
+                  )}
+                </button>
+              )}
+
+              <div className="mt-4 pt-4 border-t text-center">
+                <p className="text-[11px] text-gray-400">
+                  {applications?.length || 0} students applied
+                </p>
               </div>
+            </div>
+
+            {/* About Company */}
+            <div className="bg-white rounded-xl border p-5">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">About company</h3>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-sm font-bold text-blue-600">
+                  {company?.name?.[0] || 'C'}
+                </div>
+                <p className="text-sm font-medium text-gray-900">{company?.name}</p>
+              </div>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                {company?.description || 'A growing company looking for talented individuals to join their team.'}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Mobile Bottom Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t px-4 py-3 z-40">
+        {user?.role === 'student' && (
+          <button
+            onClick={!isApplied ? applyJobHandler : null}
+            disabled={isApplied}
+            className={`w-full py-3 rounded-lg text-sm font-semibold ${
+              isApplied
+                ? 'bg-green-50 text-green-700 border border-green-200'
+                : 'bg-[#008bdc] text-white'
+            }`}
+          >
+            {isApplied ? 'Applied ✓' : 'Apply now'}
+          </button>
+        )}
+      </div>
+      <div className="lg:hidden h-16" />
     </div>
   );
 };
