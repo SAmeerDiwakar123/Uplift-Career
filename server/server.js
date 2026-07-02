@@ -1,6 +1,5 @@
 import dns from "node:dns/promises";
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
-
 import cors from "cors";
 import express from "express";
 import "dotenv/config";
@@ -27,12 +26,27 @@ app.use(
     crossOriginResourcePolicy: false,
   })
 );
-app.use(cors({
-  origin: "https://uplift-career-frontend.vercel.app", // tumhara actual frontend URL
-  credentials: true, // cookies allow karo
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://uplift-career-frontend.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Postman ya server-to-server requests ke liye
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  })
+);
 
 app.use((req, res, next) => {
   const allowedOrigins = [

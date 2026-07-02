@@ -95,8 +95,6 @@ function App() {
         <Route path="/admin/companies/:id" element={<RecruiterRoute><CompanySetup /></RecruiterRoute>} />
         <Route path="/admin/jobs/:id/applicants" element={<RecruiterRoute><Applicants /></RecruiterRoute>} />
 
-        {/* Catch all */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
