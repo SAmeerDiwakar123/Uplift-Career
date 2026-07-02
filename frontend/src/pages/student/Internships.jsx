@@ -22,11 +22,11 @@ const useMediaQuery = (query) => {
 
 const Internships = () => {
   useGetAllInternships();
-  
+
   const { allInternships = [], searchInternshipByText = '', filters = {} } = useSelector(
     (store) => store.internship || {}
   );
-  
+
   const dispatch = useDispatch();
   const [showFilters, setShowFilters] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -43,9 +43,9 @@ const Internships = () => {
 
   const filteredInternships = allInternships.filter((internship) => {
     if (!internship) return false;
-    
+
     const searchText = (searchInternshipByText || '').toLowerCase();
-    
+
     const matchesSearch =
       internship.title?.toLowerCase().includes(searchText) ||
       internship.company?.name?.toLowerCase().includes(searchText) ||
@@ -66,17 +66,17 @@ const Internships = () => {
     //  STIPEND FILTER: range properly handle karega
     const matchesStipend = filters?.stipend
       ? (() => {
-          const stipend = Number(internship.stipend) || 0;
-          switch (filters.stipend) {
-            case 'Unpaid': return stipend === 0;
-            case '0-5k': return stipend >= 0 && stipend <= 5000;
-            case '5k-10k': return stipend > 5000 && stipend <= 10000;
-            case '10k-20k': return stipend > 10000 && stipend <= 20000;
-            case '20k-50k': return stipend > 20000 && stipend <= 50000;
-            case '50k+': return stipend > 50000;
-            default: return true;
-          }
-        })()
+        const stipend = Number(internship.stipend) || 0;
+        switch (filters.stipend) {
+          case 'Unpaid': return stipend === 0;
+          case '0-5k': return stipend >= 0 && stipend <= 5000;
+          case '5k-10k': return stipend > 5000 && stipend <= 10000;
+          case '10k-20k': return stipend > 10000 && stipend <= 20000;
+          case '20k-50k': return stipend > 20000 && stipend <= 50000;
+          case '50k+': return stipend > 50000;
+          default: return true;
+        }
+      })()
       : true;
 
     // DURATION FILTER
@@ -87,18 +87,18 @@ const Internships = () => {
     // MODE FILTER: isRemote se derive karega agar mode field na ho
     const matchesMode = filters?.mode
       ? (() => {
-          const mode = filters.mode.toLowerCase();
-          if (mode === 'remote') {
-            return internship.mode?.toLowerCase() === 'remote' || internship.isRemote === true;
-          }
-          if (mode === 'in-office') {
-            return internship.mode?.toLowerCase() === 'in-office' || internship.isRemote === false;
-          }
-          if (mode === 'hybrid') {
-            return internship.mode?.toLowerCase() === 'hybrid';
-          }
-          return true;
-        })()
+        const mode = filters.mode.toLowerCase();
+        if (mode === 'remote') {
+          return internship.mode?.toLowerCase() === 'remote' || internship.isRemote === true;
+        }
+        if (mode === 'in-office') {
+          return internship.mode?.toLowerCase() === 'in-office' || internship.isRemote === false;
+        }
+        if (mode === 'hybrid') {
+          return internship.mode?.toLowerCase() === 'hybrid';
+        }
+        return true;
+      })()
       : true;
 
     return (
@@ -119,7 +119,7 @@ const Internships = () => {
       <div className="bg-white border-b sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-2 sm:px-4">
           <div className="flex items-center gap-2 py-2 overflow-x-auto scrollbar-hide">
-            
+
             {/* Mobile Filter Button */}
             <button
               onClick={() => setShowFilters(true)}
@@ -134,7 +134,7 @@ const Internships = () => {
               Filters
               {activeCount > 0 && ` (${activeCount})`}
             </button>
-
+            
             {/* Desktop Filter Button */}
             <button
               onClick={() => setShowFilters(true)}
@@ -185,14 +185,14 @@ const Internships = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-2 sm:px-4 mt-4 flex-1 w-full pb-24">
-        
+
         <div className="flex items-center justify-between mb-4">
           <div className="hidden sm:block">
             <p className="text-sm text-gray-500 mt-1">
               {filteredInternships.length} internships found
             </p>
           </div>
-          
+
           <div className="w-full sm:w-auto flex justify-center sm:justify-end">
             <div className="flex items-center gap-2 bg-white border rounded-xl px-3 py-2 w-full sm:w-64">
               <Search size={14} className="text-gray-400" />

@@ -3,25 +3,36 @@ import { createSlice } from "@reduxjs/toolkit";
 const savedJobSlice = createSlice({
   name: "savedJob",
   initialState: {
-    savedJobs: []
+    savedJobs: [],
+    savedInternships: [],
   },
   reducers: {
+    setSavedJobs: (state, action) => {
+      state.savedJobs = action.payload;
+    },
+    setSavedInternships: (state, action) => {
+      state.savedInternships = action.payload;
+    },
     toggleSavedJob: (state, action) => {
-      if (!state.savedJobs) state.savedJobs = [];
-      
-      //Job exists
-      const exists = state.savedJobs.find(job => job._id === action.payload._id);
-      
+      const job = action.payload;
+      const exists = state.savedJobs.find((j) => j._id === job._id);
       if (exists) {
-        //remove
-        state.savedJobs = state.savedJobs.filter(job => job._id !== action.payload._id);
+        state.savedJobs = state.savedJobs.filter((j) => j._id !== job._id);
       } else {
-        //add
-        state.savedJobs.push(action.payload);
+        state.savedJobs.push(job);
       }
-    }
-  }
+    },
+    toggleSavedInternship: (state, action) => {
+      const internship = action.payload;
+      const exists = state.savedInternships.find((i) => i._id === internship._id);
+      if (exists) {
+        state.savedInternships = state.savedInternships.filter((i) => i._id !== internship._id);
+      } else {
+        state.savedInternships.push(internship);
+      }
+    },
+  },
 });
 
-export const { toggleSavedJob } = savedJobSlice.actions;
+export const { setSavedJobs, setSavedInternships, toggleSavedJob, toggleSavedInternship } = savedJobSlice.actions;
 export default savedJobSlice.reducer;

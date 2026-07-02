@@ -1,15 +1,48 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/shared/Navbar';
 import BottomNav from '@/components/shared/BottomNav';
 import JobCard from "../components/job/JobCard"
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { SAVED_API_END_POINT } from '@/utils/constant';
+import { setSavedJobs } from '@/redux/savedJobSlice'; // Sahi import check kar lein
 
 const SavedJobs = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const savedJobs = useSelector(store => store.savedJob?.savedJobs) ?? [];
 
-  return (  
+  // 👇 Ye useEffect page load hote hi backend se saari saved jobs fetch karega
+useEffect(() => {
+  const fetchSavedJobs = async () => {
+    try {
+      const res = await axios.get(
+        `${SAVED_API_END_POINT}/jobs`,
+        {
+          withCredentials:true,
+        }
+      );
+
+      if(res.data.success){
+        console.log("saved jobs", savedJobs);
+        const jobs = res.data.savedJobs.map(
+          (item)=> item.job
+        );
+
+        dispatch(setSavedJobs(jobs));
+      }
+
+    } catch(error){
+      console.log(error);
+    }
+  };
+
+  fetchSavedJobs();
+
+},[dispatch]);
+
+  return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
 
@@ -38,6 +71,7 @@ const SavedJobs = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pb-24">
             {savedJobs.map((job) => (
+              // Kuch cases mein job object direct na hokar job.job ho sakta hai, backend schema ke mutabik check karein
               <JobCard key={job._id} job={job} showRemove={true} />
             ))}
           </div>
