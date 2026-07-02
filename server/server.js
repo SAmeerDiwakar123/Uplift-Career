@@ -1,7 +1,7 @@
 import dns from "node:dns/promises";
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
-
+import cors from "cors";
 import express from "express";
 import "dotenv/config";
 import ConnectDB from "./config/mongodb.js";
@@ -27,6 +27,12 @@ app.use(
     crossOriginResourcePolicy: false,
   })
 );
+app.use(cors({
+  origin: "https://uplift-career-frontend.vercel.app", // tumhara actual frontend URL
+  credentials: true, // cookies allow karo
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 app.use((req, res, next) => {
   const allowedOrigins = [

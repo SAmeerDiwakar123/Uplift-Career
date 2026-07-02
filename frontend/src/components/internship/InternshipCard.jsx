@@ -5,22 +5,23 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSavedInternship } from "@/redux/savedJobSlice";
+import { SAVED_API_END_POINT } from "@/utils/constant";
 
 const InternshipCard = ({ internship }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-const savedInternships = useSelector((store) => store.savedJob?.savedInternships) ?? [];
-const isSaved = savedInternships.some((i) => i._id === internship._id);
+  const savedInternships = useSelector((store) => store.savedJob?.savedInternships) ?? [];
+  const isInternshipSaved = savedInternships.some((i) => i._id === internship._id);
 
-const handleSaveInternship = async () => {
-  try {
-    dispatch(toggleSavedInternship(internship));
-    await axios.post(`${SAVED_API}/internship/${internship._id}`, {}, { withCredentials: true });
-  } catch (error) {
-    dispatch(toggleSavedInternship(internship));
-    console.log(error);
-  }
-};
+  const handleSaveInternship = async () => {
+    try {
+      dispatch(toggleSavedInternship(internship));
+      await axios.post(`${SAVED_API_END_POINT}/internship/${internship._id}`, {}, { withCredentials: true });
+    } catch (error) {
+      dispatch(toggleSavedInternship(internship));
+      console.log(error);
+    }
+  };
 
 
   const daysAgo = (time) => {
@@ -37,8 +38,10 @@ const handleSaveInternship = async () => {
           Internship
         </span>
 
-        <button onClick={()=> handleSaveInternship()} className="w-8 h-8 rounded-full border flex items-center justify-center text-gray-400 hover:text-indigo-600">
-          <Bookmark size={14} />
+        <button onClick={() => handleSaveInternship()} className={`w-8 h-8 rounded-full border flex items-center justify-center transition ${
+            isInternshipSaved ? "bg-indigo-50 border-indigo-200 text-indigo-600" : "text-gray-400 hover:text-indigo-600"
+          }`}>
+          <Bookmark size={14} fill={isInternshipSaved ? "currentColor" : "none"} />
         </button>
       </div>
 

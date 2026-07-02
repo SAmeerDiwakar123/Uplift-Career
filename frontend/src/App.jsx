@@ -24,6 +24,9 @@ import CourseDetail from './pages/CourseDetail';
 import Internships from './pages/student/Internships';
 import InternshipDetail from './pages/student/InternshipDetail';
 
+import axios from "axios";
+axios.defaults.withCredentials = true;
+
 // Public Route — Login ho toh redirect
 const PublicRoute = ({ children }) => {
   const { user } = useSelector((store) => store.auth);

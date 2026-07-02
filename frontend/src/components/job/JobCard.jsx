@@ -30,7 +30,7 @@ const JobCard = ({ job }) => {
   };
 
   const isFresher = !job?.experienceLevel || job?.experienceLevel == 0;
-  
+
   const savedJobs = useSelector((store) => store.savedJob?.savedJobs) || [];
   const isJobSaved = savedJobs.some((j) => j._id === job?._id);
 
