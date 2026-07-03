@@ -52,7 +52,7 @@ const JobCard = ({ job }) => {
       console.log(error);
     }
   };
-
+  // for Fresher
   const isFresher = !job?.experienceLevel || job?.experienceLevel == 0;
 
   return (
