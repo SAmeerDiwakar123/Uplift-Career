@@ -27,7 +27,7 @@ const useMediaQuery = (query) => {
 const Jobs = () => {
   useGetAllJobs();
   
-  // 👇 Defaults add kar diye taaki undefined crash na kare
+  // Defaults add kar diye taaki undefined crash na kare
   const { alljobs = [], searchJobByText = '', filters = {} } = useSelector(
     (store) => store.job || {}
   );
@@ -39,7 +39,7 @@ const Jobs = () => {
 
   const jobsPerPage = 9;
 
-  // 👇 Filter logic with optional chaining + salary range fix
+  // Filter logic with optional chaining + salary range fix
   const filteredJobs = alljobs.filter((job) => {
     if (!job) return false;
     

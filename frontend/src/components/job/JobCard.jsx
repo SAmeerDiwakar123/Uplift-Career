@@ -3,6 +3,7 @@ import { MapPin, Clock, Users, Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSavedJob } from "@/redux/savedJobSlice";
+import { markJobApplied } from "@/redux/jobSlice";
 import axios from "axios";
 import { APPLICATION_API_END_POINT, SAVED_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
@@ -12,9 +13,10 @@ const JobCard = ({ job }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.auth);
 
-  const [isApplied, setIsApplied] = useState(
-    job?.applications?.some((app) => app.applicant === user?._id) || false
-  );
+  const [applying, setApplying] = useState(false);
+
+  const isApplied =
+    job?.applications?.some((app) => app.applicant === user?._id) || false;
 
   const savedJobs = useSelector((store) => store.savedJob?.savedJobs) || [];
   const isJobSaved = savedJobs.some((j) => j._id === job?._id);
@@ -36,7 +38,8 @@ const JobCard = ({ job }) => {
   };
 
   const handleApplyJob = async () => {
-    if (isApplied) return;
+    if (isApplied || applying) return;
+    setApplying(true);
     try {
       const res = await axios.post(
         `${APPLICATION_API_END_POINT}/apply/${job._id}`,
@@ -44,12 +47,14 @@ const JobCard = ({ job }) => {
         { withCredentials: true }
       );
       if (res.data.success) {
-        setIsApplied(true);
+        dispatch(markJobApplied({ jobId: job._id, userId: user._id }));
         toast.success(res.data.message || "Applied successfully");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
       console.log(error);
+    } finally {
+      setApplying(false);
     }
   };
   // for Fresher
@@ -138,14 +143,14 @@ const JobCard = ({ job }) => {
         </button>
         <button
           onClick={handleApplyJob}
-          disabled={isApplied}
+          disabled={isApplied || applying}
           className={`px-5 border rounded-lg text-xs ${
             isApplied
               ? "bg-green-50 text-green-600 border-green-200 cursor-default"
               : "hover:border-indigo-500 hover:text-indigo-600"
           }`}
         >
-          {isApplied ? "Applied" : "Apply"}
+          {isApplied ? "Applied" : applying ? "..." : "Apply"}
         </button>
       </div>
     </div>

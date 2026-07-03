@@ -29,6 +29,28 @@ const jobSlice = createSlice({
     setAllAppliedJobs: (state, action) => {
       state.allAppliedJobs = action.payload
     },
+    markJobApplied: (state, action) => {
+      const { jobId, userId } = action.payload;
+
+      // Update the job inside the alljobs list (used by JobCard)
+      const job = state.alljobs.find((j) => j._id === jobId);
+      if (job) {
+        if (!job.applications) job.applications = [];
+        const alreadyThere = job.applications.some((app) => app.applicant === userId);
+        if (!alreadyThere) {
+          job.applications.push({ applicant: userId });
+        }
+      }
+
+      // Also update singleJob if it's the same job (used by JobDetail)
+      if (state.singleJob?._id === jobId) {
+        if (!state.singleJob.applications) state.singleJob.applications = [];
+        const alreadyThere = state.singleJob.applications.some((app) => app.applicant === userId);
+        if (!alreadyThere) {
+          state.singleJob.applications.push({ applicant: userId });
+        }
+      }
+    },
     setFilters: (state, action) => {
       state.filters = {
         ...state.filters,
@@ -46,5 +68,5 @@ const jobSlice = createSlice({
     }
   }
 });
-export const { setAllJobs, setSingleJob, setSearchJobByText, setAllAppliedJobs, setFilters, clearFilter } = jobSlice.actions;
+export const { setAllJobs, setSingleJob, setSearchJobByText, setAllAppliedJobs, markJobApplied, setFilters, clearFilter } = jobSlice.actions;
 export default jobSlice.reducer;

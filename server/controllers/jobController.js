@@ -44,7 +44,10 @@ const getAllJobs = async (req, res) => {
       ]
     }
 
-    const jobs = await Job.find(query).populate({ path: "company" }).sort({ createAt: -1 });
+    const jobs = await Job.find(query)
+      .populate({ path: "company" })
+      .populate({ path: "applications" })
+      .sort({ createdAt: -1 });
     if (!jobs) {
       return res.status(404).json({ success: false, message: "No jobs found" });
     }
@@ -125,4 +128,4 @@ const deleteJob = async (req, res) => {
   }
 };
 
-export { postJob, getAllJobs, getJobById, getAdminJobs ,updateJob, deleteJob};
+export { postJob, getAllJobs, getJobById, getAdminJobs, updateJob, deleteJob };
