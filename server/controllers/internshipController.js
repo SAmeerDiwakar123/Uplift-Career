@@ -91,8 +91,8 @@ export const getInternshipById = async (req, res) => {
 
     const internship = await Internship.findById(id)
       .populate("company")
-      .populate("postedBy", "fullname email");
-
+      .populate("postedBy", "fullname email")
+      .populate("applications");
     if (!internship) {
       return res.status(404).json({
         success: false,

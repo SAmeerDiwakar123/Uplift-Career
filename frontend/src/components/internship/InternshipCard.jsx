@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSavedInternship } from "@/redux/savedJobSlice";
+import { markInternshipApplied } from "@/redux/internshipSlice";
 import { INTERNSHIP_API_END_POINT, SAVED_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 
@@ -15,10 +16,10 @@ const InternshipCard = ({ internship }) => {
   const savedInternships = useSelector((store) => store.savedJob?.savedInternships) ?? [];
   const isInternshipSaved = savedInternships.some((i) => i._id === internship._id);
 
-  const isInitiallyApplied = internship?.applications?.some(
-    (app) => app.applicant === user?._id
-  ) || false;
-  const [isApplied, setIsApplied] = useState(isInitiallyApplied);
+  const [applying, setApplying] = useState(false);
+
+  const isApplied =
+    internship?.applications?.some((app) => app.applicant === user?._id) || false;
 
   const handleSaveInternship = async () => {
     try {
@@ -31,7 +32,8 @@ const InternshipCard = ({ internship }) => {
   };
 
   const handleApplyInternship = async () => {
-    if (isApplied) return;
+    if (isApplied || applying) return;
+    setApplying(true);
     try {
       const res = await axios.post(
         `${INTERNSHIP_API_END_POINT}/apply/${internship._id}`,
@@ -39,12 +41,14 @@ const InternshipCard = ({ internship }) => {
         { withCredentials: true }
       );
       if (res.data.success) {
-        setIsApplied(true);
+        dispatch(markInternshipApplied({ internshipId: internship._id, userId: user._id }));
         toast.success(res.data.message || "Applied successfully");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
       console.log(error);
+    } finally {
+      setApplying(false);
     }
   };
 
@@ -134,14 +138,14 @@ const InternshipCard = ({ internship }) => {
 
         <button
           onClick={handleApplyInternship}
-          disabled={isApplied}
+          disabled={isApplied || applying}
           className={`px-5 border rounded-lg text-xs transition ${
             isApplied
               ? "bg-green-50 text-green-600 border-green-200 cursor-default"
               : "hover:border-indigo-500 hover:text-indigo-600"
           }`}
         >
-          {isApplied ? "Applied" : "Apply"}
+          {isApplied ? "Applied" : applying ? "..." : "Apply"}
         </button>
       </div>
     </div>
