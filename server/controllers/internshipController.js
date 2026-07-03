@@ -68,6 +68,7 @@ export const getAllInternships = async (req, res) => {
     const internships = await Internship.find(query)
       .populate("company")
       .populate("postedBy", "fullname email")
+      .populate("applications") 
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
