@@ -3,7 +3,6 @@ import { MapPin, Clock, Users, Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSavedJob } from "@/redux/savedJobSlice";
-import { markJobApplied } from "@/redux/jobSlice";
 import axios from "axios";
 import { APPLICATION_API_END_POINT, SAVED_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
@@ -15,18 +14,22 @@ const JobCard = ({ job }) => {
 
   const [applying, setApplying] = useState(false);
 
+  // Check if applied
   const isApplied =
     job?.applications?.some((app) => app.applicant === user?._id) || false;
 
+  // Check if saved
   const savedJobs = useSelector((store) => store.savedJob?.savedJobs) || [];
   const isJobSaved = savedJobs.some((j) => j._id === job?._id);
 
+  // Helper function
   const daysAgo = (time) => {
     if (!time) return 0;
     const diff = new Date() - new Date(time);
     return Math.floor(diff / (1000 * 60 * 60 * 24));
   };
 
+  // Save job handler
   const handleSaveJob = async () => {
     try {
       dispatch(toggleSavedJob(job));
@@ -37,27 +40,28 @@ const JobCard = ({ job }) => {
     }
   };
 
+  // Save apply handler 
   const handleApplyJob = async () => {
-    if (isApplied || applying) return;
     setApplying(true);
     try {
-      const res = await axios.post(
-        `${APPLICATION_API_END_POINT}/apply/${job._id}`,
-        {},
-        { withCredentials: true }
+      const res = await axios.post(`${APPLICATION_API_END_POINT}/apply/{job._id}`, {},
+        {
+          withCredentials: true,
+        }
       );
       if (res.data.success) {
-        dispatch(markJobApplied({ jobId: job._id, userId: user._id }));
+        dispatch(matchMedia({ jobId: job._id, userId: user._id }));
         toast.success(res.data.message || "Applied successfully");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
       console.log(error);
-    } finally {
+    }finally{
       setApplying(false);
     }
-  };
-  // for Fresher
+  }
+
+  // Fresher check
   const isFresher = !job?.experienceLevel || job?.experienceLevel == 0;
 
   return (
@@ -76,9 +80,8 @@ const JobCard = ({ job }) => {
         </div>
         <button
           onClick={handleSaveJob}
-          className={`w-8 h-8 rounded-full border flex items-center justify-center transition ${
-            isJobSaved ? "bg-indigo-50 border-indigo-200 text-indigo-600" : "text-gray-400 hover:text-indigo-600"
-          }`}
+          className={`w-8 h-8 rounded-full border flex items-center justify-center transition ${isJobSaved ? "bg-indigo-50 border-indigo-200 text-indigo-600" : "text-gray-400 hover:text-indigo-600"
+            }`}
         >
           <Bookmark size={15} fill={isJobSaved ? "currentColor" : "none"} />
         </button>
@@ -141,16 +144,13 @@ const JobCard = ({ job }) => {
         >
           View details
         </button>
-        <button
-          onClick={handleApplyJob}
-          disabled={isApplied || applying}
-          className={`px-5 border rounded-lg text-xs ${
-            isApplied
+        <button onClick={handleApplyJob} disabled={isApplied || applying}
+          className={`px-5 border rounded-lg text-xs ${isApplied
               ? "bg-green-50 text-green-600 border-green-200 cursor-default"
               : "hover:border-indigo-500 hover:text-indigo-600"
-          }`}
+            }`}
         >
-          {isApplied ? "Applied" : applying ? "..." : "Apply"}
+          {isApplied ? "Applied" : "Apply"}
         </button>
       </div>
     </div>
