@@ -6,10 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs';
 import BottomNav from '@/components/shared/BottomNav';
+import useGetAllInternships from '@/hooks/Internship/useGetAllInternships';
 
 const Applications = () => {
   useGetAppliedJobs();
+  useGetAllInternships();
   const { allAppliedJobs } = useSelector(store => store.job)
+  const { allInternships } = useSelector(store => store.internship)
   const navigate = useNavigate();
 
   return (
@@ -21,7 +24,7 @@ const Applications = () => {
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">My Applications</h1>
         <p className="text-xs sm:text-sm text-gray-400 mb-4 sm:mb-6">Track all your job applications</p>
 
-        {allAppliedJobs?.length == 0 ? (
+        {allAppliedJobs?.length == 0 && allInternships?.length == 0 ? (
           <div className="flex flex-col items-center justify-center mt-20 text-center">
             <span className="text-4xl sm:text-5xl mb-3">📋</span>
             <p className="text-sm sm:text-base text-gray-500 font-medium">No applications yet</p>
@@ -32,6 +35,61 @@ const Applications = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-3 sm:gap-4 pb-10">
+            {allInternships?.map((internship) => (<div
+              key={internship._id}
+              className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-3 sm:p-5"
+            >
+              <div className="flex items-center justify-between gap-2">
+
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-indigo-50 flex items-center justify-center text-base sm:text-xl font-bold text-indigo-600 border border-indigo-100 shrink-0">
+                    {internship?.company?.name?.charAt(0)}
+                  </div>
+
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-bold text-gray-800 flex items-center gap-1">
+                      {internship?.company?.name}
+                      <BadgeCheck size={11} className="text-indigo-500" />
+                    </h3>
+
+                    <h2 className="text-sm sm:text-base font-bold text-gray-900">
+                      {internship?.title}
+                    </h2>
+
+                    <div className="flex items-center gap-2 sm:gap-3 mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <MapPin size={10} />
+                        {internship?.location}
+                      </span>
+
+                      <span className="flex items-center gap-1">
+                        <Clock size={10} />
+                        {new Date(internship?.createdAt).toLocaleDateString("en-IN")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-1.5 sm:gap-2 shrink-0">
+                  <span
+                    className={`text-[10px] sm:text-xs font-semibold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${internship?.status === "accepted"
+                      ? "bg-green-50 text-green-600"
+                      : internship?.status === "rejected"
+                        ? "bg-red-50 text-red-600"
+                        : "bg-yellow-50 text-yellow-600"
+                      }`}
+                  >
+                    {internship?.status}
+                  </span>
+
+                  <button onClick={() => navigate(`/internship/${internship?._id}`)} className="text-[10px] sm:text-xs text-indigo-600 hover:underline">
+                    View Job
+                  </button>
+                </div>
+
+              </div>
+            </div>
+            ))}
             {allAppliedJobs?.map((app) => (
               <div
                 key={app._id}
@@ -71,10 +129,10 @@ const Applications = () => {
                   <div className="flex flex-col items-end gap-1.5 sm:gap-2 shrink-0">
                     <span
                       className={`text-[10px] sm:text-xs font-semibold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${app?.status === "accepted"
-                          ? "bg-green-50 text-green-600"
-                          : app?.status === "rejected"
-                            ? "bg-red-50 text-red-600"
-                            : "bg-yellow-50 text-yellow-600"
+                        ? "bg-green-50 text-green-600"
+                        : app?.status === "rejected"
+                          ? "bg-red-50 text-red-600"
+                          : "bg-yellow-50 text-yellow-600"
                         }`}
                     >
                       {app?.status}
@@ -92,7 +150,7 @@ const Applications = () => {
         )}
 
       </div>
-      <BottomNav/>
+      <BottomNav />
     </div>
   );
 };

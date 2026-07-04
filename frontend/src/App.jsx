@@ -25,6 +25,7 @@ import Internships from './pages/student/Internships';
 import InternshipDetail from './pages/student/InternshipDetail';
 
 import axios from "axios";
+import Notifications from './pages/student/Notifications';
 axios.defaults.withCredentials = true;
 
 // Public Route — Login ho toh redirect
@@ -77,6 +78,7 @@ function App() {
         <Route path="/jobdetail/:id" element={<StudentRoute><JobDetail /></StudentRoute>} />
         <Route path="/internship" element={<StudentRoute><Internships /></StudentRoute>} />
         <Route path="/Internship/:id" element={<StudentRoute><InternshipDetail /></StudentRoute>} />
+        <Route path="/notifications" element={<StudentRoute><Notifications /></StudentRoute>} />
         <Route path="/courses" element={<StudentRoute><Courses /></StudentRoute>} />
         <Route path="/course/:id" element={<StudentRoute><CourseDetail /></StudentRoute>} />
         <Route path="/saved" element={<StudentRoute><SavedJobs /></StudentRoute>} />
