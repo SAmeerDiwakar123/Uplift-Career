@@ -26,7 +26,7 @@ const Notifications = () => {
     }
   };
 
-  const getIconBg = (type) => {
+  const getIconBg = (type) => { 
     switch (type) {
       case "job": return "bg-indigo-500/10 border-indigo-500/20";
       case "internship": return "bg-emerald-500/10 border-emerald-500/20";
