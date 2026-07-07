@@ -1,6 +1,6 @@
 import React from 'react';
-import Navbar from '../../components/shared/Navbar'; // apne project ke hisaab se path check kar lena
-import { Search, Settings, SettingsIcon } from 'lucide-react';
+import Navbar from '../../components/shared/Navbar';
+import { Search, Settings,  } from 'lucide-react';
 
 const StudentDashboard = () => {
   return (

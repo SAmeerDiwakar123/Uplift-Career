@@ -22,19 +22,11 @@ const Jobs = () => {
   const alljobs = useSelector((store) => store.job?.alljobs || []);
   const searchJobByText = useSelector((store) => store.job?.searchJobByText || '');
   const filters = useSelector((store) => store.job?.filters || {});
+  
+  // 🌟 API Loading स्टेट (अगर आपके Redux में loading स्टेट है तो इसे यूज़ करें, अन्यथा यह डिफ़ॉल्ट रूप से हैंडल हो जाएगा)
+  const isLoading = useSelector((store) => store.job?.loading || false);
 
-  const [isMobile, setIsMobile] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    const checkScreen = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkScreen();
-    window.addEventListener('resize', checkScreen);
-    return () => window.removeEventListener('resize', checkScreen);
-  }, []);
-
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 9;
 
@@ -150,16 +142,14 @@ const Jobs = () => {
 
       <main className="max-w-7xl mx-auto px-2 sm:px-4 mt-4 flex-1 w-full pb-24">
         
-        {/* 🔥 TOP BAR - Full width search on desktop */}
+        {/* TOP BAR */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
-          {/* Jobs count - hidden on mobile */}
           <div className="hidden sm:block text-sm text-gray-500 whitespace-nowrap">
             <span className="font-semibold text-gray-700">{filteredJobs.length}</span> jobs found
           </div>
           
-          {/* Search + Filter - Full width on desktop */}
           <div className="flex items-center gap-2 w-full">
-            {/* Search Box - Full width */}
+            {/* Search Box */}
             <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl px-3 py-2 w-full shadow-sm">
               <Search size={15} className="text-gray-400 flex-shrink-0" />
               <input 
@@ -176,11 +166,11 @@ const Jobs = () => {
               )}
             </div>
 
-            {/* Filter Button - Mobile */}
-            {isMobile ? (
+            {/* 🌟 CSS Responsive Solution: मोबाइल फ़िल्टर बटन (केवल मोबाइल पर दिखेगा) */}
+            <div className="block md:hidden flex-shrink-0">
               <button
                 onClick={() => setIsDrawerOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm flex-shrink-0"
+                className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm"
               >
                 <Filter size={14} />
                 {activeCount > 0 && (
@@ -189,16 +179,16 @@ const Jobs = () => {
                   </span>
                 )}
               </button>
-            ) : (
-              /* Desktop: HoverFilterPanel - Right side */
-              <div className="flex-shrink-0">
-                <HoverFilterPanel
-                  filters={filters}
-                  onFilterChange={handleFilterChange}
-                  onClearAll={handleClearAll}
-                />
-              </div>
-            )}
+            </div>
+
+            {/* 🌟 CSS Responsive Solution: डेस्कटॉप फ़िल्टर पैनल (मोबाइल पर तुरंत छुप जाएगा, flicker नहीं करेगा) */}
+            <div className="hidden md:block flex-shrink-0">
+              <HoverFilterPanel
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onClearAll={handleClearAll}
+              />
+            </div>
           </div>
         </div>
 
@@ -210,26 +200,37 @@ const Jobs = () => {
           onClearAll={handleClearAll}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {paginatedJobs.map((job) => (
-            job && <JobCard key={job._id} job={job} />
-          ))}
-        </div>
-
-        {paginatedJobs.length === 0 && (
-          <div className="text-center py-16">
-            <span className="text-4xl mb-2 block">🔍</span>
-            <p className="text-gray-500">No jobs found matching your search</p>
-            <button 
-              onClick={handleClearAll}
-              className="mt-2 text-sm text-indigo-600 font-medium hover:underline"
-            >
-              Reset Filters
-            </button>
+        {/* 🌟 API loading के समय लेआउट को स्थिर रखने के लिए Loader */}
+        {isLoading ? (
+          <div className="min-h-[50vh] flex items-center justify-center w-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
           </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {paginatedJobs.map((job) => (
+                job && <JobCard key={job._id} job={job} />
+              ))}
+            </div>
+
+            {/* Empty State */}
+            {paginatedJobs.length === 0 && (
+              <div className="text-center py-16 min-h-[40vh] flex flex-col items-center justify-center">
+                <span className="text-4xl mb-2 block">🔍</span>
+                <p className="text-gray-500">No jobs found matching your search</p>
+                <button 
+                  onClick={handleClearAll}
+                  className="mt-2 text-sm text-indigo-600 font-medium hover:underline"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
+          </>
         )}
 
-        {totalPages > 1 && (
+        {/* Pagination */}
+        {!isLoading && totalPages > 1 && (
           <div className="flex items-center justify-center gap-1 mt-6">
             <button 
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} 

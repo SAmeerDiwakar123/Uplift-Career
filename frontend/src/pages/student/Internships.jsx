@@ -17,18 +17,11 @@ const Internships = () => {
   const allInternships = useSelector((store) => store.internship?.allInternships || []);
   const searchInternshipByText = useSelector((store) => store.internship?.searchInternshipByText || '');
   const filters = useSelector((store) => store.internship?.filters || {});
+  
+  // 🌟 API Loading स्टेट
+  const isLoading = useSelector((store) => store.internship?.loading || false);
 
-  const [isMobile, setIsMobile] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    const checkScreen = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkScreen();
-    window.addEventListener('resize', checkScreen);
-    return () => window.removeEventListener('resize', checkScreen);
-  }, []);
 
   // Filter Logic
   const filteredInternships = allInternships.filter((internship) => {
@@ -41,7 +34,6 @@ const Internships = () => {
       internship.company?.name?.toLowerCase().includes(searchText) ||
       internship.location?.toLowerCase().includes(searchText);
 
-    // Location filter - support multiple values
     const locationArr = Array.isArray(filters.location) ? filters.location : [];
     const matchesLocation =
       locationArr.length === 0 ||
@@ -52,7 +44,6 @@ const Internships = () => {
         return internship.location?.toLowerCase().includes(loc.toLowerCase());
       });
 
-    // Profile filter
     const profileArr = Array.isArray(filters.profile) ? filters.profile : [];
     const matchesProfile =
       profileArr.length === 0 ||
@@ -60,7 +51,6 @@ const Internships = () => {
         internship.title?.toLowerCase().includes(prof.toLowerCase())
       );
 
-    // Stipend filter
     const stipendArr = Array.isArray(filters.stipend) ? filters.stipend : [];
     const matchesStipend =
       stipendArr.length === 0 ||
@@ -77,7 +67,6 @@ const Internships = () => {
         }
       });
 
-    // Duration filter
     const durationArr = Array.isArray(filters.duration) ? filters.duration : [];
     const matchesDuration =
       durationArr.length === 0 ||
@@ -85,7 +74,6 @@ const Internships = () => {
         internship.duration?.toLowerCase().includes(dur.toLowerCase())
       );
 
-    // Mode filter
     const modeArr = Array.isArray(filters.mode) ? filters.mode : [];
     const matchesMode =
       modeArr.length === 0 ||
@@ -139,14 +127,14 @@ const Internships = () => {
 
       <main className="max-w-7xl mx-auto px-2 sm:px-4 mt-4 flex-1 w-full pb-24">
         
-        {/* Top Bar - Full width search on desktop */}
+        {/* Top Bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
           <div className="hidden sm:block text-sm text-gray-500 whitespace-nowrap">
             <span className="font-semibold text-gray-700">{filteredInternships.length}</span> internships found
           </div>
           
           <div className="flex items-center gap-2 w-full">
-            {/* Search Box - Full width */}
+            {/* Search Box */}
             <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl px-3 py-2 w-full shadow-sm">
               <Search size={15} className="text-gray-400 flex-shrink-0" />
               <input 
@@ -163,11 +151,11 @@ const Internships = () => {
               )}
             </div>
 
-            {/* Filter Button - Mobile */}
-            {isMobile ? (
+            {/* 🌟 CSS Responsive Solution: मोबाइल फ़िल्टर बटन */}
+            <div className="block md:hidden flex-shrink-0">
               <button
                 onClick={() => setIsDrawerOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm flex-shrink-0"
+                className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm"
               >
                 <Filter size={14} />
                 {activeCount > 0 && (
@@ -176,15 +164,16 @@ const Internships = () => {
                   </span>
                 )}
               </button>
-            ) : (
-              <div className="flex-shrink-0">
-                <HoverFilterPanel
-                  filters={filters}
-                  onFilterChange={handleFilterChange}
-                  onClearAll={handleClearAll}
-                />
-              </div>
-            )}
+            </div>
+
+            {/* 🌟 CSS Responsive Solution: डेस्कटॉप फ़िल्टर पैनल (Zero Flicker) */}
+            <div className="hidden md:block flex-shrink-0">
+              <HoverFilterPanel
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onClearAll={handleClearAll}
+              />
+            </div>
           </div>
         </div>
 
@@ -197,26 +186,35 @@ const Internships = () => {
           onClearAll={handleClearAll}
         />
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-          {filteredInternships.map((internship) => (
-            internship && <InternshipCard key={internship._id} internship={internship} />
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredInternships.length === 0 && (
-          <div className="text-center py-16">
-            <span className="text-4xl mb-2 block">🔍</span>
-            <p className="text-gray-500 font-medium">No internships found</p>
-            <p className="text-gray-400 text-sm mt-1">Try adjusting your filters</p>
-            <button 
-              onClick={handleClearAll}
-              className="mt-2 text-sm text-indigo-600 font-medium hover:underline"
-            >
-              Reset Filters
-            </button>
+        {/* 🌟 API loading के समय लेआउट को स्थिर रखने के लिए Loader */}
+        {isLoading ? (
+          <div className="min-h-[50vh] flex items-center justify-center w-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
           </div>
+        ) : (
+          <>
+            {/* Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+              {filteredInternships.map((internship) => (
+                internship && <InternshipCard key={internship._id} internship={internship} />
+              ))}
+            </div>
+
+            {/* Empty State */}
+            {filteredInternships.length === 0 && (
+              <div className="text-center py-16 min-h-[40vh] flex flex-col items-center justify-center">
+                <span className="text-4xl mb-2 block">🔍</span>
+                <p className="text-gray-500 font-medium">No internships found</p>
+                <p className="text-gray-400 text-sm mt-1">Try adjusting your filters</p>
+                <button 
+                  onClick={handleClearAll}
+                  className="mt-2 text-sm text-indigo-600 font-medium hover:underline"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
+          </>
         )}
       </main>
 
