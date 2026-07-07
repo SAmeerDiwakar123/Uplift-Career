@@ -74,7 +74,7 @@ const JobCard = ({ job }) => {
           </span>
           {isFresher && (
             <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-600">
-              Fresher
+               🌱 Fresher
             </span>
           )}
         </div>

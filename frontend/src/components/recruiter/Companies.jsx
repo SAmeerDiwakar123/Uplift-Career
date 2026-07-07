@@ -97,7 +97,7 @@ const Companies = () => {
             <p className='text-[10px] sm:text-sm text-gray-400 mt-0.5'>{companies?.length} companies registered</p>
           </div>
           <button
-            onClick={() => navigate('/admin/create-company')}
+            onClick={() => navigate('/recruiter/create-company')}
             className='flex items-center gap-1.5 bg-indigo-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl hover:bg-indigo-700 transition'
           >
             <Plus size={13} /> Add Company

@@ -104,7 +104,7 @@ const ManageJob = () => {
             <p className='text-[10px] sm:text-xs text-gray-500'>{filteredJobs.length} jobs posted</p>
           </div>
           <button
-            onClick={() => navigate('/admin/add-jobs')}
+            onClick={() => navigate('/recruiter/add-jobs')}
             className='flex items-center gap-1.5 bg-indigo-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl hover:bg-indigo-700 transition'
           >
             <Plus size={13} /> Post Job
@@ -157,7 +157,7 @@ const ManageJob = () => {
                       <button onClick={() => deleteJob(job._id)} className="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition">
                         <Trash2 size={12} />
                       </button>
-                      <button onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)} className="p-1.5 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white transition">
+                      <button onClick={() => navigate(`/recruiter/jobs/${job._id}/applicants`)} className="p-1.5 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white transition">
                         <Eye size={12} />
                       </button>
                     </div>

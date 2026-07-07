@@ -37,10 +37,10 @@ const SavedJobs = () => {
   const isEmpty = savedJobs.length === 0 && savedInternships.length === 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
+    <div className="min-h-screen bg-slate-50 pb-4">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 pt-28">
+      <div className="max-w-6xl mx-auto px-4 pt-4 sm:pt-6">
         
         {isEmpty ? (
           <div className="text-center py-16">

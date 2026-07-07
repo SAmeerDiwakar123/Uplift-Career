@@ -1,20 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import {
-  Bookmark,
-  LogOut,
-  User2,
-  Briefcase,
-  GraduationCap,
-  LayoutDashboard,
-  Building2,
-  PlusCircle,
-  ListChecks,
-  Home,
-  Info,
-  Phone,
-  Bell 
-} from "lucide-react";
+import { Bookmark,LogOut,User2,Briefcase,GraduationCap,LayoutDashboard,Building2,
+  PlusCircle,ListChecks,Home,Info,Phone,Bell } from "lucide-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
@@ -83,11 +70,11 @@ const Navbar = () => {
 
     if (user.role === "recruiter") {
       return [
-        { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { path: '/admin/add-jobs', label: 'Add Job', icon: PlusCircle },
-        { path: '/admin/manage-jobs', label: 'Manage Jobs', icon: ListChecks },
-        { path: '/admin/create-company', label: 'Create Company', icon: Building2 },
-        { path: '/admin/companies', label: 'Companies', icon: Building2 },
+        { path: '/recruiter/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { path: '/recruiter/add-jobs', label: 'Add Job', icon: PlusCircle },
+        { path: '/recruiter/manage-jobs', label: 'Manage Jobs', icon: ListChecks },
+        { path: '/recruiter/create-company', label: 'Create Company', icon: Building2 },
+        { path: '/recruiter/companies', label: 'Companies', icon: Building2 },
       ];
     }
 

@@ -1,198 +1,214 @@
+import { useState, useMemo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchJobByText, setFilters, clearFilter } from '@/redux/jobSlice';
+import useGetAllJobs from '@/hooks/useGetAllJobs';
+
+// Components & Icons
 import Navbar from '../../components/shared/Navbar';
 import JobCard from '../../components/job/JobCard';
-import FilterDrawer from '../../components/job/FilterDrawer';
-import FilterMegaDropdown from '../../components/job/FilterMegaDropdown';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSearchJobByText, clearFilter, setFilters } from '@/redux/jobSlice';
+import BottomNav from '@/components/shared/BottomNav';
+import { Search, X, Filter } from 'lucide-react';
 import left from "../../assets/left.png";
 import right from "../../assets/right.png";
-import { useState, useEffect } from 'react';
-import useGetAllJobs from '@/hooks/useGetAllJobs';
-import { Search, X } from 'lucide-react';
-import BottomNav from '@/components/shared/BottomNav';
 
-// 👇 Screen size detect karne ka hook
-const useMediaQuery = (query) => {
-  const [matches, setMatches] = useState(false);
-  useEffect(() => {
-    const media = window.matchMedia(query);
-    setMatches(media.matches);
-    const listener = (e) => setMatches(e.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
-  }, [query]);
-  return matches;
-};
+import HoverFilterPanel from '@/components/job/HoverFilterPanel';
+import FilterDrawer from '@/components/job/FilterDrawer';
 
 const Jobs = () => {
   useGetAllJobs();
   
-  // Defaults add kar diye taaki undefined crash na kare
-  const { alljobs = [], searchJobByText = '', filters = {} } = useSelector(
-    (store) => store.job || {}
-  );
-  
   const dispatch = useDispatch();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
-  const isDesktop = useMediaQuery('(min-width: 768px)');
 
+  const alljobs = useSelector((store) => store.job?.alljobs || []);
+  const searchJobByText = useSelector((store) => store.job?.searchJobByText || '');
+  const filters = useSelector((store) => store.job?.filters || {});
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+    return () => window.removeEventListener('resize', checkScreen);
+  }, []);
+
+  const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 9;
 
-  // Filter logic with optional chaining + salary range fix
-  const filteredJobs = alljobs.filter((job) => {
-    if (!job) return false;
-    
-    const searchText = (searchJobByText || '').toLowerCase();
-    
-    const matchesSearch = 
-      (job.title || '').toLowerCase().includes(searchText) ||
-      (job.company?.name || '').toLowerCase().includes(searchText) ||
-      (job.location || '').toLowerCase().includes(searchText);
+  const filteredJobs = useMemo(() => {
+    if (!Array.isArray(alljobs)) return [];
 
-    const matchesLocation = filters?.location 
-      ? (job.location || '').toLowerCase().includes(filters.location.toLowerCase()) 
-      : true;
-      
-    const matchesJobType = filters?.jobtype 
-      ? (job.jobType || '').toLowerCase().includes(filters.jobtype.toLowerCase()) 
-      : true;
-      
-    // 👇 Salary ab number range se check hoga, string split nahi
-    const matchesSalary = filters?.salary
-      ? (() => {
-          const salary = Number(job.salary) || 0; // in LPA
-          switch (filters.salary) {
-            case '0-3 LPA': return salary >= 0 && salary <= 3;
-            case '3-6 LPA': return salary > 3 && salary <= 6;
-            case '6-10 LPA': return salary > 6 && salary <= 10;
-            case '10-20 LPA': return salary > 10 && salary <= 20;
-            case '20+ LPA': return salary > 20;
-            default: return true;
+    const query = searchJobByText.toLowerCase().trim();
+
+    return alljobs.filter((job) => {
+      const matchesSearch =
+        !query ||
+        job.title?.toLowerCase().includes(query) ||
+        job.company?.name?.toLowerCase().includes(query) ||
+        job.location?.toLowerCase().includes(query);
+
+      const locationArr = Array.isArray(filters.location) ? filters.location : [];
+      const matchesLocation =
+        locationArr.length === 0 ||
+        locationArr.some((loc) => 
+          (job.location || '').toLowerCase().trim() === loc.toLowerCase().trim()
+        );
+
+      const jobTypeArr = Array.isArray(filters.jobType) ? filters.jobType : [];
+      const matchesJobType =
+        jobTypeArr.length === 0 ||
+        jobTypeArr.some((type) => {
+          const dbType = (job.jobType || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+          const filterType = type.toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+          return dbType === filterType;
+        });
+
+      const expArr = Array.isArray(filters.experience) ? filters.experience : [];
+      const matchesExperience = 
+        expArr.length === 0 ||
+        expArr.some((expRange) => {
+          const exp = Number(job.experienceLevel);
+          switch (expRange) {
+            case "Fresher (0-1 yr)":   return exp <= 1;
+            case "Junior (1-3 yrs)":  return exp > 1 && exp <= 3;
+            case "Mid (3-5 yrs)":     return exp > 3 && exp <= 5;
+            case "Senior (5-8 yrs)":  return exp > 5 && exp <= 8;
+            case "Lead (8+ yrs)":     return exp > 8;
+            default:                  return true;
           }
-        })()
-      : true;
+        });
 
-    const matchesExperience = filters?.experience
-      ? (job.experience || '').toLowerCase().includes(filters.experience.toLowerCase())
-      : true;
+      const industryArr = Array.isArray(filters.industry) ? filters.industry : [];
+      const matchesIndustry =
+        industryArr.length === 0 ||
+        industryArr.some((ind) => 
+          (job.company?.industry || '').toLowerCase().includes(ind.toLowerCase())
+        );
 
-    const matchesIndustry = filters?.industry
-      ? (job.industry || '').toLowerCase().includes(filters.industry.toLowerCase())
-      : true;
+      const salaryArr = Array.isArray(filters.salary) ? filters.salary : [];
+      const matchesSalary = 
+        salaryArr.length === 0 ||
+        salaryArr.some((salRange) => {
+          const salaryLPA = Number(job.salary) / 100000;
+          switch (salRange) {
+            case "0-3 LPA":   return salaryLPA >= 0 && salaryLPA <= 3;
+            case "3-6 LPA":   return salaryLPA > 3 && salaryLPA <= 6;
+            case "6-10 LPA":  return salaryLPA > 6 && salaryLPA <= 10;
+            case "10-20 LPA": return salaryLPA > 10 && salaryLPA <= 20;
+            case "20+ LPA":   return salaryLPA > 20;
+            default:          return true;
+          }
+        });
 
-    return matchesSearch && matchesLocation && matchesJobType && matchesSalary && matchesExperience && matchesIndustry;
-  });
+      return (
+        matchesSearch &&
+        matchesLocation &&
+        matchesJobType &&
+        matchesExperience &&
+        matchesIndustry &&
+        matchesSalary
+      );
+    });
+  }, [alljobs, searchJobByText, filters]);
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
-  const paginatedJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
-  const activeCount = Object.values(filters || {}).filter(Boolean).length;
+  const paginatedJobs = filteredJobs.slice(
+    (currentPage - 1) * jobsPerPage, 
+    currentPage * jobsPerPage
+  );
 
-  const filterSections = [
-    { title: 'Location', key: 'location' },
-    { title: 'Job Type', key: 'jobtype' },
-    { title: 'Experience', key: 'experience' },
-    { title: 'Salary', key: 'salary' },
-    { title: 'Industry', key: 'industry' },
-  ];
+  const handleSearch = (e) => {
+    dispatch(setSearchJobByText(e.target.value));
+    setCurrentPage(1);
+  };
+
+  const handleClear = () => {
+    dispatch(setSearchJobByText(''));
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    dispatch(setFilters(newFilters));
+    setCurrentPage(1);
+  };
+
+  const handleClearAll = () => {
+    dispatch(clearFilter());
+    setCurrentPage(1);
+  };
+
+  const activeCount = Object.values(filters || {}).reduce((acc, curr) => {
+    return acc + (Array.isArray(curr) ? curr.length : 0);
+  }, 0);
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <Navbar />
 
-      {/* Filter Bar */}
-      <div className="bg-white border-b sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4">
-          <div className="flex items-center gap-2 py-2 overflow-x-auto scrollbar-hide">
-            
-            {/* Mobile Filter Button */}
-            <button 
-              onClick={() => setShowFilters(true)} 
-              className="md:hidden flex items-center gap-1 bg-gray-100 rounded-lg px-3 py-1.5 text-xs font-medium"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="21" y1="10" x2="3" y2="10" />
-                <line x1="21" y1="6" x2="3" y2="6" />
-                <line x1="21" y1="14" x2="3" y2="14" />
-                <line x1="21" y1="18" x2="3" y2="18" />
-              </svg>
-              Filters
-              {activeCount > 0 && ` (${activeCount})`}
-            </button>
-
-            {/* Desktop Filter Button */}
-            <button 
-              onClick={() => setShowFilters(true)} 
-              className="hidden md:flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium transition"
-            >
-              Filters
-              {activeCount > 0 && (
-                <span className="bg-indigo-600 text-white text-[8px] px-1.5 py-0.5 rounded-full">
-                  {activeCount}
-                </span>
-              )}
-            </button>
-
-            {/* Active Chips */}
-            {Object.entries(filters || {}).map(([key, value]) => {
-              if (!value) return null;
-              const section = filterSections.find((s) => s.key === key);
-              return (
-                <span 
-                  key={key} 
-                  className="flex items-center gap-1 bg-indigo-50 text-indigo-700 text-xs px-2.5 py-1.5 rounded-lg border border-indigo-100 flex-shrink-0"
-                >
-                  {section?.title}: {value}
-                  <button onClick={() => dispatch(setFilters({ [key]: '' }))}>
-                    <X size={12} />
-                  </button>
-                </span>
-              );
-            })}
-
-            {activeCount > 0 && (
-              <button 
-                onClick={() => dispatch(clearFilter())} 
-                className="text-xs text-red-500 font-medium flex-shrink-0"
-              >
-                Clear all
-              </button>
-            )}
+      <main className="max-w-7xl mx-auto px-2 sm:px-4 mt-4 flex-1 w-full pb-24">
+        
+        {/* 🔥 TOP BAR - Full width search on desktop */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+          {/* Jobs count - hidden on mobile */}
+          <div className="hidden sm:block text-sm text-gray-500 whitespace-nowrap">
+            <span className="font-semibold text-gray-700">{filteredJobs.length}</span> jobs found
           </div>
-        </div>
-      </div>
-
-      {/* 👇 Responsive Filter: Desktop = mega dropdown, Mobile = drawer */}
-      {isDesktop ? (
-        <FilterMegaDropdown isOpen={showFilters} onClose={() => setShowFilters(false)} />
-      ) : (
-        <FilterDrawer isOpen={showFilters} onClose={() => setShowFilters(false)} />
-      )}
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 mt-4 flex-1 w-full pb-24">
-        <div className="flex items-center justify-between mb-4">
-          <div className="hidden sm:block">
-            <p className="text-sm text-gray-500 mt-1">{filteredJobs.length} jobs found</p>
-          </div>
-          <div className="w-full sm:w-auto flex justify-center sm:justify-end">
-            <div className="flex items-center gap-2 bg-white border rounded-xl px-3 py-2 w-full sm:w-64">
-              <Search size={14} className="text-gray-400" />
+          
+          {/* Search + Filter - Full width on desktop */}
+          <div className="flex items-center gap-2 w-full">
+            {/* Search Box - Full width */}
+            <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl px-3 py-2 w-full shadow-sm">
+              <Search size={15} className="text-gray-400 flex-shrink-0" />
               <input 
                 type="text" 
-                placeholder="Search jobs..." 
+                placeholder="Search jobs, companies..." 
                 value={searchJobByText || ''}
-                onChange={(e) => dispatch(setSearchJobByText(e.target.value))} 
-                className="text-xs outline-none w-full bg-transparent" 
+                onChange={handleSearch} 
+                className="text-sm outline-none w-full bg-transparent text-gray-700 placeholder-gray-400 min-w-0" 
               />
               {searchJobByText && (
-                <button onClick={() => dispatch(setSearchJobByText(''))}>
-                  <X size={14} className="text-gray-400" />
+                <button onClick={handleClear} aria-label="Clear search" className="flex-shrink-0">
+                  <X size={14} className="text-gray-400 hover:text-gray-600" />
                 </button>
               )}
             </div>
+
+            {/* Filter Button - Mobile */}
+            {isMobile ? (
+              <button
+                onClick={() => setIsDrawerOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm flex-shrink-0"
+              >
+                <Filter size={14} />
+                {activeCount > 0 && (
+                  <span className="bg-indigo-600 text-white text-[10px] px-1.5 h-4 rounded-full flex items-center justify-center font-bold">
+                    {activeCount}
+                  </span>
+                )}
+              </button>
+            ) : (
+              /* Desktop: HoverFilterPanel - Right side */
+              <div className="flex-shrink-0">
+                <HoverFilterPanel
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                  onClearAll={handleClearAll}
+                />
+              </div>
+            )}
           </div>
         </div>
+
+        <FilterDrawer
+          isOpen={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onClearAll={handleClearAll}
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {paginatedJobs.map((job) => (
@@ -203,36 +219,53 @@ const Jobs = () => {
         {paginatedJobs.length === 0 && (
           <div className="text-center py-16">
             <span className="text-4xl mb-2 block">🔍</span>
-            <p className="text-gray-500">No jobs found</p>
+            <p className="text-gray-500">No jobs found matching your search</p>
+            <button 
+              onClick={handleClearAll}
+              className="mt-2 text-sm text-indigo-600 font-medium hover:underline"
+            >
+              Reset Filters
+            </button>
           </div>
         )}
 
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-1 mt-6">
             <button 
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} 
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} 
               disabled={currentPage === 1}
+              className="disabled:opacity-40 p-1"
             >
-              <img src={left} className="w-5 h-4" alt="prev" />
+              <img src={left} className="w-5 h-4" alt="Previous" />
             </button>
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button 
-                key={i} 
-                onClick={() => setCurrentPage(i + 1)} 
-                className={`w-7 h-7 text-xs flex items-center justify-center border rounded-md ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-white text-gray-600'}`}
-              >
-                {i + 1}
-              </button>
-            ))}
+
+            {Array.from({ length: totalPages }).map((_, i) => {
+              const pageNum = i + 1;
+              return (
+                <button 
+                  key={pageNum} 
+                  onClick={() => setCurrentPage(pageNum)} 
+                  className={`w-8 h-8 text-xs flex items-center justify-center border rounded-md transition-colors ${
+                    currentPage === pageNum 
+                      ? 'bg-indigo-600 text-white border-indigo-600' 
+                      : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
             <button 
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} 
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} 
               disabled={currentPage === totalPages}
+              className="disabled:opacity-40 p-1"
             >
-              <img src={right} className="w-5 h-4" alt="next" />
+              <img src={right} className="w-5 h-4" alt="Next" />
             </button>
           </div>
         )}
-      </div>
+      </main>
 
       <BottomNav />
     </div>

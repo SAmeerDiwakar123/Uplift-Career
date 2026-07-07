@@ -89,7 +89,7 @@ const Dashboard = () => {
         <div className='max-w-7xl mx-auto'>
           <div className='mb-8'>
             <h1 className='text-3xl font-bold text-gray-900'>Dashboard</h1>
-            <p className='text-sm text-gray-800 mt-1'>Welcome back, Admin</p>
+            <p className='text-sm text-gray-800 mt-1'>Welcome back, Recruiter</p>
           </div>
 
           {/* {state} */}

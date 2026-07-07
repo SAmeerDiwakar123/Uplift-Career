@@ -38,7 +38,7 @@ const CompanySetup = () => {
       const res = await axios.put(`${COMPANY_API_END_POINT}/update/${params.id}`, formData, { withCredentials: true });
       if (res.data.success) {
         toast.success("Company updated successfully");
-        navigate('/admin/companies');
+        navigate('/recruiter/companies');
       }
     } catch (error) {
       toast.error("Failed to update company");
@@ -68,7 +68,7 @@ const CompanySetup = () => {
 
         {/* Back */}
         <button
-          onClick={() => navigate('/admin/companies')}
+          onClick={() => navigate('/recruiter/companies')}
           className='flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 hover:text-indigo-600 mb-4'
         >
           <ArrowLeft size={14} /> Back
@@ -139,7 +139,7 @@ const CompanySetup = () => {
             <div className='flex gap-2 sm:gap-3 pt-1'>
               <Button
                 type='button'
-                onClick={() => navigate('/admin/companies')}
+                onClick={() => navigate('/recruiter/companies')}
                 variant='outline'
                 className='rounded-lg sm:rounded-xl text-xs sm:text-sm py-2 px-3 sm:px-4'
               >

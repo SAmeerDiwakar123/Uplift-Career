@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 import React, { useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Search, BookOpen } from 'lucide-react';
@@ -107,14 +115,6 @@ const Courses = () => {
 };
 
 export default Courses;
-
-
-
-
-
-
-
-
 
 
 

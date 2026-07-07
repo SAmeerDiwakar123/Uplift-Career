@@ -34,7 +34,7 @@ const AddJobs = () => {
         withCredentials: true,
       });
       if (res.data.success) {
-        navigate('/admin/manage-jobs');
+        navigate('/recruiter/manage-jobs');
       }
     } catch (error) {
       console.log(error.response?.data);

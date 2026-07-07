@@ -26,7 +26,7 @@ const CreateCompany = () => {
       if (res?.data?.success) {
         dispatch(setSingleCompany(res?.data?.company));
         toast.success(res?.data?.message);
-        navigate(`/admin/companies/${res?.data?.company._id}`);
+        navigate(`/recruiter/companies/${res?.data?.company._id}`);
       }
     } catch (error) {
       toast.error('Failed to register company');
