@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Bookmark,LogOut,User2,Briefcase,GraduationCap,LayoutDashboard,Building2,
-  PlusCircle,ListChecks,Home,Info,Phone,Bell } from "lucide-react";
+  PlusCircle,ListChecks,Home,Info,Phone,Bell, 
+  LayoutDashboardIcon} from "lucide-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
@@ -208,7 +209,18 @@ const Navbar = () => {
                           Profile
                         </button>
                       )}
+                      <div className='p-2'>
+                        {user.role === "student" &&(
+                      <button onClick={() => {
+                          navigate("/StudentDashboard");
+                          setShowMenu(false);
+                      }} className='flex gap-2 items-center w-full px-3 py-2 text-emerald-400 hover:bg-emerald-950 rounded-lg'>
+                        <LayoutDashboardIcon size={15} /> Dashboard
+                      </button>
+                        )}
+                      </div>
 
+                      
                       <button
                         onClick={logoutHandler}
                         className="flex gap-2 items-center w-full px-3 py-2 text-red-400 hover:bg-red-950 rounded-lg"
