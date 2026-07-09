@@ -22,7 +22,6 @@ const Applications = () => {
     const items = activeTab === "jobs" ? allAppliedJobs : myApplications;
     
     return items.filter(item => {
-      // ✅ Jobs ke liye item?.job, Internship ke liye item?.internship
       const data = activeTab === "jobs" ? item?.job : item?.internship;
       if (!data) return false;
       
