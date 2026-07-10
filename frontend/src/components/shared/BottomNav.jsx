@@ -11,10 +11,11 @@ const studentNavItems = [
 ];
 
 const recruiterNavItems = [
-  { icon: PlusCircle, label: "Add Job", path: "/admin/add-jobs" },
-  { icon: Briefcase, label: "Manage", path: "/admin/manage-jobs" },
-  { icon: Building2, label: "Company", path: "/admin/create-company" },
-  { icon: Building, label: "Companies", path: "/admin/companies" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/recruiter/dashboard" },
+  { icon: PlusCircle, label: "Add Job", path: "/recruiter/add-jobs" },
+  { icon: Briefcase, label: "Manage", path: "/recruiter/manage-jobs" },
+  { icon: Building2, label: "Company", path: "/recruiter/create-company" },
+  { icon: Building, label: "Companies", path: "/recruiter/companies" },
 ];
 
 const guestNavItems = [

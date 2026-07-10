@@ -3,6 +3,8 @@ import Navbar from '../shared/Navbar';
 import { Search, ArrowRight, TrendingUp } from 'lucide-react';
 import axios from 'axios';
 import { JOB_API_END_POINT } from '@/utils/constant';
+import BottomNav from '../shared/BottomNav';
+import Footer from '../shared/Footer';
 
 const RecruiterDashboard = () => {
 
@@ -201,6 +203,8 @@ const RecruiterDashboard = () => {
         </div>
 
       </div>
+      <BottomNav/>
+      <Footer/>
     </div>
   );
 };
