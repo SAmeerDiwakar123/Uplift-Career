@@ -24,13 +24,30 @@ const Companies = () => {
   useEffect(() => { dispatch(setSearchCompanyByText(search)) }, [search]);
 
   useEffect(() => {
-    const filtered = companies.length > 0 && companies.filter((company) => {
-      if (!searchCompanyByText) return true;
-      return company?.name?.toLowerCase().includes(searchCompanyByText.toLowerCase()) ||
-        company?.location?.toLowerCase().includes(searchCompanyByText.toLowerCase())
-    })
-    setFilterCompany(filtered)
-  }, [companies, searchCompanyByText])
+  // If companies is undefined/null or empty, default to an empty array
+  if (!companies || companies.length === 0) {
+    setFilterCompany([]);
+    return;
+  }
+
+  const filtered = companies.filter((company) => {
+    if (!searchCompanyByText) return true;
+    return company?.name?.toLowerCase().includes(searchCompanyByText.toLowerCase()) ||
+      company?.location?.toLowerCase().includes(searchCompanyByText.toLowerCase())
+  });
+  
+  setFilterCompany(filtered);
+}, [companies, searchCompanyByText]);
+
+
+  // useEffect(() => {
+  //   const filtered = companies.length > 0 && companies.filter((company) => {
+  //     if (!searchCompanyByText) return true;
+  //     return company?.name?.toLowerCase().includes(searchCompanyByText.toLowerCase()) ||
+  //       company?.location?.toLowerCase().includes(searchCompanyByText.toLowerCase())
+  //   })
+  //   setFilterCompany(filtered)
+  // }, [companies, searchCompanyByText])
 
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)

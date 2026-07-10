@@ -38,7 +38,7 @@ const ManageJob = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get(`${JOB_API_END_POINT}/getadminjobs`, { withCredentials: true })
+        const res = await axios.get(`${JOB_API_END_POINT}/getRecruiterJobs`, { withCredentials: true })
         if (res.data.success) {
           setJobs(res.data.jobs);
           dispatch(setAllJobs(res.data.jobs));

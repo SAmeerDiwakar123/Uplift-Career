@@ -2,28 +2,32 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice";
 import jobSlice from "./jobSlice";
-import {persistStore, persistReducer,FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER,} from "redux-persist";
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import savedJobReducer from "./savedJobSlice";
 import applicationSlice from "./applicationSlice";
-import companySlice from "./companySlice"
-import courseReducer from "./courseSlice"
+import companySlice from "./companySlice";
+import courseReducer from "./courseSlice";
 import internshipReducer from "./internshipSlice";
 import notificationReducer from "./notificationSlice";
+
 const persistStorage = {
   getItem: (key) => Promise.resolve(localStorage.getItem(key)),
   setItem: (key, value) => Promise.resolve(localStorage.setItem(key, value)),
   removeItem: (key) => Promise.resolve(localStorage.removeItem(key)),
 };
 
-const persistConfig = {
+// Sirf auth slice ke liye alag persist config - "loading" ko blacklist karo
+const authPersistConfig = {
   key: "auth",
   version: 1,
   storage: persistStorage,
+  blacklist: ["loading"], // ye "loading" ko kabhi save nahi hone dega
 };
 
+const persistedAuthReducer = persistReducer(authPersistConfig, authSlice);
 
 const rootReducer = combineReducers({
-  auth: authSlice,
+  auth: persistedAuthReducer, // persisted version yaha use karo
   job: jobSlice,
   savedJob: savedJobReducer,
   application: applicationSlice,
@@ -33,10 +37,8 @@ const rootReducer = combineReducers({
   notification: notificationReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer, // ab poore rootReducer ko persist karne ki zaroorat nahi
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -47,3 +49,65 @@ const store = configureStore({
 
 export const persistor = persistStore(store);
 export default store;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // store.js
+// import { combineReducers, configureStore } from "@reduxjs/toolkit";
+// import authSlice from "./authSlice";
+// import jobSlice from "./jobSlice";
+// import {persistStore, persistReducer,FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER,} from "redux-persist";
+// import savedJobReducer from "./savedJobSlice";
+// import applicationSlice from "./applicationSlice";
+// import companySlice from "./companySlice"
+// import courseReducer from "./courseSlice"
+// import internshipReducer from "./internshipSlice";
+// import notificationReducer from "./notificationSlice";
+// const persistStorage = {
+//   getItem: (key) => Promise.resolve(localStorage.getItem(key)),
+//   setItem: (key, value) => Promise.resolve(localStorage.setItem(key, value)),
+//   removeItem: (key) => Promise.resolve(localStorage.removeItem(key)),
+// };
+
+// const persistConfig = {
+//   key: "auth",
+//   version: 1,
+//   storage: persistStorage,
+// };
+
+
+// const rootReducer = combineReducers({
+//   auth: authSlice,
+//   job: jobSlice,
+//   savedJob: savedJobReducer,
+//   application: applicationSlice,
+//   company: companySlice,
+//   course: courseReducer,
+//   internship: internshipReducer,
+//   notification: notificationReducer,
+// });
+
+// const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// const store = configureStore({
+//   reducer: persistedReducer,
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware({
+//       serializableCheck: {
+//         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+//       },
+//     }),
+// });
+
+// export const persistor = persistStore(store);
+// export default store;
