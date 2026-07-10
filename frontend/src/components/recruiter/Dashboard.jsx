@@ -1,16 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../shared/Navbar';
 import { Search, ArrowRight, TrendingUp } from 'lucide-react';
-import { useSelector } from 'react-redux';
-import store from '@/redux/store';
-import { setAllJobs, setSearchJobByText } from '@/redux/jobSlice'
+import axios from 'axios';
+import { JOB_API_END_POINT } from '@/utils/constant';
 
 const RecruiterDashboard = () => {
 
 
-  const { searchJobByText, alljobs } = useSelector(store => store.job);
-  const [filteredJobs, setFilteredJobs] = useState(alljobs);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [totalApplications, setTotalApplications] = useState(0);
 
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await axios.get(
+          `${JOB_API_END_POINT}/getRecruiterJobs`,
+          { withCredentials: true }
+        );
+
+        if (res.data.success) {
+          const jobs = res.data.jobs;
+
+          setTotalJobs(jobs.length);
+
+          const applications = jobs.reduce(
+            (total, job) => total + job.applications.length,
+            0
+          );
+
+          setTotalApplications(applications);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchJobs();
+  }, []);
   // मॉक डेटा
   const stats = {
     totalJobs: 24,
@@ -68,7 +94,7 @@ const RecruiterDashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <h3 className="text-gray-400 text-sm font-medium">Total Jobs</h3>
-            <h1 className="text-3xl font-bold mt-1 text-gray-900">{stats.totalJobs}</h1>
+            <h1 className="text-3xl font-bold mt-1 text-gray-900">{totalJobs}</h1>
             <p className="text-xs text-green-600 bg-green-50 w-fit px-2 py-0.5 rounded mt-2 font-medium">+3 this week</p>
           </div>
 
@@ -80,7 +106,7 @@ const RecruiterDashboard = () => {
 
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <h3 className="text-gray-400 text-sm font-medium">Applications</h3>
-            <h1 className="text-3xl font-bold mt-1 text-gray-900">{stats.applications}</h1>
+            <h1 className="text-3xl font-bold mt-1 text-gray-900">{totalApplications}</h1>
             <p className="text-xs text-orange-600 bg-orange-50 w-fit px-2 py-0.5 rounded mt-2 font-medium">+56 this week</p>
           </div>
 
