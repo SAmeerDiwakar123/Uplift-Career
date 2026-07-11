@@ -8,11 +8,11 @@ const jobSlice = createSlice({
     searchJobByText: "",
     allAppliedJobs: [],
     filters: {
-      location: [],      // 🔥 string se array
-      jobType: [],       // 🔥 string se array
-      experience: [],    // 🔥 string se array
-      salary: [],        // 🔥 string se array
-      industry: []       // 🔥 string se array
+      location: [],   
+      jobType: [],     
+      experience: [],  
+      salary: [],      
+      industry: []      
     }
   },
   reducers: {

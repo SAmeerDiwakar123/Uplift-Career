@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchJobByText, setFilters, clearFilter } from '@/redux/jobSlice';
 import useGetAllJobs from '@/hooks/useGetAllJobs';
@@ -15,16 +15,13 @@ import HoverFilterPanel from '@/components/job/HoverFilterPanel';
 import FilterDrawer from '@/components/job/FilterDrawer';
 
 const Jobs = () => {
-  useGetAllJobs();
-  
+  const { loading: isLoading } = useGetAllJobs();
+
   const dispatch = useDispatch();
 
   const alljobs = useSelector((store) => store.job?.alljobs || []);
   const searchJobByText = useSelector((store) => store.job?.searchJobByText || '');
   const filters = useSelector((store) => store.job?.filters || {});
-  
-  // 🌟 API Loading स्टेट (अगर आपके Redux में loading स्टेट है तो इसे यूज़ करें, अन्यथा यह डिफ़ॉल्ट रूप से हैंडल हो जाएगा)
-  const isLoading = useSelector((store) => store.job?.loading || false);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,7 +42,7 @@ const Jobs = () => {
       const locationArr = Array.isArray(filters.location) ? filters.location : [];
       const matchesLocation =
         locationArr.length === 0 ||
-        locationArr.some((loc) => 
+        locationArr.some((loc) =>
           (job.location || '').toLowerCase().trim() === loc.toLowerCase().trim()
         );
 
@@ -59,39 +56,39 @@ const Jobs = () => {
         });
 
       const expArr = Array.isArray(filters.experience) ? filters.experience : [];
-      const matchesExperience = 
+      const matchesExperience =
         expArr.length === 0 ||
         expArr.some((expRange) => {
           const exp = Number(job.experienceLevel);
           switch (expRange) {
-            case "Fresher (0-1 yr)":   return exp <= 1;
-            case "Junior (1-3 yrs)":  return exp > 1 && exp <= 3;
-            case "Mid (3-5 yrs)":     return exp > 3 && exp <= 5;
-            case "Senior (5-8 yrs)":  return exp > 5 && exp <= 8;
-            case "Lead (8+ yrs)":     return exp > 8;
-            default:                  return true;
+            case "Fresher (0-1 yr)": return exp <= 1;
+            case "Junior (1-3 yrs)": return exp > 1 && exp <= 3;
+            case "Mid (3-5 yrs)": return exp > 3 && exp <= 5;
+            case "Senior (5-8 yrs)": return exp > 5 && exp <= 8;
+            case "Lead (8+ yrs)": return exp > 8;
+            default: return true;
           }
         });
 
       const industryArr = Array.isArray(filters.industry) ? filters.industry : [];
       const matchesIndustry =
         industryArr.length === 0 ||
-        industryArr.some((ind) => 
+        industryArr.some((ind) =>
           (job.company?.industry || '').toLowerCase().includes(ind.toLowerCase())
         );
 
       const salaryArr = Array.isArray(filters.salary) ? filters.salary : [];
-      const matchesSalary = 
+      const matchesSalary =
         salaryArr.length === 0 ||
         salaryArr.some((salRange) => {
           const salaryLPA = Number(job.salary) / 100000;
           switch (salRange) {
-            case "0-3 LPA":   return salaryLPA >= 0 && salaryLPA <= 3;
-            case "3-6 LPA":   return salaryLPA > 3 && salaryLPA <= 6;
-            case "6-10 LPA":  return salaryLPA > 6 && salaryLPA <= 10;
+            case "0-3 LPA": return salaryLPA >= 0 && salaryLPA <= 3;
+            case "3-6 LPA": return salaryLPA > 3 && salaryLPA <= 6;
+            case "6-10 LPA": return salaryLPA > 6 && salaryLPA <= 10;
             case "10-20 LPA": return salaryLPA > 10 && salaryLPA <= 20;
-            case "20+ LPA":   return salaryLPA > 20;
-            default:          return true;
+            case "20+ LPA": return salaryLPA > 20;
+            default: return true;
           }
         });
 
@@ -108,7 +105,7 @@ const Jobs = () => {
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const paginatedJobs = filteredJobs.slice(
-    (currentPage - 1) * jobsPerPage, 
+    (currentPage - 1) * jobsPerPage,
     currentPage * jobsPerPage
   );
 
@@ -141,23 +138,22 @@ const Jobs = () => {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-2 sm:px-4 mt-4 flex-1 w-full pb-24">
-        
         {/* TOP BAR */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
           <div className="hidden sm:block text-sm text-gray-500 whitespace-nowrap">
             <span className="font-semibold text-gray-700">{filteredJobs.length}</span> jobs found
           </div>
-          
+
           <div className="flex items-center gap-2 w-full">
             {/* Search Box */}
             <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl px-3 py-2 w-full shadow-sm">
               <Search size={15} className="text-gray-400 flex-shrink-0" />
-              <input 
-                type="text" 
-                placeholder="Search jobs, companies..." 
+              <input
+                type="text"
+                placeholder="Search jobs, companies..."
                 value={searchJobByText || ''}
-                onChange={handleSearch} 
-                className="text-sm outline-none w-full bg-transparent text-gray-700 placeholder-gray-400 min-w-0" 
+                onChange={handleSearch}
+                className="text-sm outline-none w-full bg-transparent text-gray-700 placeholder-gray-400 min-w-0"
               />
               {searchJobByText && (
                 <button onClick={handleClear} aria-label="Clear search" className="flex-shrink-0">
@@ -166,7 +162,7 @@ const Jobs = () => {
               )}
             </div>
 
-            {/* 🌟 CSS Responsive Solution: मोबाइल फ़िल्टर बटन (केवल मोबाइल पर दिखेगा) */}
+            {/* Mobile Filter Button */}
             <div className="block md:hidden flex-shrink-0">
               <button
                 onClick={() => setIsDrawerOpen(true)}
@@ -181,7 +177,7 @@ const Jobs = () => {
               </button>
             </div>
 
-            {/* 🌟 CSS Responsive Solution: डेस्कटॉप फ़िल्टर पैनल (मोबाइल पर तुरंत छुप जाएगा, flicker नहीं करेगा) */}
+            {/* Desktop Filter Panel */}
             <div className="hidden md:block flex-shrink-0">
               <HoverFilterPanel
                 filters={filters}
@@ -200,7 +196,6 @@ const Jobs = () => {
           onClearAll={handleClearAll}
         />
 
-        {/* 🌟 API loading के समय लेआउट को स्थिर रखने के लिए Loader */}
         {isLoading ? (
           <div className="min-h-[50vh] flex items-center justify-center w-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
@@ -218,7 +213,7 @@ const Jobs = () => {
               <div className="text-center py-16 min-h-[40vh] flex flex-col items-center justify-center">
                 <span className="text-4xl mb-2 block">🔍</span>
                 <p className="text-gray-500">No jobs found matching your search</p>
-                <button 
+                <button
                   onClick={handleClearAll}
                   className="mt-2 text-sm text-indigo-600 font-medium hover:underline"
                 >
@@ -232,8 +227,8 @@ const Jobs = () => {
         {/* Pagination */}
         {!isLoading && totalPages > 1 && (
           <div className="flex items-center justify-center gap-1 mt-6">
-            <button 
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} 
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
               className="disabled:opacity-40 p-1"
             >
@@ -243,12 +238,12 @@ const Jobs = () => {
             {Array.from({ length: totalPages }).map((_, i) => {
               const pageNum = i + 1;
               return (
-                <button 
-                  key={pageNum} 
-                  onClick={() => setCurrentPage(pageNum)} 
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
                   className={`w-8 h-8 text-xs flex items-center justify-center border rounded-md transition-colors ${
-                    currentPage === pageNum 
-                      ? 'bg-indigo-600 text-white border-indigo-600' 
+                    currentPage === pageNum
+                      ? 'bg-indigo-600 text-white border-indigo-600'
                       : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
                   }`}
                 >
@@ -257,8 +252,8 @@ const Jobs = () => {
               );
             })}
 
-            <button 
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} 
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="disabled:opacity-40 p-1"
             >
