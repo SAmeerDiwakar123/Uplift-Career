@@ -25,7 +25,7 @@ export const postInternship = async (req, res) => {
       stipend,
       duration,
       openings,
-      skills: Array.isArray(skills) ? skills : (skills ? skills.split(",") : []),
+      skills: skills ? skills.split(",").map(s => s.trim()) : [],
       applyBy,
       category,
       isPPO,

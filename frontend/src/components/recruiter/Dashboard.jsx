@@ -6,7 +6,7 @@ import { JOB_API_END_POINT } from '@/utils/constant';
 import BottomNav from '../shared/BottomNav';
 import Footer from '../shared/Footer';
 
-const RecruiterDashboard = () => {
+const Dashboard = () => {
 
 
   const [totalJobs, setTotalJobs] = useState(0);
@@ -209,4 +209,4 @@ const RecruiterDashboard = () => {
   );
 };
 
-export default RecruiterDashboard;
+export default Dashboard;
