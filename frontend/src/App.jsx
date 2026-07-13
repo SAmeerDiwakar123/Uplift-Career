@@ -13,13 +13,13 @@ import Applications from './pages/student/Applications';
 import Profile from './pages/Profile';
 import JobDetail from './pages/student/JobDetail';
 import ApplyJob from './pages/ApplyJob';
-import Dashboard from './components/recruiter/Dashboard';
-import AddJobs from './components/recruiter/AddJobs';
-import ManageJob from './components/recruiter/ManageJob';
-import CreateCompany from './components/recruiter/CreateCompany';
-import Companies from './components/recruiter/Companies';
-import CompanySetup from './components/recruiter/CompanySetup';
-import Applicants from './components/recruiter/Applicants';
+import Dashboard from './pages/recruiter/Dashboard'
+import AddJobs from "./pages/recruiter/AddJob"
+import AddInternships from './pages/recruiter/AddInternship';
+import CreateCompany from './pages/recruiter/CreateCompany'
+import Companies from './pages/recruiter/Companies'
+import CompanySetup from './pages/recruiter/CompanySetup'
+import Applicants from './pages/recruiter/Applicants';
 import CourseDetail from './pages/CourseDetail';
 import Internships from './pages/student/Internships';
 import InternshipDetail from './pages/student/InternshipDetail';
@@ -27,6 +27,8 @@ import InternshipDetail from './pages/student/InternshipDetail';
 import axios from "axios";
 import Notifications from './pages/student/Notifications';
 import StudentDashboard from './pages/student/StudentDashboard';
+import ManageInternships from './pages/recruiter/ManageInternships';
+import ManageJobs from './pages/recruiter/ManageJobs';
 axios.defaults.withCredentials = true;
 
 // Public Route — Login ho toh redirect
@@ -93,7 +95,9 @@ function App() {
         {/* Recruiter Routes */}
         <Route path="/recruiter/dashboard" element={<RecruiterRoute><Dashboard /></RecruiterRoute>} />
         <Route path="/recruiter/add-jobs" element={<RecruiterRoute><AddJobs /></RecruiterRoute>} />
-        <Route path="/recruiter/manage-jobs" element={<RecruiterRoute><ManageJob /></RecruiterRoute>} />
+        <Route path="/recruiter/add-internship" element={<RecruiterRoute><AddInternships /></RecruiterRoute>}></Route>
+        <Route path="/recruiter/manage-jobs" element={<RecruiterRoute><ManageJobs /></RecruiterRoute>} />
+        <Route path="/recruiter/manage-internships" element={<RecruiterRoute><ManageInternships /></RecruiterRoute>} />
         <Route path="/recruiter/create-company" element={<RecruiterRoute><CreateCompany /></RecruiterRoute>} />
         <Route path="/recruiter/companies" element={<RecruiterRoute><Companies /></RecruiterRoute>} />
         <Route path="/recruiter/companies/:id" element={<RecruiterRoute><CompanySetup /></RecruiterRoute>} />

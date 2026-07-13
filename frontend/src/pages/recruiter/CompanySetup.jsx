@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../shared/Navbar'
+import Navbar from '../../components/shared/Navbar'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button } from '../ui/button'
+import { Button } from '../../components/ui/button'
 import axios from 'axios'
 import { COMPANY_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { ArrowLeft } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import useGetCompanyByid from '@/hooks/useGetCompanyByid'
-import BottomNav from '../shared/BottomNav'
+import BottomNav from '../../components/shared/BottomNav'
 
 const CompanySetup = () => {
   const params = useParams();

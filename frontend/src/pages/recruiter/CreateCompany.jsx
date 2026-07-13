@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import Navbar from '../shared/Navbar';
+import Navbar from '../../components/shared/Navbar'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { COMPANY_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { setSingleCompany } from '@/redux/companySlice';
-import BottomNav from '../shared/BottomNav';
+import BottomNav from '../../components/shared/BottomNav'
 
 const CreateCompany = () => {
 

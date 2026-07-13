@@ -13,6 +13,8 @@
     "@fontsource-variable/figtree": "^5.2.10",
     "@hugeicons/core-free-icons": "^4.0.0",
     "@hugeicons/react": "^1.1.6",
+    "@radix-ui/react-avatar": "^1.2.2",
+    "@radix-ui/react-dialog": "^1.1.19",
     "@react-spring/web": "^10.0.3",
     "@reduxjs/toolkit": "^2.11.2",
     "@vitejs/plugin-react": "^6.0.1",

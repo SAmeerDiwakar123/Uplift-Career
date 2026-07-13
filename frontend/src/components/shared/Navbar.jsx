@@ -73,7 +73,9 @@ const Navbar = () => {
       return [
         { path: '/recruiter/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { path: '/recruiter/add-jobs', label: 'Add Job', icon: PlusCircle },
+        { path: '/recruiter/add-internship', label: 'Add Internship', icon: PlusCircle },
         { path: '/recruiter/manage-jobs', label: 'Manage Jobs', icon: ListChecks },
+        { path: '/recruiter/manage-internships', label: 'Manage Internship', icon: ListChecks },
         { path: '/recruiter/create-company', label: 'Create Company', icon: Building2 },
         { path: '/recruiter/companies', label: 'Companies', icon: Building2 },
       ];

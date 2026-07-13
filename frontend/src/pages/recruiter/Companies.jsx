@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../shared/Navbar'
+import Navbar from '../../components/shared/Navbar'
 import { Plus, Edit2, Trash2, Search } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { COMPANY_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog'
-import { Button } from '../ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog'
+import { Button } from '../../components/ui/button'
 import { useDispatch, useSelector } from 'react-redux'
 import useGetAllCompanies from '@/hooks/useGetAllCompanies'
 import { setSearchCompanyByText } from '@/redux/companySlice'
-import BottomNav from '../shared/BottomNav'
+import BottomNav from '../../components/shared/BottomNav'
 
 const Companies = () => {
 
