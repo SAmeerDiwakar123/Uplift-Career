@@ -10,9 +10,11 @@ import Footer from "@/components/shared/Footer";
 import Navbar from "@/components/shared/Navbar";
 import TopCompanies from "@/components/home/TopCompanies";
 import BottomNav from "@/components/shared/BottomNav";
+import useGetAllJobs from "@/hooks/useGetAllJobs";
 
 
 const Home = () => {
+  useGetAllJobs();
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
       <Navbar />
