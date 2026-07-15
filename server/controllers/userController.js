@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import cloudinary from "../utils/cloudinary.js";
 import getDataUri from "../utils/datauri.js";
 
-// Register a new user
 
 const registerUser = async (req, res) => {
   try {
@@ -128,7 +127,6 @@ const updateProfile = async (req, res) => {
     const file = req.file;
     let cloudResponse;
 
-    // ✅ sirf tab upload karo jab file ho
     if (file) {
       const fileUri = getDataUri(file);
       cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
@@ -152,7 +150,6 @@ const updateProfile = async (req, res) => {
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skillsArray;
 
-    // ✅ sirf tab resume update karo jab file ho
     if (cloudResponse) {
       user.profile.resume = cloudResponse.secure_url;
       user.profile.resumeOriginalName = file.originalname;
@@ -169,17 +166,11 @@ const updateProfile = async (req, res) => {
       profile: user.profile,
     }
 
-    return res.status(200)
-      .cookie("token", "", {
-        maxAge: 0,
-        httpOnly: true,
-        secure: true,
-        sameSite: "none"
-      })
-      .json({
-        message: "Logged out successfully",
-        success: true
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user
+    });
 
   } catch (error) {
     console.log(error);
@@ -202,7 +193,7 @@ const adminLogin = async (req, res) => {
           role: "admin",
           email
         },
-        process.env.JWT_SECRET,
+        process.env.SECRET_KEY,
         { expiresIn: "1d" }
       )
 

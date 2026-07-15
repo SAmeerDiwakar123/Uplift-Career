@@ -15,9 +15,7 @@ const JobCard = ({ job }) => {
   const [applying, setApplying] = useState(false);
 
   // Check if applied
-  const isApplied =
-    job?.applications?.some((app) => app.applicant === user?._id) || false;
-
+  const isApplied = job?.applications?.some((app) => app.applicant === user?._id) || false;
   // Check if saved
   const savedJobs = useSelector((store) => store.savedJob?.savedJobs) || [];
   const isJobSaved = savedJobs.some((j) => j._id === job?._id);

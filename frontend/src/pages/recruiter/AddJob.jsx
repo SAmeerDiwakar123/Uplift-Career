@@ -62,7 +62,7 @@ const AddJob = () => {
 
       if (res.data.success) {
         toast.success('Job posted successfully!');
-        navigate('/admin/manage-jobs');
+        navigate('/recruiter/manage-jobs');
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to post job');
@@ -241,7 +241,7 @@ const AddJob = () => {
               <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-xs text-amber-600">
                 ⚠️ No companies found.{' '}
                 <span
-                  onClick={() => navigate('/admin/create-company')}
+                  onClick={() => navigate('/recruiter/create-company')}
                   className="underline cursor-pointer font-medium"
                 >
                   Create a company first

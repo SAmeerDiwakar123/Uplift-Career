@@ -12,7 +12,12 @@ const userSchema = new mongoose.Schema({
   },
   profile: {
     bio: { type: String, default: "" },
-    skills: [{ type: String }],
+    skills: [{ type: mongoose.Schema.Types.ObjectId }],
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      default: null
+    },
     resume: { type: String, default: "" },
     resumeOriginalName: { type: String, default: "" },
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },

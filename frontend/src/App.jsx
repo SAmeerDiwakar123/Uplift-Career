@@ -24,6 +24,8 @@ import CourseDetail from './pages/CourseDetail';
 import Internships from './pages/student/Internships';
 import InternshipDetail from './pages/student/InternshipDetail';
 
+import AdminLogin from './pages/admin/AdminLogin';
+
 import axios from "axios";
 import Notifications from './pages/student/Notifications';
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -102,7 +104,8 @@ function App() {
         <Route path="/recruiter/companies" element={<RecruiterRoute><Companies /></RecruiterRoute>} />
         <Route path="/recruiter/companies/:id" element={<RecruiterRoute><CompanySetup /></RecruiterRoute>} />
         <Route path="/recruiter/jobs/:id/applicants" element={<RecruiterRoute><Applicants /></RecruiterRoute>} />
-
+        {/* Admin Routes */}
+<Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
     </BrowserRouter>
   );
