@@ -10,6 +10,10 @@ import { Enrollment } from "../models/EnrolledModel.js";
 export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("ENV EMAIL:", process.env.ADMIN_EMAIL);
+    console.log("ENV PASSWORD:", process.env.ADMIN_PASSWORD);
+
+    console.log("BODY:", req.body);
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
       const token = jwt.sign(
         {
@@ -17,6 +21,7 @@ export const adminLogin = async (req, res) => {
           role: "admin",
           email,
         },
+
         process.env.SECRET_KEY,
         { expiresIn: "7d" }
       );
@@ -25,7 +30,7 @@ export const adminLogin = async (req, res) => {
         .cookie("token", token, {
           httpOnly: true,
           sameSite: "strict",
-          maxAge: 7 *24 * 60 * 60 * 1000, 
+          maxAge: 7 * 24 * 60 * 60 * 1000,
         })
         .json({
           success: true,
