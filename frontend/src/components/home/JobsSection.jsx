@@ -5,13 +5,15 @@ import JobCard from '../job/JobCard'
 const JobsSection = () => {
 
   const { alljobs } = useSelector(store => store.job);
+  console.log("All Jobs:", alljobs);
   const [activeTab, setActiveTab] = useState("fresher");
 
   const filteredJobs = alljobs.filter((job) => {
     if (activeTab === "internship") {
       return job?.jobType?.toLowerCase() === "internship";
     }
-    return job?.experienceLevel === 0;
+    console.log(alljobs[0].experienceLevel);
+    return job?.experienceLevel === 1;
   });
 
   return (

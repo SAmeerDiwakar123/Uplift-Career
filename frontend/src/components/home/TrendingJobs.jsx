@@ -7,7 +7,6 @@ import JobCard from '../job/JobCard'
 
 const TrendingJobs = () => {
   const { alljobs } = useSelector(store => store.job);
-  console.log("Trending Jobs:", alljobs);
   const navigate = useNavigate();
 
   const trendingJobs = alljobs?.slice(0, 3) || [];
