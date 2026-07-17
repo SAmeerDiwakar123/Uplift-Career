@@ -59,11 +59,13 @@ const JobsSection = () => {
           </div>
         </div>
 
-        <div className='grid grid-cols-1 sm:grid-cols-3 lg:grid-3 gap-3 sm:gap-4'>
-          {filteredJobs.slice(0, 3).map((job) => (
-            <JobCard key={job._id} job={job}/>
-          ))}
-        </div>
+        <div className="grid grid-cols-1">
+  {filteredJobs.map((job) => (
+    <h1 key={job._id} className="text-red-500 text-2xl">
+      {job.title}
+    </h1>
+  ))}
+</div>
 
       </div>
 
