@@ -26,11 +26,13 @@ export const adminLogin = async (req, res) => {
         { expiresIn: "7d" }
       );
 
+      // adminLogin controller mein cookie set hone ka code dhundo:
       res
         .cookie("token", token, {
           httpOnly: true,
-          sameSite: "strict",
-          maxAge: 7 * 24 * 60 * 60 * 1000,
+          secure: true,        // ✅ Vercel HTTPS ke liye zaroori
+          sameSite: "none",    // ✅ Cross-origin ke liye zaroori
+          maxAge: 24 * 60 * 60 * 1000,
         })
         .json({
           success: true,
