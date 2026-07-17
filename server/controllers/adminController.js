@@ -6,76 +6,87 @@ import { Application } from "../models/ApplicationModel.js";
 import { Order } from "../models/OrderModel.js";
 import { Enrollment } from "../models/EnrolledModel.js";
 
-// 1. Admin Login
-export const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      const token = jwt.sign(
-        { id: "admin", role: "admin", email },
-        process.env.SECRET_KEY,
-        { expiresIn: "1d" }
-      );
-
-      return res
-        .cookie("token", token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-          maxAge: 24 * 60 * 60 * 1000,
-        })
-        .json({
-          success: true,
-          message: "Admin logged in successfully",
-          token,
-        });
-
-    } else {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid credentials",
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
+// Human-like code bad elements ko hatane ke liye ek dynamic async handler util use karta hai
+const catchAsync = (fn) => (req, res, next) => {
+  fn(req, res, next).catch((err) => {
+    console.error(`[Admin Error Notification]:`, err.stack || err.message);
+    res.status(err.statusCode || 500).json({
       success: false,
-      message: error.message,
+      message: err.message || "Something went wrong on our end.",
     });
-  }
+  });
 };
+
+// 1. Admin Login
+export const adminLogin = catchAsync(async (req, res) => {
+  const { email, password } = req.body;
+
+  const isValidAdmin = email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD;
+  if (!isValidAdmin) {
+    return res.status(401).json({ success: false, message: "Invalid admin credentials" });
+  }
+
+  const token = jwt.sign(
+    { id: "admin_root", role: "admin", email },
+    process.env.SECRET_KEY,
+    { expiresIn: "1d" }
+  );
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Security enhancement over hardcoded true
+    sameSite: "strict", // Cookie security standard
+    maxAge: 24 * 60 * 60 * 1000,
+  }).json({
+    success: true,
+    message: "Welcome back, Admin.",
+    token,
+  });
+});
 
 // 2. Admin Logout
-export const adminLogout = async (req, res) => {
-  try {
-    return res
-      .cookie("token", "", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 0,
-      })
-      .json({
-        success: true,
-        message: "Logged out successfully",
-      });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+export const adminLogout = catchAsync(async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  }).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
 
 // 3. Dashboard Stats
-export const getAdminStats = async (req, res) => {
-  try {
-    const [
+export const getAdminStats = catchAsync(async (req, res) => {
+  // .lean() lagane se query optimization badhti hai aur complex arrays fast execute hote hain
+  const [
+    totalUsers,
+    totalStudents,
+    totalRecruiters,
+    totalTeachers,
+    totalJobs,
+    totalCourses,
+    totalApplications,
+    totalEnrollments,
+    completedOrders,
+  ] = await Promise.all([
+    User.countDocuments(),
+    User.countDocuments({ role: "student" }),
+    User.countDocuments({ role: "recruiter" }),
+    User.countDocuments({ role: "teacher" }),
+    Job.countDocuments(),
+    Course.countDocuments(),
+    Application.countDocuments(),
+    Enrollment.countDocuments(),
+    Order.find({ status: "completed" }).select("amount").lean(),
+  ]);
+
+  const totalRevenue = completedOrders.reduce((sum, order) => sum + (order.amount || 0), 0);
+  const platformRevenue = +(totalRevenue * 0.40).toFixed(2); // Floats standard fixing
+
+  res.status(200).json({
+    success: true,
+    stats: {
       totalUsers,
       totalStudents,
       totalRecruiters,
@@ -84,186 +95,366 @@ export const getAdminStats = async (req, res) => {
       totalCourses,
       totalApplications,
       totalEnrollments,
-      orders,
-    ] = await Promise.all([
-      User.countDocuments(),
-      User.countDocuments({ role: "student" }),
-      User.countDocuments({ role: "recruiter" }),
-      User.countDocuments({ role: "teacher" }),
-      Job.countDocuments(),
-      Course.countDocuments(),
-      Application.countDocuments(),
-      Enrollment.countDocuments(),
-      Order.find({ status: "completed" }),
-    ]);
-
-    const totalRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
-    const platformRevenue = totalRevenue * 0.40;
-
-    return res.status(200).json({
-      success: true,
-      stats: {
-        totalUsers,
-        totalStudents,
-        totalRecruiters,
-        totalTeachers,
-        totalJobs,
-        totalCourses,
-        totalApplications,
-        totalEnrollments,
-        totalRevenue,
-        platformRevenue,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch stats",
-    });
-  }
-};
+      totalRevenue,
+      platformRevenue,
+    },
+  });
+});
 
 // 4. All Users
-export const getAllUsers = async (req, res) => {
-  try {
-    const { role } = req.query;
-    const query = role ? { role } : {};
+export const getAllUsers = catchAsync(async (req, res) => {
+  const { role } = req.query;
+  const filter = role ? { role } : {};
 
-    const users = await User.find(query)
-      .select("-password")
-      .sort({ createdAt: -1 });
+  const users = await User.find(filter)
+    .select("-password")
+    .sort({ createdAt: -1 })
+    .lean();
 
-    return res.status(200).json({
-      success: true,
-      users,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch users",
-    });
-  }
-};
+  res.status(200).json({ success: true, count: users.length, users });
+});
 
 // 5. Ban/Unban User
-export const banUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const user = await User.findById(id);
+export const banUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    user.isBanned = !user.isBanned;
-    await user.save();
-
-    return res.status(200).json({
-      success: true,
-      message: user.isBanned ? "User banned" : "User unbanned",
-      isBanned: user.isBanned,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to ban user",
-    });
+  if (!user) {
+    return res.status(404).json({ success: false, message: "Target user account not found" });
   }
-};
+
+  user.isBanned = !user.isBanned;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: user.isBanned ? "User restriction enabled successfully" : "User access restored",
+    isBanned: user.isBanned,
+  });
+});
 
 // 6. All Jobs
-export const getAllJobsAdmin = async (req, res) => {
-  try {
-    const jobs = await Job.find()
-      .populate("company")
-      .populate("created_by", "fullname email")
-      .sort({ createdAt: -1 });
+export const getAllJobsAdmin = catchAsync(async (req, res) => {
+  const jobs = await Job.find()
+    .populate("company")
+    .populate("created_by", "fullname email")
+    .sort({ createdAt: -1 })
+    .lean();
 
-    return res.status(200).json({
-      success: true,
-      jobs,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch jobs",
-    });
-  }
-};
+  res.status(200).json({ success: true, jobs });
+});
 
 // 7. Delete Job (Admin)
-export const deleteJobAdmin = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Job.findByIdAndDelete(id);
+export const deleteJobAdmin = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const targetJob = await Job.findByIdAndDelete(id);
 
-    return res.status(200).json({
-      success: true,
-      message: "Job deleted successfully",
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to delete job",
-    });
+  if (!targetJob) {
+    return res.status(404).json({ success: false, message: "Job post already deleted or missing" });
   }
-};
+
+  res.status(200).json({ success: true, message: "Job listing successfully removed" });
+});
 
 // 8. All Courses
-export const getAllCoursesAdmin = async (req, res) => {
-  try {
-    const courses = await Course.find()
-      .populate("instructor", "fullname email")
-      .sort({ createdAt: -1 });
+export const getAllCoursesAdmin = catchAsync(async (req, res) => {
+  const courses = await Course.find()
+    .populate("instructor", "fullname email")
+    .sort({ createdAt: -1 })
+    .lean();
 
-    return res.status(200).json({
-      success: true,
-      courses,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch courses",
-    });
-  }
-};
+  res.status(200).json({ success: true, courses });
+});
 
 // 9. Revenue Details
-export const getRevenue = async (req, res) => {
-  try {
-    const orders = await Order.find({ status: "completed" })
-      .populate("user", "fullname email")
-      .populate("course", "title price")
-      .sort({ createdAt: -1 });
+export const getRevenue = catchAsync(async (req, res) => {
+  const completedOrders = await Order.find({ status: "completed" })
+    .populate("user", "fullname email")
+    .populate("course", "title price")
+    .sort({ createdAt: -1 })
+    .lean();
 
-    const totalRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
-    const platformRevenue = totalRevenue * 0.40;
-    const teacherRevenue = totalRevenue * 0.60;
+  const totalRevenue = completedOrders.reduce((sum, order) => sum + (order.amount || 0), 0);
+  
+  res.status(200).json({
+    success: true,
+    revenue: {
+      totalRevenue,
+      platformRevenue: +(totalRevenue * 0.40).toFixed(2),
+      teacherRevenue: +(totalRevenue * 0.60).toFixed(2),
+      totalOrders: completedOrders.length,
+      orders: completedOrders,
+    },
+  });
+});
 
-    return res.status(200).json({
-      success: true,
-      revenue: {
-        totalRevenue,
-        platformRevenue,
-        teacherRevenue,
-        totalOrders: orders.length,
-        orders,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch revenue",
-    });
-  }
-};
+
+// import jwt from "jsonwebtoken";
+// import { User } from "../models/UserModel.js";
+// import { Job } from "../models/JobModel.js";
+// import { Course } from "../models/CourseModel.js";
+// import { Application } from "../models/ApplicationModel.js";
+// import { Order } from "../models/OrderModel.js";
+// import { Enrollment } from "../models/EnrolledModel.js";
+
+// // 1. Admin Login
+// export const adminLogin = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     if (
+//       email === process.env.ADMIN_EMAIL &&
+//       password === process.env.ADMIN_PASSWORD
+//     ) {
+//       const token = jwt.sign(
+//         { id: "admin", role: "admin", email },
+//         process.env.SECRET_KEY,
+//         { expiresIn: "1d" }
+//       );
+
+//       return res
+//         .cookie("token", token, {
+//           httpOnly: true,
+//           secure: true,
+//           sameSite: "none",
+//           maxAge: 24 * 60 * 60 * 1000,
+//         })
+//         .json({
+//           success: true,
+//           message: "Admin logged in successfully",
+//           token,
+//         });
+
+//     } else {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Invalid credentials",
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // 2. Admin Logout
+// export const adminLogout = async (req, res) => {
+//   try {
+//     return res
+//       .cookie("token", "", {
+//         httpOnly: true,
+//         secure: true,
+//         sameSite: "none",
+//         maxAge: 0,
+//       })
+//       .json({
+//         success: true,
+//         message: "Logged out successfully",
+//       });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // 3. Dashboard Stats
+// export const getAdminStats = async (req, res) => {
+//   try {
+//     const [
+//       totalUsers,
+//       totalStudents,
+//       totalRecruiters,
+//       totalTeachers,
+//       totalJobs,
+//       totalCourses,
+//       totalApplications,
+//       totalEnrollments,
+//       orders,
+//     ] = await Promise.all([
+//       User.countDocuments(),
+//       User.countDocuments({ role: "student" }),
+//       User.countDocuments({ role: "recruiter" }),
+//       User.countDocuments({ role: "teacher" }),
+//       Job.countDocuments(),
+//       Course.countDocuments(),
+//       Application.countDocuments(),
+//       Enrollment.countDocuments(),
+//       Order.find({ status: "completed" }),
+//     ]);
+
+//     const totalRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
+//     const platformRevenue = totalRevenue * 0.40;
+
+//     return res.status(200).json({
+//       success: true,
+//       stats: {
+//         totalUsers,
+//         totalStudents,
+//         totalRecruiters,
+//         totalTeachers,
+//         totalJobs,
+//         totalCourses,
+//         totalApplications,
+//         totalEnrollments,
+//         totalRevenue,
+//         platformRevenue,
+//       },
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch stats",
+//     });
+//   }
+// };
+
+// // 4. All Users
+// export const getAllUsers = async (req, res) => {
+//   try {
+//     const { role } = req.query;
+//     const query = role ? { role } : {};
+
+//     const users = await User.find(query)
+//       .select("-password")
+//       .sort({ createdAt: -1 });
+
+//     return res.status(200).json({
+//       success: true,
+//       users,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch users",
+//     });
+//   }
+// };
+
+// // 5. Ban/Unban User
+// export const banUser = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const user = await User.findById(id);
+
+//     if (!user) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "User not found",
+//       });
+//     }
+
+//     user.isBanned = !user.isBanned;
+//     await user.save();
+
+//     return res.status(200).json({
+//       success: true,
+//       message: user.isBanned ? "User banned" : "User unbanned",
+//       isBanned: user.isBanned,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to ban user",
+//     });
+//   }
+// };
+
+// // 6. All Jobs
+// export const getAllJobsAdmin = async (req, res) => {
+//   try {
+//     const jobs = await Job.find()
+//       .populate("company")
+//       .populate("created_by", "fullname email")
+//       .sort({ createdAt: -1 });
+
+//     return res.status(200).json({
+//       success: true,
+//       jobs,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch jobs",
+//     });
+//   }
+// };
+
+// // 7. Delete Job (Admin)
+// export const deleteJobAdmin = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     await Job.findByIdAndDelete(id);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Job deleted successfully",
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to delete job",
+//     });
+//   }
+// };
+
+// // 8. All Courses
+// export const getAllCoursesAdmin = async (req, res) => {
+//   try {
+//     const courses = await Course.find()
+//       .populate("instructor", "fullname email")
+//       .sort({ createdAt: -1 });
+
+//     return res.status(200).json({
+//       success: true,
+//       courses,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch courses",
+//     });
+//   }
+// };
+
+// // 9. Revenue Details
+// export const getRevenue = async (req, res) => {
+//   try {
+//     const orders = await Order.find({ status: "completed" })
+//       .populate("user", "fullname email")
+//       .populate("course", "title price")
+//       .sort({ createdAt: -1 });
+
+//     const totalRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
+//     const platformRevenue = totalRevenue * 0.40;
+//     const teacherRevenue = totalRevenue * 0.60;
+
+//     return res.status(200).json({
+//       success: true,
+//       revenue: {
+//         totalRevenue,
+//         platformRevenue,
+//         teacherRevenue,
+//         totalOrders: orders.length,
+//         orders,
+//       },
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch revenue",
+//     });
+//   }
+// };

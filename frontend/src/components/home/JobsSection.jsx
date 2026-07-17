@@ -7,14 +7,12 @@ const JobsSection = () => {
   const { alljobs } = useSelector(store => store.job);
   const [activeTab, setActiveTab] = useState("fresher");
 
-  const filteredJobs = alljobs.filter((job) => {
+  const filter = alljobs.filter((job) => {
     if (activeTab === "internship") {
       return job?.jobType?.toLowerCase() === "internship";
     }
-    console.log(alljobs[0].experienceLevel);
-    return job?.experienceLevel === 1;
+    return job?.experienceLevel === "Fresher (0-1 yr)";
   });
-
   return (
     <section className='py-8 sm:py-14 bg-gray-100'>
 
@@ -59,13 +57,11 @@ const JobsSection = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1">
-  {filteredJobs.map((job) => (
-    <h1 key={job._id} className="text-red-500 text-2xl">
-      {job.title}
-    </h1>
-  ))}
-</div>
+        <div className='grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4'>
+          {alljobs.slice(0, 3).map((job) => (
+            <JobCard key={job._id} job={job}/>
+          ))}
+        </div>
 
       </div>
 
