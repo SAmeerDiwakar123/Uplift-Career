@@ -49,21 +49,55 @@ export const adminLogin = async (req, res) => {
   }
 };
 
-// 2. Admin Stats (Dashboard ke liye)
+// 2. Admin Logout
+export const adminLogout = async (req, res) => {
+  try {
+    return res
+      .cookie("token", "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 0,
+      })
+      .json({
+        success: true,
+        message: "Logged out successfully",
+      });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// 3. Dashboard Stats
 export const getAdminStats = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
-    const totalStudents = await User.countDocuments({ role: "student" });
-    const totalRecruiters = await User.countDocuments({ role: "recruiter" });
-    const totalTeachers = await User.countDocuments({ role: "teacher" });
-    const totalJobs = await Job.countDocuments();
-    const totalCourses = await Course.countDocuments();
-    const totalApplications = await Application.countDocuments();
-    const totalEnrollments = await Enrollment.countDocuments();
+    const [
+      totalUsers,
+      totalStudents,
+      totalRecruiters,
+      totalTeachers,
+      totalJobs,
+      totalCourses,
+      totalApplications,
+      totalEnrollments,
+      orders,
+    ] = await Promise.all([
+      User.countDocuments(),
+      User.countDocuments({ role: "student" }),
+      User.countDocuments({ role: "recruiter" }),
+      User.countDocuments({ role: "teacher" }),
+      Job.countDocuments(),
+      Course.countDocuments(),
+      Application.countDocuments(),
+      Enrollment.countDocuments(),
+      Order.find({ status: "completed" }),
+    ]);
 
-    // Total revenue (40% course revenue)
-    const orders = await Order.find({ status: "completed" });
-    const totalRevenue = orders.reduce((sum, order) => sum + order.amount, 0);
+    const totalRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
     const platformRevenue = totalRevenue * 0.40;
 
     return res.status(200).json({
@@ -90,7 +124,7 @@ export const getAdminStats = async (req, res) => {
   }
 };
 
-// 3. All Users
+// 4. All Users
 export const getAllUsers = async (req, res) => {
   try {
     const { role } = req.query;
@@ -113,12 +147,12 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// 4. Ban/Unban User
+// 5. Ban/Unban User
 export const banUser = async (req, res) => {
   try {
     const { id } = req.params;
-
     const user = await User.findById(id);
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -126,12 +160,13 @@ export const banUser = async (req, res) => {
       });
     }
 
-    user.isBanned = !user.isBanned; // toggle
+    user.isBanned = !user.isBanned;
     await user.save();
 
     return res.status(200).json({
       success: true,
       message: user.isBanned ? "User banned" : "User unbanned",
+      isBanned: user.isBanned,
     });
   } catch (error) {
     console.log(error);
@@ -142,7 +177,7 @@ export const banUser = async (req, res) => {
   }
 };
 
-// 5. All Jobs
+// 6. All Jobs
 export const getAllJobsAdmin = async (req, res) => {
   try {
     const jobs = await Job.find()
@@ -163,7 +198,7 @@ export const getAllJobsAdmin = async (req, res) => {
   }
 };
 
-// 6. Delete Job (admin)
+// 7. Delete Job (Admin)
 export const deleteJobAdmin = async (req, res) => {
   try {
     const { id } = req.params;
@@ -182,7 +217,7 @@ export const deleteJobAdmin = async (req, res) => {
   }
 };
 
-// 7. All Courses
+// 8. All Courses
 export const getAllCoursesAdmin = async (req, res) => {
   try {
     const courses = await Course.find()
@@ -202,7 +237,7 @@ export const getAllCoursesAdmin = async (req, res) => {
   }
 };
 
-// 8. Revenue Details
+// 9. Revenue Details
 export const getRevenue = async (req, res) => {
   try {
     const orders = await Order.find({ status: "completed" })

@@ -105,7 +105,7 @@ function App() {
         <Route path="/recruiter/companies/:id" element={<RecruiterRoute><CompanySetup /></RecruiterRoute>} />
         <Route path="/recruiter/jobs/:id/applicants" element={<RecruiterRoute><Applicants /></RecruiterRoute>} />
         {/* Admin Routes */}
-<Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
     </BrowserRouter>
   );

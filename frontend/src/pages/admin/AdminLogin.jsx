@@ -8,33 +8,22 @@ import { ADMIN_API_END_POINT } from "@/utils/constant";
 const AdminLogin = () => {
   const navigate = useNavigate();
 
-  const [input, setInput] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [input, setInput] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  const changeEventHandler = (e) => {
-    setInput({
-      ...input,
-      [e.target.name]: e.target.value,
-    });
+  const handleChange = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const submitHandler = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       setLoading(true);
-
       const res = await axios.post(
         `${ADMIN_API_END_POINT}/login`,
         input,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
@@ -44,62 +33,52 @@ const AdminLogin = () => {
         navigate("/admin/dashboard");
       }
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message || "Something went wrong"
-      );
+      toast.error(error?.response?.data?.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-blue-100 px-4">
-      <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md bg-white border border-gray-100 shadow-sm rounded-2xl p-8">
 
+        {/* Header */}
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-blue-100 p-4 rounded-full">
-            <ShieldCheck className="text-blue-600" size={40} />
+          <div className="w-14 h-14 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-center mb-4">
+            <ShieldCheck className="text-indigo-600" size={28} />
           </div>
-
-          <h1 className="text-3xl font-bold mt-4 text-gray-800">
-            Admin Login
-          </h1>
-
-          <p className="text-gray-500 mt-2 text-center">
-            Login to access Uplift Career Admin Panel
+          <h1 className="text-xl font-semibold text-gray-900">Admin Login</h1>
+          <p className="text-sm text-gray-400 mt-1 text-center">
+            Access Uplift Career admin panel
           </p>
         </div>
 
-        <form onSubmit={submitHandler} className="space-y-5">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Email
-            </label>
-
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-medium text-gray-600">Email</label>
             <input
               type="email"
               name="email"
               value={input.email}
-              onChange={changeEventHandler}
-              placeholder="Enter admin email"
-              className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={handleChange}
+              placeholder="admin@upliftcareer.com"
+              className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-300 w-full"
               required
             />
           </div>
 
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Password
-            </label>
-
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-medium text-gray-600">Password</label>
             <input
               type="password"
               name="password"
               value={input.password}
-              onChange={changeEventHandler}
+              onChange={handleChange}
               placeholder="Enter password"
-              className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-300 w-full"
               required
             />
           </div>
@@ -107,19 +86,27 @@ const AdminLogin = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-3 rounded-lg font-semibold flex justify-center items-center gap-2 disabled:opacity-70"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-sm font-semibold flex justify-center items-center gap-2 transition disabled:opacity-60 mt-1"
           >
             {loading ? (
               <>
-                <Loader2 className="animate-spin" size={20} />
+                <Loader2 className="animate-spin" size={16} />
                 Logging in...
               </>
             ) : (
-              "Login"
+              "Login to Admin Panel"
             )}
           </button>
 
         </form>
+
+        {/* Back link */}
+        <p
+          onClick={() => navigate('/')}
+          className="text-xs text-center text-gray-400 mt-5 cursor-pointer hover:text-gray-600"
+        >
+          ← Back to home
+        </p>
 
       </div>
     </div>
