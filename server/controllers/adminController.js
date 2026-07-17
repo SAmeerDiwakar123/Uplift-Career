@@ -21,12 +21,11 @@ export const adminLogin = async (req, res) => {
         { expiresIn: "1d" }
       );
 
-      // ✅ Cookie set karo + response bhejo
       return res
         .cookie("token", token, {
           httpOnly: true,
-          secure: true,       // ← Vercel HTTPS ke liye
-          sameSite: "none",   // ← Cross-origin ke liye
+          secure: true,
+          sameSite: "none",
           maxAge: 24 * 60 * 60 * 1000,
         })
         .json({
