@@ -5,7 +5,6 @@ import JobCard from '../job/JobCard'
 const JobsSection = () => {
 
   const { alljobs } = useSelector(store => store.job);
-  console.log("All Jobs:", alljobs);
   const [activeTab, setActiveTab] = useState("fresher");
 
   const filteredJobs = alljobs.filter((job) => {
