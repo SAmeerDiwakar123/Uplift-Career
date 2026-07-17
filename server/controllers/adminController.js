@@ -10,28 +10,23 @@ import { Enrollment } from "../models/EnrolledModel.js";
 export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log("ENV EMAIL:", process.env.ADMIN_EMAIL);
-    console.log("ENV PASSWORD:", process.env.ADMIN_PASSWORD);
 
-    console.log("BODY:", req.body);
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
       const token = jwt.sign(
-        {
-          id: "admin",
-          role: "admin",
-          email,
-        },
-
+        { id: "admin", role: "admin", email },
         process.env.SECRET_KEY,
-        { expiresIn: "7d" }
+        { expiresIn: "1d" }
       );
 
-      // adminLogin controller mein cookie set hone ka code dhundo:
-      res
+      // ✅ Cookie set karo + response bhejo
+      return res
         .cookie("token", token, {
           httpOnly: true,
-          secure: true,        // ✅ Vercel HTTPS ke liye zaroori
-          sameSite: "none",    // ✅ Cross-origin ke liye zaroori
+          secure: true,       // ← Vercel HTTPS ke liye
+          sameSite: "none",   // ← Cross-origin ke liye
           maxAge: 24 * 60 * 60 * 1000,
         })
         .json({
@@ -39,6 +34,7 @@ export const adminLogin = async (req, res) => {
           message: "Admin logged in successfully",
           token,
         });
+
     } else {
       return res.status(401).json({
         success: false,
