@@ -7,46 +7,53 @@ import { Order } from "../models/OrderModel.js";
 import { Enrollment } from "../models/EnrolledModel.js";
 
 // 1. Admin Login
+// export const adminLogin = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     if (
+//       email === process.env.ADMIN_EMAIL &&
+//       password === process.env.ADMIN_PASSWORD
+//     ) {
+//       const token = jwt.sign(
+//         { id: "admin", role: "admin", email },
+//         process.env.SECRET_KEY,
+//         { expiresIn: "1d" }
+//       );
+
+//       return res
+//         .cookie("token", token, {
+//           httpOnly: true,
+//           secure: true,
+//           sameSite: "none",
+//           maxAge: 24 * 60 * 60 * 1000,
+//         })
+//         .json({
+//           success: true,
+//           message: "Admin logged in successfully",
+//           token,
+//         });
+
+//     } else {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Invalid credentials",
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
 export const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      const token = jwt.sign(
-        { id: "admin", role: "admin", email },
-        process.env.SECRET_KEY,
-        { expiresIn: "1d" }
-      );
-
-      return res
-        .cookie("token", token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-          maxAge: 24 * 60 * 60 * 1000,
-        })
-        .json({
-          success: true,
-          message: "Admin logged in successfully",
-          token,
-        });
-
-    } else {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid credentials",
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  return res.status(200).json({
+    envEmail: process.env.ADMIN_EMAIL,
+    envPassword: process.env.ADMIN_PASSWORD,
+    body: req.body,
+  });
 };
 
 // 2. Admin Logout
