@@ -7,6 +7,7 @@ import { setLoading, setUser } from '@/redux/authSlice';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { Loader2, Mail, Lock, Eye, EyeOff, GraduationCap, Briefcase } from 'lucide-react';
 import Navbar from '@/components/shared/Navbar';
+import BottomNav from '../shared/BottomNav';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const Login = () => {
         dispatch(setUser(res.data.user));
         localStorage.setItem('user', JSON.stringify(res.data.user));
         toast.success(res.data.message);
-        
+
         if (res.data.user?.role === 'recruiter') {
           navigate('/admin/dashboard');
         } else {
@@ -132,11 +133,10 @@ const Login = () => {
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <label
-                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
-                    input.role === 'student'
+                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border-2 cursor-pointer transition-all duration-200 ${input.role === 'student'
                       ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                       : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300'
-                  }`}
+                    }`}
                 >
                   <input
                     type="radio"
@@ -151,11 +151,10 @@ const Login = () => {
                 </label>
 
                 <label
-                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
-                    input.role === 'recruiter'
+                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border-2 cursor-pointer transition-all duration-200 ${input.role === 'recruiter'
                       ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                       : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300'
-                  }`}
+                    }`}
                 >
                   <input
                     type="radio"
@@ -191,11 +190,10 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                loading
+              className={`w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${loading
                   ? 'bg-gray-300 cursor-not-allowed text-gray-600'
                   : 'bg-indigo-600 text-white hover:bg-indigo-700'
-              }`}
+                }`}
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -233,6 +231,7 @@ const Login = () => {
           </p>
         </div>
       </div>
+      <BottomNav />
     </div>
   );
 };

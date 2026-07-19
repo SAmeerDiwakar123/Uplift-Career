@@ -7,6 +7,7 @@ import { setLoading } from '@/redux/authSlice';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { Loader2, User, Mail, Phone, Lock, Upload, GraduationCap, Briefcase } from 'lucide-react';
 import Navbar from '@/components/shared/Navbar';
+import BottomNav from '../shared/BottomNav';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -293,6 +294,7 @@ const Signup = () => {
           </p>
         </div>
       </div>
+      <BottomNav/>
     </div>
   );
 };
