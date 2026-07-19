@@ -7,9 +7,10 @@ const courseSlice = createSlice({
     singleCourse: null,
     myEnrollments: [],
     loading: false,
+    searchCourseByText: "",
     filters: {},
   },
-  
+
   reducers: {
     setCourses: (state, action) => {
       state.courses = action.payload;
@@ -23,6 +24,9 @@ const courseSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setSearchCourseByText: (state, action) => {
+      state.searchCourseByText = action.payload;
+    },
     setCourseFilters: (state, action) => {
       state.filters = { ...state.filters, ...action.payload };
     },
@@ -32,5 +36,5 @@ const courseSlice = createSlice({
   },
 });
 
-export const {setCourses,setSingleCourse,setMyEnrollments,setLoading,setCourseFilters,clearCourseFilters,} = courseSlice.actions;
+export const { setCourses, setSearchCourseByText , setSingleCourse, setMyEnrollments, setLoading, setCourseFilters, clearCourseFilters, } = courseSlice.actions;
 export default courseSlice.reducer;

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { JOB_API_END_POINT, COMPANY_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import { ArrowLeft, Briefcase } from 'lucide-react';
+import BottomNav from '@/components/shared/BottomNav';
 
 const AddJob = () => {
   const navigate = useNavigate();
@@ -271,6 +272,7 @@ const AddJob = () => {
         </div>
 
       </div>
+      <BottomNav/>
     </div>
   );
 };

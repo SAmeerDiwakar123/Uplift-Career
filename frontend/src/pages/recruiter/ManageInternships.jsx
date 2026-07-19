@@ -6,7 +6,9 @@ import { INTERNSHIP_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import { Edit2, Eye, Plus, Search, Trash2, Building } from 'lucide-react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
-import { Button } from '../../components/ui/button'; 
+import { Button } from '../../components/ui/button';
+import BottomNav from '@/components/shared/BottomNav';
+
 const ManageInternships = () => {
   const navigate = useNavigate(); 
   const [internships, setInternships] = useState([]);
@@ -256,6 +258,7 @@ const ManageInternships = () => {
           </form>
         </DialogContent>
       </Dialog>
+      <BottomNav/>
     </div>
   );
 };

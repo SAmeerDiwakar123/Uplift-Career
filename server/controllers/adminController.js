@@ -6,46 +6,61 @@ import { Application } from "../models/ApplicationModel.js";
 import { Order } from "../models/OrderModel.js";
 import { Enrollment } from "../models/EnrolledModel.js";
 
-// Human-like code bad elements ko hatane ke liye ek dynamic async handler util use karta hai
-const catchAsync = (fn) => (req, res, next) => {
-  fn(req, res, next).catch((err) => {
-    console.error(`[Admin Error Notification]:`, err.stack || err.message);
-    res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message || "Something went wrong on our end.",
-    });
-  });
-};
 
 // 1. Admin Login
-export const adminLogin = catchAsync(async (req, res) => {
-  const { email, password } = req.body;
+export const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  const isValidAdmin = email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD;
-  if (!isValidAdmin) {
-    return res.status(401).json({ success: false, message: "Invalid admin credentials" });
+    // Check admin credentials
+    if (
+      email !== process.env.ADMIN_EMAIL ||
+      password !== process.env.ADMIN_PASSWORD
+    ) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid admin credentials",
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: "admin",
+        role: "admin",
+        email,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    // Send cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Admin logged in successfully",
+      token,
+    });
+
+  } catch (error) {
+    console.error("Admin Login Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
-
-  const token = jwt.sign(
-    { id: "admin_root", role: "admin", email },
-    process.env.SECRET_KEY,
-    { expiresIn: "1d" }
-  );
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // Security enhancement over hardcoded true
-    sameSite: "strict", // Cookie security standard
-    maxAge: 24 * 60 * 60 * 1000,
-  }).json({
-    success: true,
-    message: "Welcome back, Admin.",
-    token,
-  });
-});
-
+};
 // 2. Admin Logout
-export const adminLogout = catchAsync(async (req, res) => {
+export const adminLogout = (async (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -57,7 +72,7 @@ export const adminLogout = catchAsync(async (req, res) => {
 });
 
 // 3. Dashboard Stats
-export const getAdminStats = catchAsync(async (req, res) => {
+export const getAdminStats = (async (req, res) => {
   // .lean() lagane se query optimization badhti hai aur complex arrays fast execute hote hain
   const [
     totalUsers,
@@ -102,7 +117,7 @@ export const getAdminStats = catchAsync(async (req, res) => {
 });
 
 // 4. All Users
-export const getAllUsers = catchAsync(async (req, res) => {
+export const getAllUsers = (async (req, res) => {
   const { role } = req.query;
   const filter = role ? { role } : {};
 
@@ -115,7 +130,7 @@ export const getAllUsers = catchAsync(async (req, res) => {
 });
 
 // 5. Ban/Unban User
-export const banUser = catchAsync(async (req, res) => {
+export const banUser = (async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id);
 
@@ -134,7 +149,7 @@ export const banUser = catchAsync(async (req, res) => {
 });
 
 // 6. All Jobs
-export const getAllJobsAdmin = catchAsync(async (req, res) => {
+export const getAllJobsAdmin = (async (req, res) => {
   const jobs = await Job.find()
     .populate("company")
     .populate("created_by", "fullname email")
@@ -145,7 +160,7 @@ export const getAllJobsAdmin = catchAsync(async (req, res) => {
 });
 
 // 7. Delete Job (Admin)
-export const deleteJobAdmin = catchAsync(async (req, res) => {
+export const deleteJobAdmin = (async (req, res) => {
   const { id } = req.params;
   const targetJob = await Job.findByIdAndDelete(id);
 
@@ -157,7 +172,7 @@ export const deleteJobAdmin = catchAsync(async (req, res) => {
 });
 
 // 8. All Courses
-export const getAllCoursesAdmin = catchAsync(async (req, res) => {
+export const getAllCoursesAdmin = (async (req, res) => {
   const courses = await Course.find()
     .populate("instructor", "fullname email")
     .sort({ createdAt: -1 })
@@ -167,7 +182,7 @@ export const getAllCoursesAdmin = catchAsync(async (req, res) => {
 });
 
 // 9. Revenue Details
-export const getRevenue = catchAsync(async (req, res) => {
+export const getRevenue = (async (req, res) => {
   const completedOrders = await Order.find({ status: "completed" })
     .populate("user", "fullname email")
     .populate("course", "title price")
@@ -175,7 +190,7 @@ export const getRevenue = catchAsync(async (req, res) => {
     .lean();
 
   const totalRevenue = completedOrders.reduce((sum, order) => sum + (order.amount || 0), 0);
-  
+
   res.status(200).json({
     success: true,
     revenue: {

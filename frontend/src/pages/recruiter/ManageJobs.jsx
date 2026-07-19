@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Edit2, Eye, Plus, Search, Trash2, Briefcase } from 'lucide-react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { Button } from '../../components/ui/button'; 
+import BottomNav from '@/components/shared/BottomNav';
 
 const ManageJobs = () => {
   const navigate = useNavigate();
@@ -253,6 +254,7 @@ const ManageJobs = () => {
           </form>
         </DialogContent>
       </Dialog>
+      <BottomNav/>
     </div>
   );
 };

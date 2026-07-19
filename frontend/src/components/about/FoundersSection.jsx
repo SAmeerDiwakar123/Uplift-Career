@@ -1,39 +1,51 @@
 import React from 'react';
-import { founders } from '@/data/aboutData';
 
 const FoundersSection = () => {
+  const founders = [
+    { 
+      id: 1, 
+      name: 'Rahul Sharma', 
+      role: 'CEO & Co-Founder', 
+      initials: 'RS' 
+    },
+    { 
+      id: 2, 
+      name: 'Priya Patel', 
+      role: 'CTO & Co-Founder', 
+      initials: 'PP' 
+    },
+  ];
+
   return (
-    <section className="py-10 sm:py-16 lg:py-20 px-4 sm:px-6 bg-slate-50">
-      <div className="max-w-4xl mx-auto">
+    <section className="py-8 sm:py-12 bg-gray-100">
+      <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-10">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-            Meet Our <span className="text-blue-600">Founders</span>
+        <div className="text-center mb-6">
+          <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1">
+            Meet Our Founders
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500">
+          <p className="text-sm text-gray-500">
             The visionaries behind Uplift Career
           </p>
         </div>
 
         {/* Founders Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
           {founders.map((member) => (
             <div 
               key={member.id} 
-              className="bg-white rounded-2xl border border-slate-100 p-5 sm:p-6 text-center hover:shadow-lg hover:border-slate-200 transition-all duration-300"
+              className="bg-white rounded-lg border border-gray-200 p-6 text-center hover:shadow-md transition"
             >
               {/* Avatar */}
-              <div 
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-3 sm:mb-4 border-2 border-slate-100 flex items-center justify-center text-lg sm:text-2xl font-bold text-slate-700 bg-slate-50"
-              >
+              <div className="w-14 h-14 rounded-full mx-auto mb-3 bg-indigo-100 flex items-center justify-center text-sm font-semibold text-indigo-600">
                 {member.initials}
               </div>
 
               {/* Info */}
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-0.5">
+              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">
                 {member.name}
               </h3>
-              <p className="text-xs sm:text-sm text-blue-600 font-medium">
+              <p className="text-xs text-gray-500">
                 {member.role}
               </p>
             </div>

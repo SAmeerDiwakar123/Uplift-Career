@@ -3,7 +3,7 @@ import React from "react";
 const companies = [
   { 
     name: "TCS", 
-     logo: "https://tse3.mm.bing.net/th/id/OIP.wGvIBluul352FAXwe6Y6fgHaHa?pid=Api&P=0&h=180"  
+    logo: "https://tse3.mm.bing.net/th/id/OIP.wGvIBluul352FAXwe6Y6fgHaHa?pid=Api&P=0&h=180"  
   },
   { 
     name: "Infosys", 
@@ -29,26 +29,26 @@ const companies = [
 
 const TopCompanies = () => {
   return (
-    <section id="companies" className="py-8 sm:py-16 bg-gray-100">
-      <div className="max-w-6xl mx-auto px-4 text-center">
+    <section className="py-8 sm:py-12 bg-gray-100">
+      <div className="max-w-7xl mx-auto px-4 text-center">
 
-        <h2 className="text-xl sm:text-3xl font-bold text-gray-900">
+        <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
           Top Companies Hiring Now
         </h2>
-        <p className="text-xs sm:text-base text-gray-500 mt-1 sm:mt-2">
+        <p className="text-sm text-gray-500 mt-1">
           Join leading companies and grow your career
         </p>
 
-        <div className="mt-6 sm:mt-10 grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-6">
+        <div className="mt-6 grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {companies.map((company, i) => (
             <div
               key={i}
-              className="bg-gray-50 p-2.5 sm:p-5 rounded-lg sm:rounded-xl border flex items-center justify-center hover:shadow-md transition"
+              className="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-center hover:shadow-md transition"
             >
               <img
                 src={company.logo}
                 alt={company.name}
-                className="h-5 sm:h-8 object-contain grayscale hover:grayscale-0 transition"
+                className="h-8 object-contain grayscale hover:grayscale-0 transition"
               />
             </div>
           ))}

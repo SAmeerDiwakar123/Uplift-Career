@@ -36,12 +36,12 @@ const Applicants = () => {
   const statusHandler = async (status, id) => {
     try {
       axios.defaults.withCredentials = true;
-      const res = await axios.post(`${APPLICATION_API_END_POINT}/status/${id}/update`, {status}, {withCredentials: true});
-      if(res.data.success){
+      const res = await axios.post(`${APPLICATION_API_END_POINT}/status/${id}/update`, { status }, { withCredentials: true });
+      if (res.data.success) {
         toast.success("Application status updated successfully");
       }
     } catch (error) {
-      toast .error("Something went wrong while updating application status");
+      toast.error("Something went wrong while updating application status");
     }
   }
 
@@ -63,8 +63,8 @@ const Applicants = () => {
         </div>
 
         <div className='relative mb-4'>
-          <Search size={15} className='absolute left-3 top-3 text-gray-400'/>
-          <input type="text" placeholder='Search applicant' className='w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white'/>
+          <Search size={15} className='absolute left-3 top-3 text-gray-400' />
+          <input type="text" placeholder='Search applicant' className='w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white' />
         </div>
 
         <div className='bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto'>
@@ -112,7 +112,7 @@ const Applicants = () => {
 
                     <div className='flex items-center gap-3'>
 
-                      <div className='w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold'>{item?.applicant?. fullname?.charAt(0)}
+                      <div className='w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold'>{item?.applicant?.fullname?.charAt(0)}
                       </div>
 
                       <div>
@@ -173,7 +173,7 @@ const Applicants = () => {
 
                     <div className='flex gap-2'>
 
-                      <button                     onClick={() => statusHandler("accepted", item._id)} 
+                      <button onClick={() => statusHandler("accepted", item._id)}
                         className='p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-500 hover:text-white transition'
                       >
                         Accept
@@ -200,7 +200,7 @@ const Applicants = () => {
         </div>
 
       </div>
-              <BottomNav/>
+      <BottomNav />
     </div>
   )
 }

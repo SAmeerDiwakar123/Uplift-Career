@@ -5,6 +5,7 @@ import axios from 'axios';
 import { COMPANY_API_END_POINT, INTERNSHIP_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import { ArrowLeft, Building } from 'lucide-react';
+import BottomNav from '@/components/shared/BottomNav';
 
 const AddInternship = () => {
   const navigate = useNavigate();
@@ -203,6 +204,7 @@ const AddInternship = () => {
           </form>
         </div>
       </div>
+      <BottomNav/>
     </div>
   );
 };

@@ -1,39 +1,47 @@
 import React from 'react';
-import { teamMembers } from '@/data/aboutData';
 
 const TeamSection = () => {
+  const teamMembers = [
+    { id: 1, name: 'Rahul Sharma', role: 'CEO & Co-Founder', initials: 'RS' },
+    { id: 2, name: 'Priya Patel', role: 'CTO & Co-Founder', initials: 'PP' },
+    { id: 3, name: 'Amit Kumar', role: 'Head of Education', initials: 'AK' },
+    { id: 4, name: 'Sneha Reddy', role: 'Head of Placements', initials: 'SR' },
+    { id: 5, name: 'Vikram Singh', role: 'Senior Instructor', initials: 'VS' },
+    { id: 6, name: 'Neha Gupta', role: 'Product Manager', initials: 'NG' },
+    { id: 7, name: 'Arjun Nair', role: 'Tech Lead', initials: 'AN' },
+    { id: 8, name: 'Kavya Menon', role: 'Marketing Lead', initials: 'KM' },
+  ];
+
   return (
-    <section className="py-10 sm:py-16 lg:py-20 px-4 sm:px-6 bg-slate-50">
-      <div className="max-w-5xl mx-auto">
+    <section className="py-8 sm:py-12 bg-white">
+      <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-10">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-            Our <span className="text-blue-600">Team</span>
+        <div className="text-center mb-6">
+          <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1">
+            Our Team
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500">
+          <p className="text-sm text-gray-500">
             The amazing people behind Uplift Career
           </p>
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {teamMembers.map((member) => (
             <div 
               key={member.id} 
-              className="bg-white border border-slate-100 rounded-xl p-3 sm:p-4 text-center hover:shadow-md hover:border-slate-200 transition-all duration-300"
+              className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition"
             >
               {/* Avatar */}
-              <div 
-                className="w-12 h-12 sm:w-14 sm:h-14 rounded-full mx-auto mb-2 border border-slate-100 flex items-center justify-center text-sm sm:text-base font-bold text-slate-600 bg-slate-50"
-              >
+              <div className="w-12 h-12 rounded-full mx-auto mb-2 bg-indigo-100 flex items-center justify-center text-xs font-semibold text-indigo-600">
                 {member.initials}
               </div>
 
               {/* Info */}
-              <h4 className="text-xs sm:text-sm font-semibold text-slate-900 mb-0.5">
+              <h4 className="text-xs font-semibold text-gray-900 mb-0.5">
                 {member.name}
               </h4>
-              <p className="text-[10px] sm:text-xs text-slate-500">
+              <p className="text-[10px] text-gray-500">
                 {member.role}
               </p>
             </div>

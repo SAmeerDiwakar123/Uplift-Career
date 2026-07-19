@@ -79,18 +79,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <div className="bg-gray-50 min-h-screen">
       <Navbar />
 
-      <div className="min-h-[calc(100vh-64px)] flex justify-center items-center px-3 py-8">
-        <div className="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-xl p-6 sm:p-8">
+      <div className="min-h-[calc(100vh-64px)] flex justify-center items-center px-4 py-8">
+        <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-sm p-6">
 
           {/* Heading */}
           <div className="mb-6 text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-100 to-indigo-100 border border-purple-200 text-purple-700 text-xs font-semibold mb-3">
-              🚀 Join Uplift
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-indigo-800 bg-clip-text text-transparent">
+            <h1 className="text-lg font-bold text-gray-900">
               Create Account
             </h1>
             <p className="text-sm text-gray-500 mt-1">
@@ -102,11 +99,11 @@ const Signup = () => {
 
             {/* Full Name */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-700 mb-1 block">
                 Full Name
               </label>
               <div className="relative">
-                <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   name="fullname"
@@ -114,18 +111,18 @@ const Signup = () => {
                   onChange={changeHandler}
                   placeholder="Enter your full name"
                   required
-                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-700 mb-1 block">
                 Email
               </label>
               <div className="relative">
-                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="email"
                   name="email"
@@ -133,18 +130,18 @@ const Signup = () => {
                   onChange={changeHandler}
                   placeholder="Enter your email"
                   required
-                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
                 />
               </div>
             </div>
 
             {/* Phone Number */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-700 mb-1 block">
                 Phone Number
               </label>
               <div className="relative">
-                <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   name="phoneNumber"
@@ -152,18 +149,18 @@ const Signup = () => {
                   onChange={changeHandler}
                   placeholder="Enter your phone number"
                   required
-                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-700 mb-1 block">
                 Password
               </label>
               <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="password"
                   name="password"
@@ -171,43 +168,43 @@ const Signup = () => {
                   onChange={changeHandler}
                   placeholder="Create a password"
                   required
-                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
                 />
               </div>
             </div>
 
             {/* Profile Photo */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
+              <label className="text-xs font-medium text-gray-700 mb-1 block">
                 Profile Photo
               </label>
               <div className="relative">
-                <Upload size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
+                <Upload size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
                 <input
                   type="file"
                   accept="image/*"
                   onChange={fileChangeHandler}
                   required
-                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all cursor-pointer file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200"
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all cursor-pointer file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200"
                 />
               </div>
               {fileName && (
-                <p className="text-xs text-purple-600 mt-1.5 font-medium">
-                  ✅ {fileName}
+                <p className="text-xs text-indigo-600 mt-1.5 font-medium">
+                  ✓ {fileName}
                 </p>
               )}
             </div>
 
             {/* Role Selection */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">
+              <label className="text-xs font-medium text-gray-700 mb-1.5 block">
                 Select Role
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <label
-                  className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
                     input.role === 'student'
-                      ? 'border-purple-500 bg-purple-50 text-purple-700'
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                       : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300'
                   }`}
                 >
@@ -219,14 +216,14 @@ const Signup = () => {
                     onChange={changeHandler}
                     className="hidden"
                   />
-                  <GraduationCap size={18} />
+                  <GraduationCap size={16} />
                   <span className="text-sm font-medium">Student</span>
                 </label>
 
                 <label
-                  className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
                     input.role === 'recruiter'
-                      ? 'border-purple-500 bg-purple-50 text-purple-700'
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                       : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300'
                   }`}
                 >
@@ -238,7 +235,7 @@ const Signup = () => {
                     onChange={changeHandler}
                     className="hidden"
                   />
-                  <Briefcase size={18} />
+                  <Briefcase size={16} />
                   <span className="text-sm font-medium">Recruiter</span>
                 </label>
               </div>
@@ -249,15 +246,15 @@ const Signup = () => {
               <input
                 type="checkbox"
                 required
-                className="w-4 h-4 mt-0.5 bg-gray-50 border-gray-300 rounded focus:ring-2 focus:ring-purple-500 accent-purple-600"
+                className="w-4 h-4 mt-0.5 bg-gray-50 border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 accent-indigo-600"
               />
               <label className="text-xs text-gray-500 leading-relaxed">
                 I agree to the{' '}
-                <span className="text-purple-600 hover:underline cursor-pointer font-medium">
+                <span className="text-indigo-600 hover:underline cursor-pointer font-medium">
                   Terms & Conditions
                 </span>{' '}
                 and{' '}
-                <span className="text-purple-600 hover:underline cursor-pointer font-medium">
+                <span className="text-indigo-600 hover:underline cursor-pointer font-medium">
                   Privacy Policy
                 </span>
               </label>
@@ -267,10 +264,10 @@ const Signup = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3 text-sm font-semibold rounded-xl transition-all duration-300 ${
+              className={`w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
                 loading
-                  ? 'bg-gray-300 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02]'
+                  ? 'bg-gray-300 cursor-not-allowed text-gray-600'
+                  : 'bg-indigo-600 text-white hover:bg-indigo-700'
               }`}
             >
               {loading ? (
@@ -279,17 +276,17 @@ const Signup = () => {
                   Please wait...
                 </span>
               ) : (
-                'Create Account →'
+                'Create Account'
               )}
             </button>
           </form>
 
           {/* Login Link */}
-          <p className="text-sm text-center text-gray-500 mt-5">
+          <p className="text-xs text-center text-gray-500 mt-4">
             Already have an account?{' '}
             <span
               onClick={() => navigate('/login')}
-              className="text-purple-600 font-semibold cursor-pointer hover:underline"
+              className="text-indigo-600 font-medium cursor-pointer hover:underline"
             >
               Login
             </span>
@@ -301,6 +298,11 @@ const Signup = () => {
 };
 
 export default Signup;
+
+
+
+
+
 
 // import React, { useState } from 'react'
 // import Navbar from '../shared/Navbar'
