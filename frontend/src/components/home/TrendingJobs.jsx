@@ -8,7 +8,7 @@ const TrendingJobs = () => {
   const { alljobs } = useSelector(store => store.job);
   const navigate = useNavigate();
 
-  const trendingJobs = alljobs?.slice(0, 3) || [];
+  const trendingJobs = alljobs?.slice(0, 4) || [];
 
   return (
     <section className="py-8 sm:py-12 bg-gray-100">
