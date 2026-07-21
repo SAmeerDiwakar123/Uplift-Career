@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Clock, Users, Bookmark, Play, GraduationCap } from 'lucide-react';
+import { Clock, Users, Bookmark, Play, GraduationCap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
@@ -45,116 +45,125 @@ const CourseCard = ({ course }) => {
   const isBeginner = !course?.level || course?.level === 'Beginner';
 
   return (
-    <div className="bg-white rounded-xl border p-4 flex flex-col gap-3 hover:shadow-md transition">
-      {/* Badge + Save */}
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2 flex-wrap">
-          <span className="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-600">
+    <div className="bg-white rounded-xl border overflow-hidden hover:shadow-md transition group">
+      {/* Thumbnail */}
+      <div className="relative h-36 bg-gray-100">
+        {course?.thumbnail ? (
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-indigo-50 to-blue-50">
+            📚
+          </div>
+        )}
+        
+        {/* Badges on thumbnail */}
+        <div className="absolute top-2 left-2 flex gap-1 flex-wrap">
+          {course?.price === 0 && (
+            <span className="text-[10px] font-bold px-2 py-0.5 bg-green-500 text-white rounded">
+              FREE
+            </span>
+          )}
+          {course?.enrolledStudents?.length > 50 && (
+            <span className="text-[10px] font-bold px-2 py-0.5 bg-yellow-400 text-gray-900 rounded">
+              BESTSELLER
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="p-4 flex flex-col gap-2">
+        {/* Category + Save */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-600">
             {course?.category || "Course"}
           </span>
-          {isBeginner && (
-            <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-600">
-              🌱 Beginner
-            </span>
-          )}
-          {course?.price === 0 && (
-            <span className="text-xs px-3 py-1 rounded-full bg-purple-100 text-purple-600">
-              🎯 Free
-            </span>
-          )}
+          <button className="w-7 h-7 rounded-full border flex items-center justify-center text-gray-400 hover:text-indigo-600 transition">
+            <Bookmark size={14} />
+          </button>
         </div>
-        <button className="w-8 h-8 rounded-full border flex items-center justify-center text-gray-400 hover:text-indigo-600 transition">
-          <Bookmark size={15} />
-        </button>
-      </div>
 
-      {/* Course Image + Title */}
-      <div className="flex items-center gap-3">
-        <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-          {course?.thumbnail ? (
-            <img
-              src={course.thumbnail}
-              alt={course.title}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-2xl bg-gradient-to-br from-indigo-50 to-blue-50">
-              📚
-            </div>
-          )}
+        {/* Title */}
+        <h3 className="text-sm font-semibold text-gray-900 line-clamp-1">
+          {course?.title}
+        </h3>
+
+        {/* Instructor */}
+        <p className="text-xs text-gray-500">
+          {course?.instructor?.fullname || "Instructor"}
+        </p>
+
+        {/* Details */}
+        <div className="flex gap-3 text-xs text-gray-500 flex-wrap">
+          <span className="flex items-center gap-1">
+            <GraduationCap size={12} /> {course?.level || "All levels"}
+          </span>
+          <span className="flex items-center gap-1">
+            <Users size={12} /> {course?.enrolledStudents?.length || 0}
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock size={12} />
+            {daysAgo(course?.createdAt) === 0 ? "Today" : `${daysAgo(course?.createdAt)}d`}
+          </span>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-800 truncate">
-            {course?.title}
-          </p>
-          <p className="text-xs text-gray-500 truncate">
-            {course?.instructor?.fullname || "Instructor"}
-          </p>
+
+        {/* Lessons & Validity */}
+        <div className="flex gap-2">
+          <div className="flex-1 bg-gray-50 rounded-lg px-2 py-1.5 text-center">
+            <span className="text-[10px] text-gray-500">Lessons</span>
+            <p className="text-xs font-semibold text-indigo-600">
+              {course?.lessons?.length || 0}
+            </p>
+          </div>
+          <div className="flex-1 bg-blue-50 rounded-lg px-2 py-1.5 text-center">
+            <span className="text-[10px] text-gray-500">Access</span>
+            <p className="text-xs font-semibold text-blue-600">
+              {course?.validityYears || 1}Yr
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Description */}
-      <div>
-        <p className="text-xs text-gray-500 line-clamp-2">{course?.subtitle || course?.description}</p>
-      </div>
-
-      {/* Details */}
-      <div className="flex gap-3 text-xs text-gray-500 flex-wrap">
-        <span className="flex items-center gap-1">
-          <GraduationCap size={12} /> {course?.level || "All levels"}
-        </span>
-        <span className="flex items-center gap-1">
-          <Users size={12} /> {course?.enrolledStudents?.length || 0} students
-        </span>
-        <span className="flex items-center gap-1">
-          <Clock size={12} />
-          {daysAgo(course?.createdAt) === 0 ? "Today" : `${daysAgo(course?.createdAt)}d ago`}
-        </span>
-      </div>
-
-      {/* Lessons */}
-      <div className="flex justify-between bg-gray-50 rounded-lg px-3 py-2">
-        <span className="text-xs text-gray-500">Lessons</span>
-        <span className="text-sm font-semibold text-indigo-600">
-          {course?.lessons?.length || 0}
-        </span>
-      </div>
-
-      {/* Validity */}
-      <div className="flex justify-between bg-blue-50 rounded-lg px-3 py-2">
-        <span className="text-xs text-gray-500">Access</span>
-        <span className="text-sm font-semibold text-blue-600">
-          {course?.validityYears || 1} Year
-        </span>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => navigate(`/course/${course?._id}`)}
-          className="flex-1 bg-indigo-600 text-white text-xs py-2 rounded-lg hover:bg-indigo-700 flex items-center justify-center gap-1"
-        >
-          <Play size={12} /> View Course
-        </button>
-        <button
-          onClick={handleEnroll}
-          disabled={isEnrolled || enrolling}
-          className={`px-5 border rounded-lg text-xs ${
-            isEnrolled
-              ? "bg-green-50 text-green-600 border-green-200 cursor-default"
-              : "hover:border-indigo-500 hover:text-indigo-600"
-          }`}
-        >
-          {isEnrolled ? "Enrolled" : "Enroll"}
-        </button>
+        {/* Price & Buttons */}
+        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+          <div>
+            {course?.price === 0 ? (
+              <span className="text-sm font-bold text-green-600">Free</span>
+            ) : (
+              <span className="text-sm font-bold text-gray-900">
+                ₹{course?.price?.toLocaleString()}
+              </span>
+            )}
+          </div>
+          <div className="flex gap-1.5">
+            <button
+              onClick={() => navigate(`/course/${course?._id}`)}
+              className="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-indigo-700"
+            >
+              View
+            </button>
+            <button
+              onClick={handleEnroll}
+              disabled={isEnrolled || enrolling}
+              className={`px-3 py-1.5 border rounded-lg text-xs ${
+                isEnrolled
+                  ? "bg-green-50 text-green-600 border-green-200 cursor-default"
+                  : "hover:border-indigo-500 hover:text-indigo-600"
+              }`}
+            >
+              {isEnrolled ? "Enrolled" : "Enroll"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default CourseCard;
-
-
 
 
 
