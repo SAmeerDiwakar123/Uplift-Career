@@ -1,8 +1,11 @@
+import Navbar from '@/components/shared/Navbar'
 import React from 'react'
 
 const AllInternships = () => {
   return (
-    <div>AllInternships</div>
+    <div>
+      <Navbar/>
+      AllInternships</div>
   )
 }
 
